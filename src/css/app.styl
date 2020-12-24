@@ -1,0 +1,146 @@
+// app global css in Stylus form
+::-webkit-scrollbar
+  width 9px
+  height 9px
+  background-color transparent
+.q-scrollarea__thumb,::-webkit-scrollbar-thumb
+  border-radius 9px
+  opacity .4
+  background-color $primary
+html,body
+  background $base
+  background-size cover
+  color $dark
+  font-family 'Roboto', '-apple-system', 'Helvetica Neue', 'Microsoft YaHei', Helvetica, Arial, sans-serif
+h1,h2,h3,h4,h5,h6
+  margin 0
+.list-move
+  transition transform 1s ease-out
+.list_shorter-move
+  transition transform .2s ease-out
+.ani
+  transition all .4s ease-out
+.ani_slow
+  transition all 1s ease-out
+a
+  color $primary
+
+.view_card
+  position relative
+  background $white
+  border-radius 4px
+  max-width 100%
+.view_title
+  display flex
+  align-items center
+  height 50px
+  color $white
+  font-size 18px
+
+.dialog_card
+  background $white
+  min-width 40vw
+  height 100vh
+  pointer-events all
+  >.view_title
+    background $primary
+.dialog_tool
+  background $white
+  min-width 100vw
+  height 100vh
+  pointer-events all
+  >.view_title
+    background $primary
+.dialog_form
+  >div
+    min-height 95px
+  h5
+    font-size 14px
+    >i:first-child
+      transform: translate(0,-2px)
+.q_b_toggle
+  width 100%
+  border 1px $primary solid
+  color $primary
+  box-shadow unset
+  >button
+    flex 999 1 0%
+    .q-btn__wrapper
+      padding 0
+.q_b_tabs
+  border-bottom 1px $light solid
+  .q-tab--active
+    color $primary
+
+.toggle_btn
+  border 1px $primary solid
+  color $t-grey
+
+.cross_table
+  border-radius 0 !important
+  border 1px $light solid
+  max-width 100%
+  &.margin
+    margin 0 20px
+  .q-table
+    thead
+      th,td
+        position sticky
+        top 0
+        font-size 16px
+        transition none
+        opacity 1
+        z-index: 1
+        color $t-dark
+      tr
+        background #eee
+        th
+          position sticky
+          top 0
+          z-index 1
+      tr:nth-child(even)
+        background #eee
+    tbody
+      tr:nth-child(even)
+        background #f8f8f8
+      td
+        font-size 14px
+  &.q-table--cell-separator
+    td,th
+      border-left-width 0
+      border-right-width 1px
+      &:last-child
+        border-right-width 0
+  &.left_sticky
+    td:first-child
+      position sticky
+      left 0
+      z-index 2
+    thead th:first-child
+      top 0
+      left 0
+      z-index 3
+
+.amcharts-AmChartsLogo-group
+  display none
+  visibility hidden
+  width 0
+  height 0
+  overflow hidden
+  pointer-events none
+
+.text-t-dark
+  color $t-dark
+.bg-t-dark
+  background $t-dark
+.text-t-grey
+  color $t-grey
+.bg-t-grey
+  background $t-grey
+
+.cc-header
+  align-items center
+  justify-content space-between
+  display flex
+  flex-wrap wrap
+  margin-bottom 16px

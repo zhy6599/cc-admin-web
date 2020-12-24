@@ -1,0 +1,6 @@
+/.quasar
+/node_modules
+/.vscode
+/dist
+*.log
+*.lock

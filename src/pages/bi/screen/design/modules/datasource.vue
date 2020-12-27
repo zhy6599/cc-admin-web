@@ -63,7 +63,7 @@
 
 <script>
 
-import { columnToIcon, calculateType, sortType } from 'boot/datatype';
+import { columnToIcon, calculateType } from 'boot/datatype';
 import draggable from 'vuedraggable';
 
 export default {
@@ -105,9 +105,6 @@ export default {
           alias: '',
         },
       };
-    },
-    sort(val) {
-      return sortType.find((v) => v.value === val);
     },
     getViews() {
       return this.$axios.get('/bi/view/listAll')
@@ -221,6 +218,19 @@ export default {
           v.check = c;
         });
       },
+    },
+    configViewId() {
+      return this.config.viewId;
+    },
+  },
+  watch: {
+    configViewId() {
+      this.widget.viewId = this.configViewId;
+      if (this.widget.viewId) {
+        this.getModel();
+      } else {
+        this.model = [];
+      }
     },
   },
 };

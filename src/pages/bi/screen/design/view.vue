@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf">
     <q-page-container>
       <q-page class="column q-pa-sm">
-        <div class="col column view_card shadow-2 q-pa-md justify-center items-center">
+        <div class="col column justify-center items-center">
           <div :style="backgroundStyle">
             <vue-draggable-resizable
               v-for="item in layout"
@@ -11,25 +11,21 @@
               :y="item.y"
               :w="item.w"
               :h="item.h"
+              :z="item.z"
               :parent="true"
-              :draggable="false"
               :resizable="false"
-              class-name="no-border"
-              @resizestop="resizedEvent(item.i)"
+              :class="'no-border'"
             >
-              <div class="col column" :id="item.key" @click="selectItem(item.i)" @dragenter.prevent>
+              <div class="col column" :id="item.key">
                 <textview v-if="item.type === 'text'" :config="item.config" />
                 <imageview v-if="item.type === 'image'" :config="item.config" />
-                <chartview v-if="item.type === 'chart'" :config="item.config"/>
+                <chartview v-if="item.type === 'chart'" :config="item.config" />
               </div>
             </vue-draggable-resizable>
           </div>
         </div>
       </q-page>
     </q-page-container>
-    <q-inner-loading :showing="loading">
-      <q-spinner-gears size="50px" color="primary" />
-    </q-inner-loading>
   </q-layout>
 </template>
 
@@ -41,12 +37,11 @@ import textview from './modules/textview';
 import imageview from './modules/imageview';
 
 export default {
-  name: 'ScreenDesign',
   components: {
+    VueDraggableResizable,
     chartview,
     textview,
     imageview,
-    VueDraggableResizable,
   },
   data() {
     return {
@@ -76,6 +71,7 @@ export default {
       this.$root.$emit('allParamChange', this.allParam);
     },
     getScreen() {
+      this.loading = true;
       return this.$axios.get(`/bi/screen/queryById?id=${this.$route.query.id}`)
         .then(({ result }) => {
           const biScreen = result;
@@ -96,6 +92,8 @@ export default {
             color: 'red',
             message: '还原电子报告出错！',
           });
+        }).finally(() => {
+          this.loading = false;
         });
     },
   },
@@ -111,17 +109,44 @@ export default {
   },
   computed: {
     backgroundStyle() {
-      return {
-        width: `${this.backgroundConfig.width}px`,
-        height: `${this.backgroundConfig.height}px`,
-        background: `url('${this.imgUrl}/${this.backgroundConfig.src}')`,
-        backgroundRepeat: this.backgroundConfig.backPicSet,
+      let bkStyle = {};
+      if (this.backgroundConfig.src) {
+        bkStyle = {
+          width: `${this.backgroundConfig.width}px`,
+          height: `${this.backgroundConfig.height}px`,
+          background: `url('${this.imgUrl}/${this.backgroundConfig.src}')`,
+          backgroundRepeat: this.backgroundConfig.backPicSet,
+          backgroundSize: '10px 10px',
+          backgroundImage: this.backgroundConfig.showGrid
+            ? 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),'
+            + 'linear-gradient(#f2f2f2 10%, rgba(0, 0, 0, 0) 10%)' : '',
 
-      };
+        };
+        if (this.backgroundConfig.backPicSet === 'stretch') {
+          bkStyle.backgroundSize = '100%';
+        } else {
+          delete bkStyle.backgroundSize;
+        }
+      } else {
+        bkStyle = {
+          width: `${this.backgroundConfig.width}px`,
+          height: `${this.backgroundConfig.height}px`,
+          background: this.backgroundConfig.color,
+          backgroundSize: '10px 10px',
+          backgroundImage: this.backgroundConfig.showGrid
+            ? 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),'
+            + 'linear-gradient(#f2f2f2 10%, rgba(0, 0, 0, 0) 10%)' : '',
+        };
+      }
+      return bkStyle;
     },
   },
 };
 </script>
 
 <style lang="stylus">
+.gridBackground {
+  backgroundImage: 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),
+linear-gradient(#f2f2f2 10%, rgba(0, 0, 0, 0) 10%)';
+}
 </style>

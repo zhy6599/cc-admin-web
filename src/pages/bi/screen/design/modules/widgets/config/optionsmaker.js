@@ -6,6 +6,10 @@ const makePieOption = (config, chartData) => {
       type: config.type,
       data: seriesData.dataList,
       center: [`${config.series.center.x}%`, `${config.series.center.y}%`],
+      radius: [config.series.pie.radius.min, config.series.pie.radius.max],
+      roseType: config.series.pie.roseType,
+      hoverAnimation: config.series.pie.hoverAnimation,
+      avoidLabelOverlap: config.series.pie.avoidLabelOverlap,
     };
     seriesList.push(series);
   });

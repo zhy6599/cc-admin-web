@@ -216,3 +216,30 @@ export const modelTools = [
   { name: 'convert', icon: 'mdi-select-multiple', label: '行列转换' },
   { name: 'sort', icon: 'mdi-sort-alphabetical-ascending', label: '数据排序' },
 ];
+
+export const chartList = [
+  {
+    selected: false,
+    name: '文字',
+    icon: 'text_fields',
+    type: 'text',
+  },
+  {
+    selected: false,
+    name: '图片',
+    icon: 'mdi-file-image',
+    type: 'image',
+  },
+  {
+    selected: false,
+    name: '图表',
+    icon: 'mdi-chart-bar',
+    type: 'chart',
+  },
+  {
+    selected: false,
+    name: '背景设置',
+    icon: 'mdi-cog-outline',
+    type: 'cursor',
+  },
+];

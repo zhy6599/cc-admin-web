@@ -194,6 +194,7 @@
         <q-tab-panel name="style">
           <q-list>
             <configbar :config="config" v-if="config.type === 'bar'"/>
+            <configpie :config="config" v-if="config.type === 'pie'"/>
             <q-expansion-item
               dense
               dense-toggle
@@ -766,18 +767,20 @@
 <script>
 
 import {
-  columnToIcon, sortType, leftRightType, calculateType, themeMap, chartTypes, themeOptions,
+  sortType, leftRightType, calculateType, themeMap, chartTypes, themeOptions,
   leftAlignOptions, topAlignOptions, orientOptions, fontWeightOptions, fontStyleOptions,
   topBottomOptions,
 } from 'boot/datatype';
 import draggable from 'vuedraggable';
 import configbar from './widgets/config/bar';
+import configpie from './widgets/config/pie';
 
 export default {
   name: 'chartsetting',
   components: {
     draggable,
     configbar,
+    configpie,
   },
   data() {
     return {
@@ -817,19 +820,10 @@ export default {
     },
   },
   mounted() {
-    this.getViews();
   },
   methods: {
     changeTheme(value) {
       this.config.colors = this.themeMap[value];
-    },
-    clone() {
-      return {
-        name: this.uid(),
-        field: {
-          alias: '',
-        },
-      };
     },
     changeSort(v) {
       if (v.sort === 'desc') {
@@ -854,64 +848,6 @@ export default {
         this.$set(v, 'leftRight', '1');
       }
     },
-    getViews() {
-      return this.$axios.get('/bi/view/listAll')
-        .then(({ result }) => {
-          this.views = result.map((v) => ({
-            label: v.name,
-            value: v.id,
-          }));
-        });
-    },
-    confirmGetModel() {
-      if ((this.config.cols && this.config.cols.length)
-        || (this.config.rows && this.config.rows.length)) {
-        this.$q.dialog({
-          title: '切换视图',
-          message: '切换视图将清空维度和指标列表，确认切换？',
-          cancel: true,
-          ok: {
-            color: 'primary',
-          },
-        }).onOk(() => {
-          Object.assign(this.config, {
-            cols: [],
-            rows: [],
-            viewId: this.widget.viewId,
-          });
-          this.getModel();
-        }).onCancel(() => {
-          this.widget.viewId = this.config.viewId;
-        });
-      } else {
-        this.config.viewId = this.widget.viewId;
-        this.getModel();
-      }
-    },
-    getWidget() {
-      return this.$axios.get(`/bi/chart/queryById?id=${this.$route.query.id}`)
-        .then(({ result }) => {
-          this.config = JSON.parse(result.config);
-          this.widget = result;
-        }).catch(() => {
-          this.$router.replace('/analysis');
-        });
-    },
-    getModel() {
-      this.loading = true;
-      return this.$axios.get(`/bi/view/queryById?id=${this.config.viewId}`)
-        .then(({ result }) => {
-          this.model = Object.entries(JSON.parse(result.model)).map(([name, v]) => ({
-            name,
-            type: v.modelType,
-            visualType: v.visualType,
-            icon: columnToIcon(v.visualType),
-            check: false,
-          }));
-        }).finally(() => {
-          this.loading = false;
-        });
-    },
     del(t, type) {
       if (type === 'value') {
         this.config.rows = this.config.rows.filter((v) => v.name !== t.name);
@@ -935,10 +871,6 @@ export default {
         c.push('bg-light-blue');
       }
       return c;
-    },
-    uid() {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16)
-        + Math.floor((9 + Math.random()) * 0x10000).toString(16);
     },
     checkDrag(a, b) {
       return a === 'all' || (this.config.draging.type === b
@@ -972,13 +904,6 @@ export default {
         1,
         ...list.map((v) => this.translate(v, type)),
       );
-    },
-    cloneStart(e, type) {
-      const list = this[type];
-      this.config.draging = {
-        type,
-        data: list.some((v) => v.check) ? list.filter((v) => v.check) : [list[e.oldIndex]],
-      };
     },
     cloneEnd() {
       this.config.draging = {

@@ -11,7 +11,7 @@
             </q-toolbar-title>
           </q-toolbar>
         </div>
-        <div class="col-9">
+        <div class="col">
           <div class="row no-warp justify-center items-center content-center">
             <ul class="ul-box-tool"
               v-for="v in chartList"
@@ -25,30 +25,25 @@
               </li>
             </ul>
             <q-space />
-            <q-icon name="delete_sweep" style="font-size: 32px;" @click="removeItem()">
-              <q-tooltip>删除</q-tooltip>
-            </q-icon>
+            <q-btn flat icon="mdi-content-cut" @click="cutItem()" />
+            <q-btn flat icon="mdi-content-copy" @click="copyItem()" />
+            <q-btn flat icon="mdi-content-paste" @click="pasteItem()" />
           </div>
         </div>
-        <div class="col-1 text-right q-pr-md">
-          <q-icon
-            name="mdi-laptop"
-            style="font-size: 32px;margin-right:15px;"
-            @click="viewScreen()"
-          >
-            <q-tooltip>查看</q-tooltip>
-          </q-icon>
-          <q-icon
-            name="mdi-content-save"
-            style="font-size: 32px;"
-            @click="saveScreen()"
-          >
-            <q-tooltip>保存</q-tooltip>
-          </q-icon>
+        <div class="col-2 text-right q-pr-md q-gutter-sm">
+          <q-btn flat icon="mdi-format-float-left" @click="left=!left" />
+          <q-btn flat icon="mdi-format-float-right" @click="right=!right" />
+          <q-btn flat icon="mdi-laptop" @click="viewScreen()" />
+          <q-btn flat icon="mdi-content-save" @click="saveScreen()" />
         </div>
       </div>
     </q-header>
 
+    <q-drawer show-if-above v-model="left" side="left" bordered :width="230">
+      <div class="row no-wrap fit overflow-hidden">
+        <layout :items.sync="layout" :selId="selChartId" @selectItem="selectItem" />
+      </div>
+    </q-drawer>
     <q-drawer show-if-above v-model="right" side="right" bordered :width="590">
       <div class="row no-wrap fit overflow-hidden">
         <chartsetting v-if="selType === 'chart'" :config.sync="config" />
@@ -73,12 +68,13 @@
               :y="item.y"
               :w="item.w"
               :h="item.h"
+              :z="item.z"
               :active="item.active"
               :parent="true"
               :class="selChartId === item.i?'grid-item-select':'no-border'"
               @resizestop="resizedEvent"
-              @activated="onActivated(item.i)"
-              @deactivated="onDeactivated(item.i)"
+              @activated="selectItem(item.i)"
+              @dragging="onDrag"
             >
               <div class="col column" :id="item.key" @click="selectItem(item.i)" @dragenter.prevent>
                 <textview v-if="item.type === 'text'" :config="item.config" />
@@ -94,7 +90,7 @@
 </template>
 
 <script>
-import { themeMap } from 'boot/datatype';
+import { themeMap, chartList } from 'boot/datatype';
 import VueDraggableResizable from 'vue-draggable-resizable';
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 import backgroundsetting from './modules/backgroundsetting';
@@ -105,10 +101,12 @@ import textview from './modules/textview';
 import textsetting from './modules/textsetting';
 import imageview from './modules/imageview';
 import imagesetting from './modules/imagesetting';
+import layout from './modules/layout';
 
 export default {
   components: {
     VueDraggableResizable,
+    layout,
     backgroundsetting,
     datasource,
     chartview,
@@ -124,11 +122,13 @@ export default {
       backgroundImage: '',
       themeMap,
       allParam: {}, // 所有请求参数
+      left: true,
       right: true,
       loading: false,
       saveLoading: false,
       selType: 'cursor',
       selChartId: null,
+      copyedItem: null,
       config: {
       },
       backgroundConfig: {
@@ -141,32 +141,7 @@ export default {
         opacity: 0,
       },
       index: 0,
-      chartList: [
-        {
-          selected: false,
-          name: '文字',
-          icon: 'text_fields',
-          type: 'text',
-        },
-        {
-          selected: false,
-          name: '图片',
-          icon: 'mdi-file-image',
-          type: 'image',
-        },
-        {
-          selected: false,
-          name: '图表',
-          icon: 'mdi-chart-bar',
-          type: 'chart',
-        },
-        {
-          selected: false,
-          name: '背景设置',
-          icon: 'mdi-cog-outline',
-          type: 'cursor',
-        },
-      ],
+      chartList,
       layout: [],
       eventLog: [],
       url: {
@@ -215,7 +190,12 @@ export default {
         this.selType = selChart.type;
       }
     },
-    onDeactivated() {
+    onDeactivated(i) {
+      this.selChartId = i;
+      if (this.layout.filter((item) => item.i === i).length === 1) {
+        const selChart = this.layout.filter((item) => item.i === i)[0];
+        selChart.active = false;
+      }
     },
     selectItem(i) {
       this.selChartId = i;
@@ -232,6 +212,26 @@ export default {
         this.selType = 'cursor';
       }
     },
+    cutItem() {
+      if (this.layout.filter((item) => item.i === this.selChartId).length === 1) {
+        [this.copyedItem] = (this.layout.filter((item) => item.i === this.selChartId));
+        this.removeItem();
+      }
+    },
+    copyItem() {
+      if (this.layout.filter((item) => item.i === this.selChartId).length === 1) {
+        [this.copyedItem] = (this.layout.filter((item) => item.i === this.selChartId));
+      }
+    },
+    pasteItem() {
+      if (this.copyedItem) {
+        this.index += 1;
+        const copyObj = JSON.parse(JSON.stringify(this.copyedItem));
+        copyObj.i = this.index;
+        this.layout.push(copyObj);
+        this.selectItem(this.index);
+      }
+    },
     addItem(type) {
       const item = {
         x: 0,
@@ -239,6 +239,8 @@ export default {
         w: 300,
         h: 100,
         type,
+        name: type,
+        z: 1000,
         active: true,
         i: this.index += 1,
       };
@@ -288,6 +290,12 @@ export default {
               stack: false,
               barWidth: 0,
               itemStyle: { opacity: 100, barBorderRadius: 0 },
+            },
+            pie: {
+              radius: { min: 0, max: 100 },
+              roseType: false,
+              hoverAnimation: false,
+              avoidLabelOverlap: false,
             },
             center: {
               x: 50,
@@ -418,6 +426,11 @@ export default {
       selChart.h = h;
       selChart.config.needResize = true;
     },
+    onDrag(x, y) {
+      const selChart = this.layout.filter((item) => item.i === this.selChartId)[0];
+      selChart.x = x;
+      selChart.y = y;
+    },
     paramChange(param) {
       // 将请求参数合并到一起
       Object.assign(this.allParam, param);
@@ -479,25 +492,11 @@ export default {
 
 <style lang="stylus">
 @import '~src/css/quasar.variables.styl';
+@import '~src/css/app.styl';
 .ul-box-tool
   list-style none
   height 30px
   cursor pointer
-.grid-item-select {
-  flex: 1;
-  border-style: dashed;
-  border-width: 2px;
-  border-color: #00bfff;
-  touch-action: none;
-}
-
-.grid-item-unselect {
-  flex: 1;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #b8b6ba;
-  touch-action: none;
-}
 
 .w_l_list
   >div

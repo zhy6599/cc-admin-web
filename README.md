@@ -22,7 +22,7 @@ CC-ADMIN 前端源码
 |  码云   |  https://gitee.com/zhy6599/cc-admin-api   |  https://gitee.com/zhy6599/cc-admin-web   |
 
 #### 系统演示环境
-[http://8.131.83.13:10000/](演示环境)
+[演示环境](http://8.131.83.13:10000/)
 
 #### Quasar帮助文档
 

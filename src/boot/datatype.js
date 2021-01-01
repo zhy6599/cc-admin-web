@@ -77,9 +77,9 @@ export const databaseType = [
 
 export const calculateType = [
   { label: '聚合函数', value: '' },
-  { label: '总数', value: 'sum' },
+  { label: '求和', value: 'sum' },
   { label: '平均数', value: 'avg' },
-  { label: '条目数量', value: 'count' },
+  { label: '数量', value: 'count' },
   { label: '去重条数', value: 'COUNTDISTINCT' },
   { label: '最大值', value: 'max' },
   { label: '最小值', value: 'min' },

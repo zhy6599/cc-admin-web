@@ -33,10 +33,29 @@ const makeLineBarOption = (config, chartData) => {
       data: seriesData.dataList,
       yAxisIndex: seriesData.axisIndex === '1' ? 1 : 0,
       itemStyle: {
-        opacity: config.series.bar.itemStyle.opacity / 100,
-        barBorderRadius: config.series.bar.itemStyle.barBorderRadius,
+        normal: {
+          opacity: config.series.bar.itemStyle.opacity / 100,
+          barBorderRadius: config.series.bar.itemStyle.barBorderRadius,
+          label: {
+            show: config.series.bar.itemStyle.show,
+            position: config.series.bar.itemStyle.position,
+            textStyle: {
+              color: config.series.bar.itemStyle.color,
+            },
+          },
+        },
       },
     };
+
+    if (config.series.line.showArea) {
+      series.areaStyle = {};
+    }
+    if (config.series.line.smooth) {
+      series.smooth = true;
+    }
+    if (!config.series.line.showSymbol) {
+      series.symbol = 'none';
+    }
     if (config.series.bar.stack) {
       series.stack = 'same';
     }
@@ -45,37 +64,45 @@ const makeLineBarOption = (config, chartData) => {
     }
     seriesList.push(series);
   });
-  const xAxis = {
+  const xAxis = [{
     ...config.xAxis,
     data: chartData.xAxisData,
-  };
+  }];
   const yAxis = [];
-  if (config.yAxis.master.show) {
-    const master = {
-      type: 'value',
-      position: 'left',
-    };
-    if (config.yAxis.master.name) {
-      master.name = config.yAxis.master.name;
-    }
-    if (config.yAxis.master.unit) {
-      master.axisLabel = { formatter: `{value} ${config.yAxis.master.unit}` };
-    }
-    yAxis.push(master);
+  const master = {
+    type: 'value',
+    position: 'left',
+    show: config.yAxis.master.show,
+    splitLine: {
+      show: config.yAxis.master.splitLine.show,
+    },
+  };
+  if (config.yAxis.master.name) {
+    master.name = config.yAxis.master.name;
   }
-  if (config.yAxis.slave.show) {
-    const slave = {
-      type: 'value',
-      position: 'right',
-    };
-    if (config.yAxis.slave.name) {
-      slave.name = config.yAxis.slave.name;
-    }
-    if (config.yAxis.slave.unit) {
-      slave.axisLabel = { formatter: `{value} ${config.yAxis.slave.unit}` };
-    }
-    yAxis.push(slave);
+  master.axisLabel = {
+    ...config.yAxis.master.axisLabel,
+  };
+  if (config.yAxis.master.unit) {
+    master.axisLabel.formatter = `{value} ${config.yAxis.master.unit}`;
   }
+  yAxis.push(master);
+  const slave = {
+    type: 'value',
+    position: 'right',
+    show: config.yAxis.slave.show,
+    splitLine: {
+      show: config.yAxis.slave.splitLine.show,
+    },
+  };
+  if (config.yAxis.slave.name) {
+    slave.name = config.yAxis.slave.name;
+  }
+  slave.axisLabel = { ...config.yAxis.slave.axisLabel };
+  if (config.yAxis.slave.unit) {
+    slave.axisLabel.formatter = `{value} ${config.yAxis.slave.unit}`;
+  }
+  yAxis.push(slave);
   return {
     title: config.title,
     color: config.colors,
@@ -95,11 +122,12 @@ const makeLineBarOption = (config, chartData) => {
       right: `${config.grid.right}%`,
       bottom: `${config.grid.bottom}%`,
     },
-    xAxis,
-    yAxis,
+    xAxis: config.series.horizontal ? yAxis : xAxis,
+    yAxis: config.series.horizontal ? xAxis : yAxis,
     series: seriesList,
   };
 };
+
 const makeRadarOption = (config, chartData) => {
   const seriesList = [];
   const dataList = [];
@@ -232,12 +260,58 @@ const makeFunnelOption = (config, chartData) => {
 
 const makeGaugeOption = (config, chartData) => {
   const seriesList = [];
+  if (!config.series.gauge.showDataName) {
+    chartData.dataList.forEach((data) => {
+      delete data.name;
+    });
+  }
   const series = {
     type: config.type,
     min: chartData.min,
     max: chartData.max,
-    radius: '75%',
+    radius: `${config.series.gauge.radius}%`,
+    detail: {
+      show: config.series.gauge.detail.show,
+      formatter: config.series.gauge.detail.formatter,
+      offsetCenter: [`${config.series.gauge.detail.offsetCenter.x}%`, `${config.series.gauge.detail.offsetCenter.y}%`],
+      color: config.series.gauge.detail.color,
+      fontWeight: config.series.gauge.detail.fontWeight,
+      fontStyle: config.series.gauge.detail.fontStyle,
+      fontSize: config.series.gauge.detail.fontSize,
+    },
+    axisLine: {
+      show: config.series.gauge.axisLine.show,
+      lineStyle: {
+        width: config.series.gauge.axisLine.lineStyle.width,
+        color: JSON.parse(config.series.gauge.axisLine.lineStyle.color),
+      },
+    },
+    splitLine: {
+      show: config.series.gauge.splitLine.show,
+      length: config.series.gauge.splitLine.length,
+    },
+    axisTick: {
+      show: config.series.gauge.axisTick.show,
+      length: config.series.gauge.axisTick.length,
+    },
+    axisLabel: {
+      show: config.series.gauge.axisLabel.show,
+    },
+    pointer: {
+      show: config.series.gauge.pointer.show,
+      length: `${config.series.gauge.pointer.length}%`,
+      width: config.series.gauge.pointer.width,
+    },
+    itemStyle: {
+      color: config.series.gauge.itemStyle.color,
+      borderWidth: 0,
+      borderColor: '#000',
+      borderType: 'solid',
+      opacity: config.series.gauge.itemStyle.opacity / 100,
+    },
     data: chartData.dataList,
+    startAngle: config.series.gauge.startAngle,
+    endAngle: config.series.gauge.endAngle,
   };
   seriesList.push(series);
   return {

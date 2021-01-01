@@ -117,10 +117,11 @@ export default {
     },
     confirmGetModel() {
       if ((this.config.cols && this.config.cols.length)
-        || (this.config.rows && this.config.rows.length)) {
+        || (this.config.rows && this.config.rows.length)
+        || (this.config.datas && this.config.datas.length)) {
         this.$q.dialog({
           title: '切换视图',
-          message: '切换视图将清空维度和指标列表，确认切换？',
+          message: '切换视图将清空配置项列表，确认切换？',
           cancel: true,
           ok: {
             color: 'primary',
@@ -131,6 +132,7 @@ export default {
             rows: [],
             colors: [],
             orders: [],
+            datas: [],
             viewId: this.widget.viewId,
           });
           this.getModel();

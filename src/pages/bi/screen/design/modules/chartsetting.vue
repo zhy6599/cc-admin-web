@@ -194,7 +194,10 @@
         <q-tab-panel name="style">
           <q-list>
             <configbar :config="config" v-if="config.type === 'bar'"/>
+            <configline :config="config" v-if="config.type === 'line'"/>
+            <configscatter :config="config" v-if="config.type === 'scatter'"/>
             <configpie :config="config" v-if="config.type === 'pie'"/>
+            <configgauge :config="config" v-if="config.type === 'gauge'"/>
             <q-expansion-item
               dense
               dense-toggle
@@ -507,6 +510,67 @@
                     input-class="text-left"
                   />
                   <q-toggle
+                    label="显示分隔线"
+                    v-model="config.yAxis.master.splitLine.show"
+                  />
+                  <q-input
+                    dense
+                    filled
+                    type="number"
+                    v-model="config.yAxis.master.axisLabel.rotate"
+                    prefix="旋转角度："
+                    class="q-my-sm"
+                    input-class="text-left"
+                  />
+                  <q-input
+                    dense
+                    filled
+                    prefix="字体颜色："
+                    class="q-my-sm"
+                    input-class="text-left"
+                    v-model="config.yAxis.master.axisLabel.color"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="colorize" class="cursor-pointer"
+                        :style="{color:config.yAxis.master.axisLabel.color}">
+                        <q-popup-proxy transition-show="scale" transition-hide="scale">
+                          <q-color v-model="config.yAxis.master.axisLabel.color" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                  <q-select
+                    dense
+                    filled
+                    options-dense
+                    v-model="config.yAxis.master.axisLabel.fontWeight"
+                    prefix="字体粗细："
+                    class="q-my-sm"
+                    :options="fontWeightOptions"
+                    emit-value
+                    map-options
+                  />
+                  <q-select
+                    dense
+                    filled
+                    options-dense
+                    v-model="config.yAxis.master.axisLabel.fontStyle"
+                    prefix="字体风格："
+                    class="q-my-sm"
+                    :options="fontStyleOptions"
+                    emit-value
+                    map-options
+                  />
+                  <q-input
+                    dense
+                    filled
+                    type="number"
+                    v-model="config.yAxis.master.axisLabel.fontSize"
+                    prefix="字体大小："
+                    class="q-my-sm"
+                    input-class="text-left"
+                  />
+                  <q-toggle
                     label="显示右轴"
                     v-model="config.yAxis.slave.show"
                   />
@@ -523,6 +587,67 @@
                     filled
                     v-model="config.yAxis.slave.unit"
                     prefix="右轴单位："
+                    class="q-my-sm"
+                    input-class="text-left"
+                  />
+                  <q-toggle
+                    label="显示分隔线"
+                    v-model="config.yAxis.slave.splitLine.show"
+                  />
+                  <q-input
+                    dense
+                    filled
+                    type="number"
+                    v-model="config.yAxis.slave.axisLabel.rotate"
+                    prefix="旋转角度："
+                    class="q-my-sm"
+                    input-class="text-left"
+                  />
+                  <q-input
+                    dense
+                    filled
+                    prefix="字体颜色："
+                    class="q-my-sm"
+                    input-class="text-left"
+                    v-model="config.yAxis.slave.axisLabel.color"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="colorize" class="cursor-pointer"
+                        :style="{color:config.yAxis.slave.axisLabel.color}">
+                        <q-popup-proxy transition-show="scale" transition-hide="scale">
+                          <q-color v-model="config.yAxis.slave.axisLabel.color" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                  <q-select
+                    dense
+                    filled
+                    options-dense
+                    v-model="config.yAxis.slave.axisLabel.fontWeight"
+                    prefix="字体粗细："
+                    class="q-my-sm"
+                    :options="fontWeightOptions"
+                    emit-value
+                    map-options
+                  />
+                  <q-select
+                    dense
+                    filled
+                    options-dense
+                    v-model="config.yAxis.slave.axisLabel.fontStyle"
+                    prefix="字体风格："
+                    class="q-my-sm"
+                    :options="fontStyleOptions"
+                    emit-value
+                    map-options
+                  />
+                  <q-input
+                    dense
+                    filled
+                    type="number"
+                    v-model="config.yAxis.slave.axisLabel.fontSize"
+                    prefix="字体大小："
                     class="q-my-sm"
                     input-class="text-left"
                   />
@@ -773,14 +898,20 @@ import {
 } from 'boot/datatype';
 import draggable from 'vuedraggable';
 import configbar from './widgets/config/bar';
+import configline from './widgets/config/line';
+import configscatter from './widgets/config/scatter';
 import configpie from './widgets/config/pie';
+import configgauge from './widgets/config/gauge';
 
 export default {
   name: 'chartsetting',
   components: {
     draggable,
     configbar,
+    configscatter,
+    configline,
     configpie,
+    configgauge,
   },
   data() {
     return {

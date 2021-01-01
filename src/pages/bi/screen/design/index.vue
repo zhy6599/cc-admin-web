@@ -25,6 +25,9 @@
               </li>
             </ul>
             <q-space />
+            <q-btn flat icon="mdi-undo" :disable="historyIndex === 0" @click="undo()" />
+            <q-btn flat icon="mdi-redo" @click="redo()" class="q-mr-lg"
+            :disable="historyIndex === history.length - 1|| history.length === 0"/>
             <q-btn flat icon="mdi-content-cut" @click="cutItem()" />
             <q-btn flat icon="mdi-content-copy" @click="copyItem()" />
             <q-btn flat icon="mdi-content-paste" @click="pasteItem()" />
@@ -74,6 +77,7 @@
               :class="selChartId === item.i?'grid-item-select':'no-border'"
               @resizestop="resizedEvent"
               @activated="selectItem(item.i)"
+              @deactivated="item.active=false"
               @dragging="onDrag"
             >
               <div class="col column" :id="item.key" @click="selectItem(item.i)" @dragenter.prevent>
@@ -131,6 +135,8 @@ export default {
       copyedItem: null,
       config: {
       },
+      historyIndex: 0,
+      history: [],
       backgroundConfig: {
         width: 800,
         height: 600,
@@ -211,6 +217,26 @@ export default {
         this.layout.splice(this.layout.indexOf(selItem[0]), 1);
         this.selType = 'cursor';
       }
+      this.addHistory();
+    },
+    addHistory() {
+      if (this.history.length > 10) {
+        this.history.shift();
+      }
+      this.history.push(JSON.stringify(this.layout));
+      this.historyIndex = this.history.length - 1;
+    },
+    redo() {
+      if (this.historyIndex < this.history.length - 1) {
+        this.historyIndex += 1;
+        this.layout = JSON.parse(this.history[this.historyIndex]);
+      }
+    },
+    undo() {
+      if (this.historyIndex > 0) {
+        this.historyIndex -= 1;
+        this.layout = JSON.parse(this.history[this.historyIndex]);
+      }
     },
     cutItem() {
       if (this.layout.filter((item) => item.i === this.selChartId).length === 1) {
@@ -230,6 +256,7 @@ export default {
         copyObj.i = this.index;
         this.layout.push(copyObj);
         this.selectItem(this.index);
+        this.addHistory();
       }
     },
     addItem(type) {
@@ -252,6 +279,25 @@ export default {
           fontWeight: 'normal',
           align: 'left',
           letterSpacing: 0,
+          datas: [],
+          viewId: null,
+          length: 100,
+          slice: true,
+          interval: 60,
+          loop: true,
+          dragState: {
+            type: '',
+            data: [],
+          },
+          draging: {
+            type: '',
+            data: [],
+          },
+          useBackground: false,
+          bgColor: '#fff',
+          src: '',
+          backPicSet: 'repeat',
+          opacity: 100,
         };
       } else if (type === 'image') {
         item.config = {
@@ -286,14 +332,87 @@ export default {
             },
           },
           series: {
+            horizontal: false,
             bar: {
               stack: false,
               barWidth: 0,
-              itemStyle: { opacity: 100, barBorderRadius: 0 },
+              itemStyle: {
+                opacity: 100,
+                barBorderRadius: 0,
+                show: false,
+                position: 'top',
+                color: 'auto',
+              },
+            },
+            scatter: {
+              itemStyle: {
+                opacity: 100,
+                show: false,
+                position: 'top',
+                color: 'auto',
+              },
+            },
+            line: {
+              showArea: false,
+              showSymbol: true,
+              smooth: false,
+              itemStyle: {
+                show: false,
+                position: 'top',
+                color: 'auto',
+              },
             },
             pie: {
               radius: { min: 0, max: 100 },
               roseType: false,
+              hoverAnimation: false,
+              avoidLabelOverlap: false,
+            },
+            gauge: {
+              radius: 90,
+              startAngle: 225,
+              endAngle: -45,
+              showDataName: true,
+              detail: {
+                show: true,
+                formatter: '{value}',
+                offsetCenter: { x: 0, y: 40 },
+                color: '#91c7af',
+                fontWeight: 'normal',
+                fontStyle: 'normal',
+                fontSize: 18,
+              },
+              axisLine: {
+                show: true,
+                lineStyle: {
+                  width: 30,
+                  color: JSON.stringify([[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]),
+                },
+              },
+              splitLine: {
+                show: true,
+                length: 30,
+              },
+              axisTick: {
+                show: true,
+                length: 8,
+              },
+              axisLabel: {
+                show: true,
+                length: 8,
+              },
+              pointer: {
+                show: true,
+                length: 80,
+                width: 8,
+              },
+              itemStyle: {
+                color: '#91c7af',
+                borderWidth: 0,
+                borderColor: '#000',
+                borderType: 'solid',
+                opacity: 100,
+              },
               hoverAnimation: false,
               avoidLabelOverlap: false,
             },
@@ -306,12 +425,34 @@ export default {
             master: {
               name: '',
               show: true,
+              splitLine: {
+                show: true,
+              },
               unit: '',
+              axisLabel: {
+                show: true,
+                color: '#000',
+                rotate: 0,
+                fontSize: 12,
+                fontWeight: 'normal',
+                fontStyle: 'normal',
+              },
             },
             slave: {
               name: '',
               show: false,
               unit: '',
+              splitLine: {
+                show: true,
+              },
+              axisLabel: {
+                show: true,
+                color: '#000',
+                rotate: 0,
+                fontSize: 12,
+                fontWeight: 'normal',
+                fontStyle: 'normal',
+              },
             },
           },
           xAxis: {
@@ -332,6 +473,7 @@ export default {
             axisLabel: {
               show: true,
               rotate: 0,
+              color: '#000',
               fontSize: 12,
               fontWeight: 'normal',
               fontStyle: 'normal',
@@ -359,7 +501,6 @@ export default {
           fillOpacity: 0,
           cornerRadius: 0,
           stacked: false,
-          horizontal: false,
           showLoop: true,
           description: '',
           viewId: null,
@@ -383,6 +524,7 @@ export default {
       }
       this.layout.push(item);
       this.selectItem(this.index);
+      this.addHistory();
     },
     viewScreen() {
       const { id } = this.$route.query;
@@ -467,7 +609,7 @@ export default {
 
         };
         if (this.backgroundConfig.backPicSet === 'stretch') {
-          bkStyle.backgroundSize = '100%';
+          bkStyle.backgroundSize = '100% 100%';
         } else {
           delete bkStyle.backgroundSize;
         }

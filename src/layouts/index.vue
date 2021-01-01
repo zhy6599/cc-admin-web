@@ -4,6 +4,8 @@
       <q-toolbar>
         <q-btn flat icon="menu" @click="drawer=!drawer" />
         <q-toolbar-title class="text-caption">欢迎进入 cc-admin 企业级快速开发平台</q-toolbar-title>
+        <q-btn flat size="sm" label="Quasar中文网"  type="a" href="http://www.quasarchs.com/"
+        icon="img:https://cdn.quasar.dev/logo/svg/quasar-logo.svg" target="__blank" />
         <q-btn flat round size="sm" icon="mdi-card-search-outline" @click="drawer=!drawer" />
         <q-btn flat round size="sm" icon="mdi-help-circle-outline" @click="drawer=!drawer" />
         <q-btn flat round size="sm" icon="mdi-bell-outline" @click="drawer=!drawer" />

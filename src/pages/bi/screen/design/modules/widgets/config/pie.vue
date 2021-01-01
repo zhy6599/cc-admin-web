@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  name: 'configbar',
+  name: 'configpie',
   components: {},
   props: {
     config: {

@@ -1,42 +1,17 @@
 <template>
   <div
-    class="chart-table"
+    :class="[this.config.table.horizontal ? 'chart-table-horizontal' : 'chart-table-vertical']"
     ref="chart"
   >
-    <q-markup-table
-      flat
-      bordered
-      color="primary"
-      class="cross_table"
-      separator="vertical"
-    >
+    <q-markup-table flat bordered color="primary" class="cross_table" separator="vertical">
       <thead>
-        <tr
-          v-for="v in list.thead"
-          :key="v.name"
-        >
-          <th class="text-left">{{v.cname}}</th>
-          <td
-            class="text-right"
-            v-for="(t,i) in v.data"
-            :key="i"
-            :colspan="t.colspan"
-          >
-            {{t.val}}</td>
+        <tr>
+          <th class="text-center" v-for="(v,idx) in list.head" :key="idx">{{v}}</th>
         </tr>
       </thead>
-      <tbody>
-        <tr
-          v-for="v in list.tbody"
-          :key="v.name"
-        >
-          <th class="text-left">{{v.cname}}</th>
-          <td
-            class="text-right"
-            v-for="(t,i) in v.data"
-            :key="i"
-          >
-            {{t}}</td>
+      <tbody :style="tableStyle()">
+        <tr v-for="(v,i) in list.body" :key="i">
+          <td class="text-center" v-for="(d,idx) in v" :key="idx">{{d}}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -64,9 +39,30 @@ export default {
     };
   },
   methods: {
-    format() {
-      this.data = this.data
-        .slice(0, this.config.slice ? this.config.length : this.data.length);
+    tableStyle() {
+      const resultStyle = {};
+      if (this.config.table.loop) {
+        resultStyle.animationDuration = `${this.config.table.scrolldelay}s`;
+        resultStyle.animationTimingFunction = 'linear';
+        resultStyle.animationIterationCount = 'infinite';
+        resultStyle.animationDirection = 'alternate';
+        resultStyle.animationDelay = '2s';
+        if (this.config.table.alternate) {
+          resultStyle.animationDirection = 'alternate';
+        } else {
+          resultStyle.animationDirection = 'normal';
+        }
+        if (this.config.table.direction === 'left') {
+          resultStyle.animationName = 'tableLoopLeft';
+        } else if (this.config.table.direction === 'right') {
+          resultStyle.animationName = 'tableLoopRight';
+        } else if (this.config.table.direction === 'up') {
+          resultStyle.animationName = 'tableLoopUp';
+        } else if (this.config.table.direction === 'down') {
+          resultStyle.animationName = 'tableLoopDown';
+        }
+      }
+      return resultStyle;
     },
     loop() {
       clearTimeout(this.ti);
@@ -99,27 +95,29 @@ export default {
     },
     doLoadData() {
       this.loading = true;
-      return this.$axios.post(`/bi/view/getData/${this.config.viewId}`, {
-        aggregators: this.config.rows.map((v) => ({
-          column: v.name.split('@')[0],
-          alias: v.field.alias,
-          func: v.agg,
-        })),
-        allParam: this.allParam,
-        cache: false,
-        expired: 0,
-        filters: this.config.filters,
-        groups: this.config.cols.map((v) => v.name),
-        nativeQuery: false,
-        orders: this.getOrders(),
-        pageNo: 1,
-        pageSize: this.config.length,
-      }).then(({ result }) => {
-        this.data = (result && result.records) || [];
-        this.format();
-      }).finally(() => {
-        this.loading = false;
-      });
+      if (this.config.viewId && (this.config.cols.length > 0 || this.config.rows.length > 0)) {
+        this.$axios.post(`/bi/view/getTableData/${this.config.viewId}`, {
+          aggregators: this.config.rows.map((v) => ({
+            column: v.name.split('@')[0],
+            alias: v.field.alias,
+            func: v.agg,
+          })),
+          allParam: this.allParam,
+          cache: false,
+          expired: 0,
+          filters: this.config.filters,
+          groups: this.config.cols,
+          nativeQuery: false,
+          horizontal: this.config.table.horizontal,
+          orders: this.getOrders(),
+          pageNo: 1,
+          pageSize: this.config.length,
+        }).then(({ result }) => {
+          this.data = result;
+        }).finally(() => {
+          this.loading = false;
+        });
+      }
     },
   },
   created() {
@@ -166,71 +164,56 @@ export default {
     'config.length': {
       handler(n, o) {
         if (n !== o) {
-          this.format();
+          this.getData();
         }
       },
     },
   },
   computed: {
     list() {
-      const thead = this.config.cols
-        .map(({ name, field: { alias } }) => ({
-          name,
-          cname: !alias ? name : alias,
-          data: [],
-        }));
-      const tbody = this.config.rows
-        .map(({ agg, name, field: { alias } }) => (agg ? {
-          name,
-          tname: `${agg}(${name})`,
-          cname: !alias ? name : alias,
-          data: [],
-        } : {
-          name,
-          cname: !alias ? name : alias,
-          tname: name,
-          data: [],
-        }));
-      this.data.forEach((v) => {
-        thead.forEach((th, i) => {
-          const val = v[th.name];
-          if (!th.data.length) {
-            th.data.push({
-              val,
-              colspan: 1,
-            });
-          } else if (i > 0 && thead[i - 1].data[thead[i - 1].data.length - 1].colspan === 1) {
-            th.data.push({
-              val,
-              colspan: 1,
-            });
-          } else {
-            const last = th.data[th.data.length - 1];
-            if (val === last.val) {
-              last.colspan += 1;
-            } else {
-              th.data.push({
-                val,
-                colspan: 1,
-              });
-            }
-          }
-        });
-        tbody.forEach((tb) => {
-          tb.data.push(v[tb.tname]);
-        });
-      });
-      return {
-        thead, tbody,
-      };
+      return this.data;
     },
   },
 };
 </script>
 
 <style lang="stylus">
-.chart-table {
-  th {
+
+@keyframes tableLoopLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-200px);
+  }
+}
+@keyframes tableLoopRight {
+  0% {
+    transform: translateX(-200px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes tableLoopUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
+}
+@keyframes tableLoopDown {
+  0% {
+    transform: translateY(-100px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.chart-table-horizontal {
+  th:first-child {
     position: sticky;
     left: 0;
     z-index: 1;
@@ -239,7 +222,22 @@ export default {
     border-bottom: 0;
   }
 
-  tbody th {
+  tbody td:first-child {
+    background: $positive !important;
+  }
+}
+
+.chart-table-vertical {
+  th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: $light-blue !important;
+    color: #fff;
+    border-bottom: 0;
+  }
+
+  th:not(:first-child) {
     background: $positive !important;
   }
 }

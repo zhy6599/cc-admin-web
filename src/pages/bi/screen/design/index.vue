@@ -54,6 +54,7 @@
         <summarysetting v-if="selType === 'summary'" :config.sync="config" />
         <textsetting v-if="selType === 'text'" :config.sync="config" />
         <imagesetting v-if="selType === 'image'" :config.sync="config" />
+        <videosetting v-if="selType === 'video'" :config.sync="config" />
         <datasource :config.sync="config" />
       </div>
     </q-drawer>
@@ -80,10 +81,12 @@
               @deactivated="item.active=false"
               @dragging="onDrag"
             >
-              <div class="col column" :id="item.key" @click="selectItem(item.i)" @dragenter.prevent>
+              <div class="col column" style="overflow: hidden;height:100%;"
+              :id="item.key" @click="selectItem(item.i)" @dragenter.prevent>
                 <textview v-if="item.type === 'text'" :config="item.config" />
                 <imageview v-if="item.type === 'image'" :config="item.config" />
                 <chartview v-if="item.type === 'chart'" :config="item.config"/>
+                <videoview v-if="item.type === 'video'" :config="item.config"/>
               </div>
             </vue-draggable-resizable>
           </div>
@@ -105,6 +108,8 @@ import textview from './modules/textview';
 import textsetting from './modules/textsetting';
 import imageview from './modules/imageview';
 import imagesetting from './modules/imagesetting';
+import videoview from './modules/videoview';
+import videosetting from './modules/videosetting';
 import layout from './modules/layout';
 
 export default {
@@ -119,6 +124,8 @@ export default {
     textsetting,
     imageview,
     imagesetting,
+    videoview,
+    videosetting,
   },
   data() {
     return {
@@ -273,11 +280,19 @@ export default {
       };
       if (type === 'text') {
         item.config = {
+          asDate: false,
+          dateFormat: 'YYYY-MM-DD HH:mm:ss',
+          marquee: {
+            loop: false,
+            direction: 'left',
+            scrolldelay: 60,
+            alternate: false,
+          },
           text: '请输入文字',
           color: '#000',
           fontSize: 12,
           fontWeight: 'normal',
-          align: 'left',
+          textAlign: 'left',
           letterSpacing: 0,
           datas: [],
           viewId: null,
@@ -303,16 +318,33 @@ export default {
         item.config = {
           src: '',
           opacity: 0,
+          loop: false,
+          scrolldelay: 6,
+          alternate: false,
+        };
+      } else if (type === 'video') {
+        item.config = {
+          src: '',
         };
       } else if (type === 'chart') {
         item.config = {
           rows: [],
           cols: [],
-          theme: 'roma',
-          colors: this.themeMap.roma,
+          theme: 'shine',
+          colors: this.themeMap.shine,
           orders: [],
           type: 'line',
           name: '',
+          custom: {
+            option: '',
+          },
+          table: {
+            horizontal: false,
+            loop: false,
+            direction: 'up',
+            scrolldelay: 6,
+            alternate: true,
+          },
           title: {
             show: true,
             text: '',
@@ -333,6 +365,20 @@ export default {
           },
           series: {
             horizontal: false,
+            maps: {
+              id: '',
+              zoom: 10,
+              label: {
+                show: true,
+                color: '#000',
+              },
+              itemStyle: {
+                borderColor: '#fff',
+                borderWidth: 1,
+                borderType: 'solid',
+                opacity: 100,
+              },
+            },
             bar: {
               stack: false,
               barWidth: 0,
@@ -367,6 +413,22 @@ export default {
               roseType: false,
               hoverAnimation: false,
               avoidLabelOverlap: false,
+            },
+            donut: {
+              total: 100,
+              width: 10,
+              roseType: false,
+              hoverAnimation: false,
+              avoidLabelOverlap: false,
+              noDataColor: '#fff',
+              lable: {
+                show: false,
+                template: 'name',
+                color: '#000',
+                fontWeight: 'normal',
+                fontSize: 18,
+                position: 'center',
+              },
             },
             gauge: {
               radius: 90,
@@ -441,6 +503,7 @@ export default {
             slave: {
               name: '',
               show: false,
+              asLine: false,
               unit: '',
               splitLine: {
                 show: true,
@@ -496,6 +559,12 @@ export default {
             top: 10,
             right: 5,
             bottom: 10,
+          },
+          tooltip: {
+            show: true,
+            trigger: 'item',
+            animation: true,
+            formatter: '{a} <br/>{b} : {c}',
           },
           needResize: false,
           fillOpacity: 0,

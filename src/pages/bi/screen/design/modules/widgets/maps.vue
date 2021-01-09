@@ -5,13 +5,11 @@
 <script>
 import { debounce } from 'quasar';
 import echarts from 'echarts';
-import { makeOptions } from './config/optionsmaker';
 
-require('echarts/theme/shine');
-require('echarts-wordcloud');
+require('echarts/theme/macarons');
 
 export default {
-  name: 'chart',
+  name: 'maps',
   props: {
     config: {
       required: true,
@@ -38,6 +36,8 @@ export default {
       allParam: {},
       chartData: {},
       data: [],
+      min: 0,
+      max: 100,
       interval: this.config.interval,
       ti: 0,
       loading: false,
@@ -72,15 +72,11 @@ export default {
         this.getData();
       },
     },
-    'config.cols': {
-      handler() {
-        this.getData();
-      },
-      deep: true,
-    },
-    'config.rows': {
-      handler() {
-        this.getData();
+    'config.series.maps.id': {
+      handler(n, o) {
+        if (n !== o) {
+          this.registerMap();
+        }
       },
       deep: true,
     },
@@ -98,34 +94,8 @@ export default {
         }
       },
     },
-    'config.length': {
-      handler(n, o) {
-        if (n !== o) {
-          this.format();
-        }
-      },
-    },
   },
   methods: {
-    makeOptions,
-    format() {
-      this.tableData = this.data
-        .slice(0, this.config.slice ? this.config.length : this.data.length);
-      this.chartData = this.tableData.map((v) => {
-        const t = {};
-        this.config.rows.forEach(({ name, agg }) => {
-          if (agg) {
-            t[name] = v[`${agg}(${name})`];
-          } else {
-            t[name] = v[`${name}`];
-          }
-        });
-        t.label = this.config.cols
-          .map(({ name, field: { alias } }) => (alias ? `${alias}:${v[name]}` : v[name]))
-          .join('\n');
-        return t;
-      });
-    },
     getOrders() {
       const orders = [];
       this.config.orders.forEach((o) => {
@@ -137,7 +107,7 @@ export default {
       return orders;
     },
     doLoadData() {
-      if (this.config.cols && this.config.cols.length > 0) {
+      if (this.config.viewId && this.config.cols && this.config.cols.length > 0) {
         this.loading = true;
         this.$axios.post(`/bi/view/getChartData/${this.config.viewId}`, {
           type: this.config.type,
@@ -157,15 +127,14 @@ export default {
           pageNo: 1,
           pageSize: this.config.length,
         }).then(({ result }) => {
-          this.chartData = result || {};
+          this.data = result.dataList || [];
+          this.min = result.min;
+          this.max = result.max;
           this.renderChart();
-          this.format();
         }).finally(() => {
           this.loading = false;
           this.confirmLoop();
         });
-      } else if (this.config.type === 'custom') {
-        this.renderChart();
       }
     },
     loop() {
@@ -196,20 +165,68 @@ export default {
         this.chart.resize();
       }
     },
-    renderChart() {
-      if (!this.chart) {
-        this.chart = echarts.init(this.$refs.chart, this.config.theme);
+    registerMap() {
+      if (this.config.series.maps.id) {
+        this.$axios.get(`/bi/map/queryById?id=${this.config.series.maps.id}`).then(({ result }) => {
+          echarts.registerMap('MP', result.json);
+          this.makeOptions();
+        }).finally(() => {
+        });
       }
-      const option = this.makeOptions(this.config, this.chartData);
+    },
+    makeOptions() {
+      const option = {
+        title: this.config.title,
+        tooltip: this.config.tooltip,
+        visualMap: {
+          min: this.min,
+          max: this.max,
+          text: ['High', 'Low'],
+          realtime: false,
+          inRange: {
+            color: ['lightskyblue', 'yellow', 'orangered'],
+          },
+        },
+        series: [
+          {
+            type: 'map',
+            mapType: 'MP',
+            zoom: this.config.series.maps.zoom / 10,
+            label: {
+              show: this.config.series.maps.label.show,
+              color: this.config.series.maps.label.color,
+            },
+            itemStyle: {
+              borderColor: this.config.series.maps.itemStyle.borderColor,
+              borderWidth: this.config.series.maps.itemStyle.borderWidth,
+              borderType: this.config.series.maps.itemStyle.borderType,
+              opacity: this.config.series.maps.itemStyle.opacity / 100,
+            },
+            left: `${this.config.grid.left}%`,
+            top: `${this.config.grid.top}%`,
+            right: `${this.config.grid.right}%`,
+            bottom: `${this.config.grid.bottom}%`,
+            data: this.data,
+          },
+        ],
+      };
       this.chart.clear();
       this.chart.setOption(option);
       setTimeout(() => {
         this.chart.resize();
       }, 100);
     },
+    renderChart() {
+      if (!this.chart) {
+        this.chart = echarts.init(this.$refs.chart, this.config.theme);
+        this.registerMap();
+      }
+      this.makeOptions();
+    },
   },
   mounted() {
     this.doLoadData();
+    this.renderChart();
   },
   created() {
     // 这里监听所有请求参数

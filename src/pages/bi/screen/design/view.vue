@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-page-container>
-      <q-page class="column q-pa-sm">
+      <q-page class="column">
         <div class="col column justify-center items-center">
           <div :style="backgroundStyle">
             <vue-draggable-resizable
@@ -16,7 +16,7 @@
               :resizable="false"
               :class="'no-border'"
             >
-              <div class="col column" :id="item.key">
+              <div class="col column" style="overflow: hidden;height:100%;" :id="item.key">
                 <textview v-if="item.type === 'text'" :config="item.config" />
                 <imageview v-if="item.type === 'image'" :config="item.config" />
                 <chartview v-if="item.type === 'chart'" :config="item.config" />
@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
       allParam: {}, // 所有请求参数
       right: true,
       loading: false,

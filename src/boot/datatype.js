@@ -97,11 +97,6 @@ export const leftRightType = [
 ];
 
 export const themeMap = {
-  roma: ['#E01F54', '#001852', '#f5e8c8', '#b8d2c7', '#c6b38e',
-    '#a4d8c2', '#f3d999', '#d3758f', '#dcc392', '#2e4783',
-    '#82b6e9', '#ff6347', '#a092f1', '#0a915d', '#eaf889',
-    '#6699FF', '#ff6666', '#3cb371', '#d5b158', '#38b6b6',
-  ],
   shine: [
     '#c12e34', '#e6b600', '#0098d9', '#2b821d',
     '#005eaa', '#339ca8', '#cda819', '#32a487',
@@ -110,6 +105,11 @@ export const themeMap = {
     '#C1232B', '#27727B', '#FCCE10', '#E87C25', '#B5C334',
     '#FE8463', '#9BCA63', '#FAD860', '#F3A43B', '#60C0DD',
     '#D7504B', '#C6E579', '#F4E001', '#F0805A', '#26C0C0',
+  ],
+  roma: ['#E01F54', '#001852', '#f5e8c8', '#b8d2c7', '#c6b38e',
+    '#a4d8c2', '#f3d999', '#d3758f', '#dcc392', '#2e4783',
+    '#82b6e9', '#ff6347', '#a092f1', '#0a915d', '#eaf889',
+    '#6699FF', '#ff6666', '#3cb371', '#d5b158', '#38b6b6',
   ],
   macarons: [
     '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
@@ -163,8 +163,27 @@ export const chartTypes = [{
   name: 'gauge',
   icon: 'mdi-gauge',
   label: '仪表盘',
+},
+{
+  name: 'donut',
+  icon: 'mdi-chart-donut-variant',
+  label: '环形图',
+},
+{
+  name: 'maps',
+  icon: 'mdi-google-maps',
+  label: '地图',
+},
+{
+  name: 'custom',
+  icon: 'mdi-puzzle-edit-outline',
+  label: '自定义',
 }];
-
+export const borderTypeOptions = [
+  { label: '实线', value: 'solid' },
+  { label: '虚线', value: 'dashed' },
+  { label: '点线', value: 'dotted' },
+];
 export const leftAlignOptions = [
   { label: '自动', value: 'auto' },
   { label: '居左', value: 'left' },
@@ -197,9 +216,9 @@ export const topBottomOptions = [
   { label: '底部', value: 'bottom' },
 ];
 export const themeOptions = [
-  { label: 'roma', value: 'roma' },
   { label: 'shine', value: 'shine' },
   { label: 'infographic', value: 'infographic' },
+  { label: 'roma', value: 'roma' },
   { label: 'macarons', value: 'macarons' },
 ];
 export const modelTools = [
@@ -235,6 +254,12 @@ export const chartList = [
     name: '图表',
     icon: 'mdi-chart-bar',
     type: 'chart',
+  },
+  {
+    selected: false,
+    name: '视频',
+    icon: 'mdi-video-box',
+    type: 'video',
   },
   {
     selected: false,

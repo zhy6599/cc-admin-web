@@ -146,6 +146,14 @@ export default [
     },
     children: [
       {
+        id: 603,
+        path: '/bi/map',
+        component: 'bi/map',
+        meta: {
+          title: '地图管理',
+        },
+      },
+      {
         id: 601,
         path: '/bi/view',
         component: 'bi/view',
@@ -305,6 +313,24 @@ export default [
         component: 'demo/demo13',
         meta: {
           title: '导航文字13',
+          icon: 'assignment_ind',
+        },
+      },
+      {
+        id: 814,
+        path: '/demo/demo14',
+        component: 'demo/demo14',
+        meta: {
+          title: '环形图14',
+          icon: 'assignment_ind',
+        },
+      },
+      {
+        id: 815,
+        path: '/demo/demo15',
+        component: 'demo/demo15',
+        meta: {
+          title: 'Echarts自定义15',
           icon: 'assignment_ind',
         },
       },

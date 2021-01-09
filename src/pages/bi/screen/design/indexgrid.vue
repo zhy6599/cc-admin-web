@@ -266,8 +266,8 @@ export default {
         item.config = {
           rows: [],
           cols: [],
-          theme: 'roma',
-          colors: this.themeMap.roma,
+          theme: 'shine',
+          colors: this.themeMap.shine,
           orders: [],
           type: 'line',
           name: '',

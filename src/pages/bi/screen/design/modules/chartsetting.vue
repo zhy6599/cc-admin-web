@@ -10,7 +10,20 @@
           </q-tab>
         </q-tabs>
       </div>
+
+      <div v-if="config.type==='custom'" class="text-body2 q-pt-sm">自定义option</div>
+      <q-input
+        v-if="config.type==='custom'"
+        dense
+        filled
+        v-model="config.custom.option"
+        type="textarea"
+        :debounce="999"
+        class="q-my-sm"
+      />
+
       <q-tabs
+        v-if="config.type!=='custom'"
         v-model="chartSettingTab"
         dense
         class="text-grey"
@@ -19,10 +32,16 @@
         align="justify"
       >
         <q-tab name="data" label="数据" />
-        <q-tab name="style" label="样式" />
+        <q-tab v-if="config.type !== 'table'" name="chartStyle" label="图表样式" />
+        <q-tab v-if="config.type === 'table'" name="tableStyle" label="表格样式" />
       </q-tabs>
       <q-separator />
-      <q-tab-panels class="chart-dim-set" v-model="chartSettingTab" animated>
+      <q-tab-panels
+        v-if="config.type!=='custom'"
+        class="chart-dim-set"
+        v-model="chartSettingTab"
+        animated
+      >
         <q-tab-panel name="data">
           <div class="text-body2 q-pt-sm">维度</div>
           <draggable
@@ -77,8 +96,13 @@
               :class="checkClass(v)"
               class="rounded-borders row no-wrap justify-between items-center drag-item"
             >
-              <q-btn round dense flat :icon="leftRight(v.leftRight).icon"
-              @click="changeLeftRight(v)">
+              <q-btn
+                round
+                dense
+                flat
+                :icon="leftRight(v.leftRight).icon"
+                @click="changeLeftRight(v)"
+              >
                 <q-tooltip>坐标轴位置：{{leftRight(v.leftRight).label}}</q-tooltip>
               </q-btn>
               <div class="row no-wrap justify-between items-center" style="width:190px">
@@ -147,8 +171,8 @@
               </q-btn>
             </div>
             <div class="drag-no" v-if="!config.orders.length&&!config.draging.type">
-              <q-icon name="mdi-cursor-default-click" size="24px" />
-              拖拽<b class="text-tertiary"> 字段 </b>排序
+              <q-icon name="mdi-cursor-default-click" size="24px" />拖拽
+              <b class="text-tertiary">字段</b>排序
             </div>
           </draggable>
           <div class="text-body2 q-pt-sm">配置</div>
@@ -191,25 +215,19 @@
           </q-field>
         </q-tab-panel>
 
-        <q-tab-panel name="style">
+        <q-tab-panel name="chartStyle">
           <q-list>
-            <configbar :config="config" v-if="config.type === 'bar'"/>
-            <configline :config="config" v-if="config.type === 'line'"/>
-            <configscatter :config="config" v-if="config.type === 'scatter'"/>
-            <configpie :config="config" v-if="config.type === 'pie'"/>
-            <configgauge :config="config" v-if="config.type === 'gauge'"/>
-            <q-expansion-item
-              dense
-              dense-toggle
-              expand-separator
-              label="标题设置"
-            >
+            <configbar :config="config" v-if="config.type === 'bar'" />
+            <configline :config="config" v-if="config.type === 'line'" />
+            <configscatter :config="config" v-if="config.type === 'scatter'" />
+            <configpie :config="config" v-if="config.type === 'pie'" />
+            <configgauge :config="config" v-if="config.type === 'gauge'" />
+            <configmaps :config="config" v-if="config.type === 'maps'" />
+            <configdonut :config="config" v-if="config.type === 'donut'" />
+            <q-expansion-item dense dense-toggle expand-separator label="标题设置">
               <q-card>
                 <q-card-section>
-                  <q-toggle
-                    label="显示标题"
-                    v-model="config.title.show"
-                  />
+                  <q-toggle label="显示标题" v-model="config.title.show" />
                   <q-input
                     dense
                     filled
@@ -227,8 +245,11 @@
                     v-model="config.title.textStyle.color"
                   >
                     <template v-slot:append>
-                      <q-icon name="colorize" class="cursor-pointer"
-                        :style="{color:config.title.textStyle.color}">
+                      <q-icon
+                        name="colorize"
+                        class="cursor-pointer"
+                        :style="{color:config.title.textStyle.color}"
+                      >
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-color v-model="config.title.textStyle.color" />
                         </q-popup-proxy>
@@ -294,8 +315,11 @@
                     v-model="config.title.subtextStyle.color"
                   >
                     <template v-slot:append>
-                      <q-icon name="colorize" class="cursor-pointer"
-                        :style="{color:config.title.subtextStyle.color}">
+                      <q-icon
+                        name="colorize"
+                        class="cursor-pointer"
+                        :style="{color:config.title.subtextStyle.color}"
+                      >
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-color v-model="config.title.subtextStyle.color" />
                         </q-popup-proxy>
@@ -322,12 +346,12 @@
                     class="q-my-sm"
                     input-class="text-left"
                   />
-
                 </q-card-section>
               </q-card>
             </q-expansion-item>
 
             <q-expansion-item
+              v-if="config.type !== 'maps'"
               dense
               dense-toggle
               expand-separator
@@ -335,10 +359,7 @@
             >
               <q-card>
                 <q-card-section>
-                  <q-toggle
-                    label="显示X轴"
-                    v-model="config.xAxis.show"
-                  />
+                  <q-toggle label="显示X轴" v-model="config.xAxis.show" />
                   <q-input
                     dense
                     filled
@@ -376,8 +397,11 @@
                     v-model="config.xAxis.nameTextStyle.color"
                   >
                     <template v-slot:append>
-                      <q-icon name="colorize" class="cursor-pointer"
-                        :style="{color:config.xAxis.nameTextStyle.color}">
+                      <q-icon
+                        name="colorize"
+                        class="cursor-pointer"
+                        :style="{color:config.xAxis.nameTextStyle.color}"
+                      >
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-color v-model="config.xAxis.nameTextStyle.color" />
                         </q-popup-proxy>
@@ -416,10 +440,7 @@
                     input-class="text-left"
                   />
 
-                  <q-toggle
-                    label="显示刻度"
-                    v-model="config.xAxis.axisLabel.show"
-                  />
+                  <q-toggle label="显示刻度" v-model="config.xAxis.axisLabel.show" />
                   <q-input
                     dense
                     filled
@@ -438,8 +459,11 @@
                     v-model="config.xAxis.axisLabel.color"
                   >
                     <template v-slot:append>
-                      <q-icon name="colorize" class="cursor-pointer"
-                        :style="{color:config.xAxis.axisLabel.color}">
+                      <q-icon
+                        name="colorize"
+                        class="cursor-pointer"
+                        :style="{color:config.xAxis.axisLabel.color}"
+                      >
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-color v-model="config.xAxis.axisLabel.color" />
                         </q-popup-proxy>
@@ -482,6 +506,7 @@
             </q-expansion-item>
 
             <q-expansion-item
+              v-if="config.type !== 'maps'"
               dense
               dense-toggle
               expand-separator
@@ -489,10 +514,7 @@
             >
               <q-card>
                 <q-card-section>
-                  <q-toggle
-                    label="显示左轴"
-                    v-model="config.yAxis.master.show"
-                  />
+                  <q-toggle label="显示左轴" v-model="config.yAxis.master.show" />
                   <q-input
                     dense
                     filled
@@ -509,10 +531,7 @@
                     class="q-my-sm"
                     input-class="text-left"
                   />
-                  <q-toggle
-                    label="显示分隔线"
-                    v-model="config.yAxis.master.splitLine.show"
-                  />
+                  <q-toggle label="显示分隔线" v-model="config.yAxis.master.splitLine.show" />
                   <q-input
                     dense
                     filled
@@ -531,8 +550,11 @@
                     v-model="config.yAxis.master.axisLabel.color"
                   >
                     <template v-slot:append>
-                      <q-icon name="colorize" class="cursor-pointer"
-                        :style="{color:config.yAxis.master.axisLabel.color}">
+                      <q-icon
+                        name="colorize"
+                        class="cursor-pointer"
+                        :style="{color:config.yAxis.master.axisLabel.color}"
+                      >
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-color v-model="config.yAxis.master.axisLabel.color" />
                         </q-popup-proxy>
@@ -570,10 +592,11 @@
                     class="q-my-sm"
                     input-class="text-left"
                   />
-                  <q-toggle
-                    label="显示右轴"
-                    v-model="config.yAxis.slave.show"
-                  />
+                  <q-toggle label="显示右轴" v-model="config.yAxis.slave.show" />
+                  <q-toggle label="右轴折线图" v-model="config.yAxis.slave.asLine" />
+                  <q-toggle label="面积显示：" v-model="config.series.line.showArea" />
+                  <q-toggle label="显示圆点：" v-model="config.series.line.showSymbol" />
+                  <q-toggle label="平滑曲线：" v-model="config.series.line.smooth" />
                   <q-input
                     dense
                     filled
@@ -590,10 +613,7 @@
                     class="q-my-sm"
                     input-class="text-left"
                   />
-                  <q-toggle
-                    label="显示分隔线"
-                    v-model="config.yAxis.slave.splitLine.show"
-                  />
+                  <q-toggle label="显示分隔线" v-model="config.yAxis.slave.splitLine.show" />
                   <q-input
                     dense
                     filled
@@ -612,8 +632,11 @@
                     v-model="config.yAxis.slave.axisLabel.color"
                   >
                     <template v-slot:append>
-                      <q-icon name="colorize" class="cursor-pointer"
-                        :style="{color:config.yAxis.slave.axisLabel.color}">
+                      <q-icon
+                        name="colorize"
+                        class="cursor-pointer"
+                        :style="{color:config.yAxis.slave.axisLabel.color}"
+                      >
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-color v-model="config.yAxis.slave.axisLabel.color" />
                         </q-popup-proxy>
@@ -655,6 +678,7 @@
               </q-card>
             </q-expansion-item>
             <q-expansion-item
+              v-if="config.type !== 'maps'"
               dense
               dense-toggle
               expand-separator
@@ -662,10 +686,7 @@
             >
               <q-card>
                 <q-card-section>
-                  <q-toggle
-                    label="显示图例"
-                    v-model="config.legend.show"
-                  />
+                  <q-toggle label="显示图例" v-model="config.legend.show" />
                   <q-select
                     dense
                     filled
@@ -708,8 +729,11 @@
                     v-model="config.legend.textStyle.color"
                   >
                     <template v-slot:append>
-                      <q-icon name="colorize" class="cursor-pointer"
-                        :style="{color:config.legend.textStyle.color}">
+                      <q-icon
+                        name="colorize"
+                        class="cursor-pointer"
+                        :style="{color:config.legend.textStyle.color}"
+                      >
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-color v-model="config.legend.textStyle.color" />
                         </q-popup-proxy>
@@ -767,7 +791,7 @@
                     class="q-my-sm"
                   >
                     <template v-slot:control>
-                      <q-slider v-model="config.series.center.x" :min="0" :max="100"/>
+                      <q-slider v-model="config.series.center.x" :min="0" :max="100" />
                     </template>
                   </q-field>
                   <q-field
@@ -778,7 +802,7 @@
                     class="q-my-sm"
                   >
                     <template v-slot:control>
-                      <q-slider v-model="config.series.center.y" :min="0" :max="100"/>
+                      <q-slider v-model="config.series.center.y" :min="0" :max="100" />
                     </template>
                   </q-field>
                 </q-card-section>
@@ -801,7 +825,7 @@
                     class="q-my-sm"
                   >
                     <template v-slot:control>
-                      <q-slider v-model="config.grid.top" :min="0" :max="50"/>
+                      <q-slider v-model="config.grid.top" :min="0" :max="50" />
                     </template>
                   </q-field>
                   <q-field
@@ -812,7 +836,7 @@
                     class="q-my-sm"
                   >
                     <template v-slot:control>
-                      <q-slider v-model="config.grid.left" :min="0" :max="50"/>
+                      <q-slider v-model="config.grid.left" :min="0" :max="50" />
                     </template>
                   </q-field>
                   <q-field
@@ -823,7 +847,7 @@
                     class="q-my-sm"
                   >
                     <template v-slot:control>
-                      <q-slider v-model="config.grid.right" :min="0" :max="50"/>
+                      <q-slider v-model="config.grid.right" :min="0" :max="50" />
                     </template>
                   </q-field>
                   <q-field
@@ -834,13 +858,14 @@
                     class="q-my-sm"
                   >
                     <template v-slot:control>
-                      <q-slider v-model="config.grid.bottom" :min="0" :max="50"/>
+                      <q-slider v-model="config.grid.bottom" :min="0" :max="50" />
                     </template>
                   </q-field>
                 </q-card-section>
               </q-card>
             </q-expansion-item>
             <q-expansion-item
+              v-if="config.type !== 'maps'"
               dense
               dense-toggle
               expand-separator
@@ -870,11 +895,16 @@
                     :key="rw.id"
                   >
                     <template v-slot:append>
-                      <q-icon name="colorize" class="cursor-pointer"
-                        :style="{color:config.colors[idx]}">
+                      <q-icon
+                        name="colorize"
+                        class="cursor-pointer"
+                        :style="{color:config.colors[idx]}"
+                      >
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
-                          <q-color :default-value="config.colors[idx]"
-                          @change="(value)=>{$set(config.colors,idx,value)}" />
+                          <q-color
+                            :default-value="config.colors[idx]"
+                            @change="(value)=>{$set(config.colors,idx,value)}"
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
@@ -882,7 +912,47 @@
                 </q-card-section>
               </q-card>
             </q-expansion-item>
+            <q-expansion-item dense dense-toggle expand-separator label="提示设置">
+              <q-card>
+                <q-card-section>
+                  <q-toggle label="显示提示" v-model="config.tooltip.show" />
+                  <q-input
+                    dense
+                    filled
+                    v-model="config.tooltip.formatter"
+                    prefix="提示模板："
+                    class="q-my-sm"
+                    input-class="text-left"
+                  />
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
           </q-list>
+        </q-tab-panel>
+        <q-tab-panel name="tableStyle">
+          <q-toggle label="水平显示" v-model="config.table.horizontal" />
+          <q-toggle label="开启跑马灯" v-model="config.table.loop" />
+          <q-toggle label="轮流反向" v-model="config.table.alternate" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.table.scrolldelay"
+            prefix="滚动时间间隔："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.table.direction"
+            prefix="滚动方向："
+            class="q-my-sm"
+            :options="directionOptions"
+            emit-value
+            map-options
+          />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -901,7 +971,9 @@ import configbar from './widgets/config/bar';
 import configline from './widgets/config/line';
 import configscatter from './widgets/config/scatter';
 import configpie from './widgets/config/pie';
+import configdonut from './widgets/config/donut';
 import configgauge from './widgets/config/gauge';
+import configmaps from './widgets/config/maps';
 
 export default {
   name: 'chartsetting',
@@ -912,6 +984,8 @@ export default {
     configline,
     configpie,
     configgauge,
+    configmaps,
+    configdonut,
   },
   data() {
     return {
@@ -929,6 +1003,12 @@ export default {
       fontWeightOptions,
       fontStyleOptions,
       topBottomOptions,
+      directionOptions: [
+        { label: '左', value: 'left' },
+        { label: '右', value: 'right' },
+        { label: '上', value: 'up' },
+        { label: '下', value: 'down' },
+      ],
       widget: {
         id: -1,
         config: '',
@@ -1075,74 +1155,129 @@ export default {
       handler() {
       },
     },
+    'config.type': {
+      handler(n, o) {
+        if (n !== o) {
+          if (n === 'table' && this.chartSettingTab === 'chartStyle') {
+            this.chartSettingTab = 'tableStyle';
+          }
+          if (n !== 'table' && this.chartSettingTab === 'tableStyle') {
+            this.chartSettingTab = 'chartStyle';
+          }
+        }
+      },
+    },
   },
 };
 </script>
 
 <style lang="stylus">
 @import '~src/css/quasar.variables.styl';
-.chart-dim-set
-  .q-tab-panel
-    padding: 6px
-.chart-sel-tabs
-  background #fff
-  border-left 1px solid $ash
-  .q-tabs
-    border-bottom 1px solid $ash
-    .q-tabs__content
-      flex-wrap wrap
-    .q-tab
-      padding 0
-      min-height 40px
-    .q-tab__content
-      min-width 50
-.dotted
-  border 1px $ash dashed
-  min-height 50px
-  margin 0 0 9px 0
-  padding 9px 4px
-  >div
-    color #fff
-    font-size 14px
-    margin 0 0 9px 0
-    >span
-      padding 0 9px
-    &:last-child
-      margin 0
-    &.drag-ing
-      opacity .4
-    &.drag-no
-      line-height 30px
-      text-align center
-      color $grey
-    .q-field__native,.q-select__dropdown-icon
-      color #fff
-  .w_l_val
-  .w_l_cat
-    color $black
-    .q-checkbox
-      display none
-.modelCat
-  .w_l_g_cat
-    background $primary-light
-.modelVal
-  .w_l_g_val
-    background $positive-light
-.w_l_g_theme
-  div
-    position relative
-    border-radius 99px
-    padding 4px
-    margin 4px
-    border 2px #fff solid
-    transition border-color .4s ease-in
-    &.v-choosing,&:hover
-      border-color $primary
-  i
-    display block
-    width 45px
-    height 45px
-    border 9px solid
-    border-radius 99px
-    cursor pointer
+
+.chart-dim-set {
+  .q-tab-panel {
+    padding: 6px;
+  }
+}
+
+.chart-sel-tabs {
+  background: #fff;
+  border-left: 1px solid $ash;
+
+  .q-tabs {
+    border-bottom: 1px solid $ash;
+
+    .q-tabs__content {
+      flex-wrap: wrap;
+    }
+
+    .q-tab {
+      padding: 0;
+      min-height: 40px;
+    }
+
+    .q-tab__content {
+      min-width: 50;
+    }
+  }
+}
+
+.dotted {
+  border: 1px $ash dashed;
+  min-height: 50px;
+  margin: 0 0 9px 0;
+  padding: 9px 4px;
+
+  >div {
+    color: #fff;
+    font-size: 14px;
+    margin: 0 0 9px 0;
+
+    >span {
+      padding: 0 9px;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
+
+    &.drag-ing {
+      opacity: 0.4;
+    }
+
+    &.drag-no {
+      line-height: 30px;
+      text-align: center;
+      color: $grey;
+    }
+
+    .q-field__native, .q-select__dropdown-icon {
+      color: #fff;
+    }
+  }
+
+  .w_l_val, .w_l_cat {
+    color: $black;
+
+    .q-checkbox {
+      display: none;
+    }
+  }
+}
+
+.modelCat {
+  .w_l_g_cat {
+    background: $primary-light;
+  }
+}
+
+.modelVal {
+  .w_l_g_val {
+    background: $positive-light;
+  }
+}
+
+.w_l_g_theme {
+  div {
+    position: relative;
+    border-radius: 99px;
+    padding: 4px;
+    margin: 4px;
+    border: 2px #fff solid;
+    transition: border-color 0.4s ease-in;
+
+    &.v-choosing, &:hover {
+      border-color: $primary;
+    }
+  }
+
+  i {
+    display: block;
+    width: 45px;
+    height: 45px;
+    border: 9px solid;
+    border-radius: 99px;
+    cursor: pointer;
+  }
+}
 </style>

@@ -16,14 +16,59 @@ const makePieOption = (config, chartData) => {
   return {
     title: config.title,
     color: config.colors,
-    tooltip: {
-      trigger: 'item',
-      formatter: '{a} <br/>{b} : {c}',
-    },
+    tooltip: config.tooltip,
     legend: config.legend,
     series: seriesList,
   };
 };
+const makeDonutOption = (config, chartData) => {
+  const seriesList = [];
+  chartData.seriesDataList.forEach((seriesData, index) => {
+    const dataName = config.series.donut.lable.template.replace('name', seriesData.name)
+      .replace('value', seriesData.value);
+    const series = {
+      name: seriesData.name,
+      type: 'pie',
+      label: config.series.donut.lable,
+      labelLine: {
+        normal: {
+          show: false,
+        },
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: '20',
+          fontWeight: 'bold',
+        },
+      },
+      data: [
+        {
+          value: Math.min(seriesData.value, config.series.donut.total),
+          name: dataName,
+        },
+        {
+          value: Math.max(0, config.series.donut.total - seriesData.value),
+          itemStyle: {
+            normal: {
+              color: config.series.donut.noDataColor,
+            },
+          },
+        },
+      ],
+      radius: [`${90 - (index + 1) * config.series.donut.width}%`, `${90 - index * config.series.donut.width}%`],
+    };
+    seriesList.push(series);
+  });
+  return {
+    title: config.title,
+    color: config.colors,
+    tooltip: config.tooltip,
+    legend: config.legend,
+    series: seriesList,
+  };
+};
+
 const makeLineBarOption = (config, chartData) => {
   const seriesList = [];
   chartData.seriesDataList.forEach((seriesData) => {
@@ -46,7 +91,10 @@ const makeLineBarOption = (config, chartData) => {
         },
       },
     };
-
+    // 右轴作为 折线图来处理
+    if (config.yAxis.slave.show && config.yAxis.slave.asLine && seriesData.axisIndex === '1') {
+      series.type = 'line';
+    }
     if (config.series.line.showArea) {
       series.areaStyle = {};
     }
@@ -106,15 +154,7 @@ const makeLineBarOption = (config, chartData) => {
   return {
     title: config.title,
     color: config.colors,
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-        crossStyle: {
-          color: '#999',
-        },
-      },
-    },
+    tooltip: config.tooltip,
     legend: config.legend,
     grid: {
       left: `${config.grid.left}%`,
@@ -144,7 +184,7 @@ const makeRadarOption = (config, chartData) => {
   return {
     title: config.title,
     color: config.colors,
-    tooltip: {},
+    tooltip: config.tooltip,
     radar: {
       shape: 'circle',
       name: {
@@ -249,10 +289,7 @@ const makeFunnelOption = (config, chartData) => {
   return {
     title: config.title,
     color: config.colors,
-    tooltip: {
-      trigger: 'item',
-      formatter: '{a} <br/>{b} : {c}',
-    },
+    tooltip: config.tooltip,
     legend: config.legend,
     series: seriesList,
   };
@@ -317,10 +354,7 @@ const makeGaugeOption = (config, chartData) => {
   return {
     title: config.title,
     color: config.colors,
-    tooltip: {
-      trigger: 'item',
-      formatter: '{b} : {c}',
-    },
+    tooltip: config.tooltip,
     legend: config.legend,
     series: seriesList,
   };
@@ -339,6 +373,12 @@ export const makeOptions = (config, chartData) => {
     return makeFunnelOption(config, chartData);
   } if (config.type === 'gauge') {
     return makeGaugeOption(config, chartData);
+  } if (config.type === 'donut') {
+    return makeDonutOption(config, chartData);
+  } if (config.type === 'custom') {
+    if (config.custom.option) {
+      return JSON.parse(config.custom.option);
+    }
   }
   return {};
 };

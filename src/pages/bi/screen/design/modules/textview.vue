@@ -1,16 +1,14 @@
 <template>
-  <div
-    ref="textView"
-    :style="textStyle"
-  ></div>
+  <div ref="textView" :style="textStyle"></div>
 </template>
 <script>
-import { debounce } from 'quasar';
+import { debounce, date } from 'quasar';
 
 export default {
   name: 'textview',
   data() {
     return {
+      weekday: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
       text: '',
       chartData: [],
       interval: this.config.interval,
@@ -46,6 +44,19 @@ export default {
         }
       },
     },
+    'config.asDate': {
+      handler(n, o) {
+        if (n !== o) {
+          if (n) {
+            this.config.interval = 1;
+            this.config.loop = true;
+          } else {
+            this.config.interval = 60;
+          }
+          this.confirmLoop();
+        }
+      },
+    },
     config: {
       deep: true,
       handler() {
@@ -61,9 +72,29 @@ export default {
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
-    renderText() {
-      const { dataList } = this.chartData;
+    renderContent() {
+      if (this.config.asDate) {
+        this.renderDate();
+      } else {
+        this.getData();
+      }
+    },
+    renderDate() {
       let result = this.text;
+      const timeStamp = Date.now();
+      if (this.config.dateFormat === '星期几') {
+        result = this.weekday[date.formatDate(timeStamp, 'd')];
+      } else {
+        result = date.formatDate(timeStamp, this.config.dateFormat);
+      }
+      if (this.$refs.textView) {
+        this.$refs.textView.innerHTML = result;
+      }
+      this.confirmLoop();
+    },
+    renderText() {
+      let result = this.text;
+      const { dataList } = this.chartData;
       try {
         if (dataList && dataList.length > 0) {
           const data = dataList[0];
@@ -83,41 +114,45 @@ export default {
     handleResize() {
     },
     doLoadData() {
-      this.loading = true;
-      if (this.config.viewId && this.text && this.config.datas.length > 0) {
-        this.$axios.post(`/bi/view/getChartData/${this.config.viewId}`, {
-          type: 'text',
-          aggregators: this.config.datas.map((v) => ({
-            column: v.name.split('@')[0],
-            func: v.agg,
-            alias: v.field.alias,
-            axisIndex: v.leftRight ? '1' : '0',
-          })),
-          allParam: this.allParam,
-          cache: false,
-          expired: 0,
-          filters: this.config.filters,
-          groups: [],
-          nativeQuery: false,
-          orders: [],
-          pageNo: 1,
-          pageSize: this.config.length,
-        }).then(({ result }) => {
-          this.chartData = result || {};
+      if (!this.config.asDate) {
+        this.loading = true;
+        if (this.config.viewId && this.text && this.config.datas.length > 0) {
+          this.$axios.post(`/bi/view/getChartData/${this.config.viewId}`, {
+            type: 'text',
+            aggregators: this.config.datas.map((v) => ({
+              column: v.name.split('@')[0],
+              func: v.agg,
+              alias: v.field.alias,
+              axisIndex: v.leftRight ? '1' : '0',
+            })),
+            allParam: this.allParam,
+            cache: false,
+            expired: 0,
+            filters: this.config.filters,
+            groups: [],
+            nativeQuery: false,
+            orders: [],
+            pageNo: 1,
+            pageSize: this.config.length,
+          }).then(({ result }) => {
+            this.chartData = result || {};
+            this.renderText();
+          }).finally(() => {
+            this.loading = false;
+            this.confirmLoop();
+          });
+        } else {
           this.renderText();
-        }).finally(() => {
-          this.loading = false;
-          this.confirmLoop();
-        });
+        }
       } else {
-        this.renderText();
+        this.renderContent();
       }
     },
     loop() {
       clearTimeout(this.ti);
       this.interval -= 1;
       if (this.interval < 1) {
-        this.getData();
+        this.renderContent();
       } else {
         this.ti = setTimeout(() => {
           this.loop();
@@ -160,6 +195,31 @@ export default {
           }
         }
       }
+      if (this.config.marquee.loop) {
+        resultStyle.animationDuration = `${this.config.marquee.scrolldelay}s`;
+        resultStyle.animationTimingFunction = 'linear';
+        resultStyle.animationIterationCount = 'infinite';
+        resultStyle.animationDirection = 'alternate';
+        resultStyle.animationDelay = '2s';
+        if (this.config.marquee.alternate) {
+          resultStyle.animationDirection = 'alternate';
+        } else {
+          resultStyle.animationDirection = 'normal';
+        }
+        if (this.config.marquee.direction === 'left') {
+          resultStyle.left = '100%';
+          resultStyle.animationName = 'wordsLoopLeft';
+        } else if (this.config.marquee.direction === 'right') {
+          resultStyle.left = '0%';
+          resultStyle.animationName = 'wordsLoopRight';
+        } else if (this.config.marquee.direction === 'up') {
+          resultStyle.top = '0%';
+          resultStyle.animationName = 'wordsLoopUp';
+        } else if (this.config.marquee.direction === 'down') {
+          resultStyle.bottom = '0%';
+          resultStyle.animationName = 'wordsLoopDown';
+        }
+      }
 
       return resultStyle;
     },
@@ -170,5 +230,37 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style >
+@keyframes wordsLoopLeft {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+@keyframes wordsLoopRight {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes wordsLoopUp {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+@keyframes wordsLoopDown {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
 </style>

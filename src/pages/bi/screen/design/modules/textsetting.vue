@@ -4,8 +4,29 @@
       <q-scroll-area class="col">
         <div class="text-subtitle1 text-center q-py-sm">文字设置</div>
         <q-separator class="q-mb-sm" />
-        <span>文本内容：</span>
-        <q-input dense filled v-model="config.text" type="textarea" debounce="500" />
+        <q-toggle label="时间字段" v-model="config.asDate" />
+        <q-select
+          v-if="config.asDate"
+          dense
+          filled
+          v-model="config.dateFormat"
+          transition-show="flip-up"
+          emit-value
+          map-options
+          transition-hide="flip-down"
+          prefix="格式："
+          class="q-my-sm"
+          :options="dateFormatOptions"
+        />
+        <div v-if="!config.asDate">文本内容：</div>
+        <q-input
+          v-if="!config.asDate"
+          dense
+          filled
+          v-model="config.text"
+          type="textarea"
+          debounce="500"
+        />
         <q-expansion-item dense dense-toggle expand-separator label="字体设置">
           <q-card>
             <q-card-section>
@@ -27,11 +48,7 @@
                 input-class="text-left"
               >
                 <template v-slot:append>
-                  <q-icon
-                    name="colorize"
-                    class="cursor-pointer"
-                    :style="{color:config.color}"
-                  >
+                  <q-icon name="colorize" class="cursor-pointer" :style="{color:config.color}">
                     <q-popup-proxy transition-show="scale" transition-hide="scale">
                       <q-color v-model="config.color" />
                     </q-popup-proxy>
@@ -81,14 +98,10 @@
         <q-expansion-item dense dense-toggle expand-separator label="背景设置">
           <q-card>
             <q-card-section>
-              <q-toggle
-                label="使用背景"
-                v-model="config.useBackground"
-              />
+              <q-toggle label="使用背景" v-model="config.useBackground" />
               <q-input filled v-model="config.bgColor" prefix="背景色：" class="q-my-sm">
                 <template v-slot:append>
-                  <q-icon name="colorize" class="cursor-pointer"
-                    :style="{color:config.bgColor}">
+                  <q-icon name="colorize" class="cursor-pointer" :style="{color:config.bgColor}">
                     <q-popup-proxy transition-show="scale" transition-hide="scale">
                       <q-color v-model="config.bgColor" />
                     </q-popup-proxy>
@@ -115,6 +128,34 @@
                 prefix="背景设置："
                 class="q-my-sm"
                 :options="backSetOptions"
+                emit-value
+                map-options
+              />
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+        <q-expansion-item dense dense-toggle expand-separator label="跑马灯设置">
+          <q-card>
+            <q-card-section>
+              <q-toggle label="开启跑马灯" v-model="config.marquee.loop" />
+              <q-toggle label="轮流反向" v-model="config.marquee.alternate" />
+              <q-input
+                dense
+                filled
+                type="number"
+                v-model="config.marquee.scrolldelay"
+                prefix="滚动时间间隔："
+                class="q-my-sm"
+                input-class="text-left"
+              />
+              <q-select
+                dense
+                filled
+                options-dense
+                v-model="config.marquee.direction"
+                prefix="滚动方向："
+                class="q-my-sm"
+                :options="directionOptions"
                 emit-value
                 map-options
               />
@@ -210,6 +251,20 @@ export default {
         { label: '不重复', value: 'no-repeat' },
         { label: '水平重复', value: 'repeat-x' },
         { label: '垂直重复', value: 'repeat-y' },
+      ],
+      dateFormatOptions: [
+        { label: 'YYYY-MM-DD HH:mm:ss', value: 'YYYY-MM-DD HH:mm:ss' },
+        { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' },
+        { label: 'MM-DD', value: 'MM-DD' },
+        { label: 'HH:mm:ss', value: 'HH:mm:ss' },
+        { label: '星期几', value: '星期几' },
+        { label: 'YYYY年MM月DD日 HH时mm分ss秒', value: 'YYYY年MM月DD日 HH时mm分ss秒' },
+      ],
+      directionOptions: [
+        { label: '左', value: 'left' },
+        { label: '右', value: 'right' },
+        { label: '上', value: 'up' },
+        { label: '下', value: 'down' },
       ],
     };
   },

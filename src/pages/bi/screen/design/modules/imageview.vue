@@ -1,17 +1,13 @@
 <template>
-  <div>
-    <q-img
-      :style="{width: '100%',height: '100%',objectFit: 'cover',opacity:(100-config.opacity)/100 }"
-      spinner-color="primary"
-      spinner-size="82px"
-      :src="imagePath"
-      style="width: 100%"
-    />
-  </div>
+  <q-img
+    :class="this.config.loop?'rotateImg':''"
+    :style="imageStyle"
+    :src="imagePath"
+  />
 </template>
 <script>
 export default {
-  name: 'textview',
+  name: 'imageview',
   data() {
     return {
       text: '',
@@ -40,9 +36,18 @@ export default {
       }
       return path;
     },
+    imageStyle() {
+      return {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        opacity: (100 - this.config.opacity) / 100,
+        animationDuration: `${this.config.scrolldelay}s`,
+        animationDirection: this.config.alternate ? 'alternate' : 'normal',
+      };
+    },
   },
   mounted() {
-    this.text = this.config.text;
     this.$on('resized', this.handleResize);
     window.addEventListener('resize', this.handleResize);
   },
@@ -53,5 +58,17 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style scoped>
+.rotateImg{
+    display: block;
+    animation: rotate 6s linear infinite;
+}
+@keyframes rotate {
+  0% {
+    transform: rotateZ(0deg); /*从0度开始*/
+  }
+  100% {
+    transform: rotateZ(360deg); /*360度结束*/
+  }
+}
 </style>

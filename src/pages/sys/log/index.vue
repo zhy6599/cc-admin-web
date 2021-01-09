@@ -176,6 +176,9 @@ export default {
           name: 'ip', align: 'left', label: 'IP', field: 'ip',
         },
         {
+          name: 'createTime', align: 'left', label: '操作时间', field: 'createTime',
+        },
+        {
           name: 'method', align: 'left', label: '请求java方法', field: 'method',
         },
         {

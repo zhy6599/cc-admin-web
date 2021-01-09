@@ -148,13 +148,15 @@ export default {
       this.loading = true;
       return this.$axios.get(`/bi/view/queryById?id=${this.config.viewId}`)
         .then(({ result }) => {
-          this.model = Object.entries(JSON.parse(result.model)).map(([name, v]) => ({
-            name,
-            type: v.modelType,
-            visualType: v.visualType,
-            icon: columnToIcon(v.visualType),
-            check: false,
-          }));
+          if (result.model) {
+            this.model = Object.entries(JSON.parse(result.model)).map(([name, v]) => ({
+              name,
+              type: v.modelType,
+              visualType: v.visualType,
+              icon: columnToIcon(v.visualType),
+              check: false,
+            }));
+          }
         }).finally(() => {
           this.loading = false;
         });

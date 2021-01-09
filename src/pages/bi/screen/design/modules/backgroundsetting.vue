@@ -40,20 +40,26 @@
         accept="image/*"
         :url="uploadUrl"
         :max-files="1"
+        ref="uploadPic"
         @uploaded="uploaded"
       />
       <q-select
         dense
         filled
         options-dense
-        v-model="backPicSet"
+        v-model="config.backPicSet"
         prefix="背景设置："
         class="q-my-sm"
         :options="backSetOptions"
-        @input="changeBackPic"
         emit-value
         map-options
-      />
+      >
+        <template v-slot:after>
+          <q-btn round dense flat icon="delete" @click="removeUpload" color="warning">
+            <q-tooltip content-class="bg-accent">删除背景</q-tooltip>
+          </q-btn>
+        </template>
+      </q-select>
       <div class="q-pa-md">
         <q-badge color="secondary">透明度: {{ config.opacity }}% (0 to 100)</q-badge>
         <q-slider v-model="config.opacity" :min="0" :max="100" color="green" />
@@ -71,7 +77,6 @@ export default {
   data() {
     return {
       headers: [{ name: 'Authorization', value: localStorage.Authorization }],
-      backPicSet: 'repeat',
       uploadUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/upload`,
       backSetOptions: [
         { label: '重复', value: 'repeat' },
@@ -91,6 +96,7 @@ export default {
   methods: {
     removeUpload() {
       this.config.src = '';
+      this.$refs.uploadPic.removeUploadedFiles();
     },
     uploaded({ xhr }) {
       const response = JSON.parse(xhr.responseText);
@@ -103,9 +109,6 @@ export default {
           message: '图片上传失败',
         });
       }
-    },
-    changeBackPic() {
-      this.config.backPicSet = this.backPicSet;
     },
   },
   computed: {},

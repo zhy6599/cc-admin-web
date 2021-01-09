@@ -170,7 +170,7 @@ export default {
           if (biScreen && biScreen.config) {
             const configObj = JSON.parse(biScreen.config);
             this.layout = configObj.layout;
-            this.backgroundConfig = configObj.backgroundConfig;
+            this.backgroundConfig = { ...configObj.backgroundConfig };
             let maxIndex = 0;
             this.layout.forEach((item) => {
               if (item.i > maxIndex) {
@@ -671,11 +671,6 @@ export default {
           height: `${this.backgroundConfig.height}px`,
           background: `url('${this.imgUrl}/${this.backgroundConfig.src}')`,
           backgroundRepeat: this.backgroundConfig.backPicSet,
-          backgroundSize: '10px 10px',
-          backgroundImage: this.backgroundConfig.showGrid
-            ? 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),'
-            + 'linear-gradient(#f2f2f2 10%, rgba(0, 0, 0, 0) 10%)' : '',
-
         };
         if (this.backgroundConfig.backPicSet === 'stretch') {
           bkStyle.backgroundSize = '100% 100%';

@@ -284,6 +284,57 @@
             class="q-my-sm"
             input-class="text-left"
           />
+          <q-toggle label="显示轴线" v-model="config.xAxis.axisLine.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.xAxis.axisLine.lineStyle.width"
+            prefix="轴线线宽："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-input
+            dense
+            filled
+            prefix="轴线颜色："
+            class="q-my-sm"
+            input-class="text-left"
+            v-model="config.xAxis.axisLine.lineStyle.color"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="colorize"
+                class="cursor-pointer"
+                :style="{color:config.xAxis.axisLine.lineStyle.color}"
+              >
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-color v-model="config.xAxis.axisLine.lineStyle.color" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.xAxis.axisLine.lineStyle.type"
+            prefix="轴线类型："
+            class="q-my-sm"
+            :options="borderTypeOptions"
+            emit-value
+            map-options
+          />
+          <q-toggle label="显示刻度：" v-model="config.xAxis.axisTick.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.xAxis.axisTick.length"
+            prefix="刻度长度："
+            class="q-my-sm"
+            input-class="text-left"
+          />
         </q-card-section>
       </q-card>
     </q-expansion-item>
@@ -375,6 +426,57 @@
             class="q-my-sm"
             input-class="text-left"
           />
+          <q-toggle label="显示轴线" v-model="config.yAxis.master.axisLine.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.master.axisLine.lineStyle.width"
+            prefix="轴线线宽："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-input
+            dense
+            filled
+            prefix="轴线颜色："
+            class="q-my-sm"
+            input-class="text-left"
+            v-model="config.yAxis.master.axisLine.lineStyle.color"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="colorize"
+                class="cursor-pointer"
+                :style="{color:config.yAxis.master.axisLine.lineStyle.color}"
+              >
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-color v-model="config.yAxis.master.axisLine.lineStyle.color" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.yAxis.master.axisLine.lineStyle.type"
+            prefix="轴线类型："
+            class="q-my-sm"
+            :options="borderTypeOptions"
+            emit-value
+            map-options
+          />
+          <q-toggle label="显示刻度：" v-model="config.yAxis.master.axisTick.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.master.axisTick.length"
+            prefix="刻度长度："
+            class="q-my-sm"
+            input-class="text-left"
+          />
           <q-toggle label="显示右轴" v-model="config.yAxis.slave.show" />
           <q-toggle label="右轴折线图" v-model="config.yAxis.slave.asLine" />
           <q-toggle label="面积显示：" v-model="config.series.line.showArea" />
@@ -454,6 +556,57 @@
             type="number"
             v-model="config.yAxis.slave.axisLabel.fontSize"
             prefix="字体大小："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-toggle label="显示轴线" v-model="config.yAxis.slave.axisLine.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.slave.axisLine.lineStyle.width"
+            prefix="轴线线宽："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-input
+            dense
+            filled
+            prefix="轴线颜色："
+            class="q-my-sm"
+            input-class="text-left"
+            v-model="config.yAxis.slave.axisLine.lineStyle.color"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="colorize"
+                class="cursor-pointer"
+                :style="{color:config.yAxis.slave.axisLine.lineStyle.color}"
+              >
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-color v-model="config.yAxis.slave.axisLine.lineStyle.color" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.yAxis.slave.axisLine.lineStyle.type"
+            prefix="轴线类型："
+            class="q-my-sm"
+            :options="borderTypeOptions"
+            emit-value
+            map-options
+          />
+          <q-toggle label="显示刻度：" v-model="config.yAxis.slave.axisTick.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.slave.axisTick.length"
+            prefix="刻度长度："
             class="q-my-sm"
             input-class="text-left"
           />
@@ -681,7 +834,7 @@
 
 <script>
 import {
-  leftRightType, themeOptions, themeMap,
+  leftRightType, themeOptions, themeMap, borderTypeOptions,
   leftAlignOptions, topAlignOptions, orientOptions, fontWeightOptions, fontStyleOptions,
   topBottomOptions,
 } from 'boot/datatype';
@@ -720,6 +873,7 @@ export default {
       fontWeightOptions,
       fontStyleOptions,
       topBottomOptions,
+      borderTypeOptions,
     };
   },
   created() {

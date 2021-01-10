@@ -407,6 +407,11 @@ export default {
                 position: 'top',
                 color: 'auto',
               },
+              symbolSizeRatio: 1,
+              symbolSize: {
+                min: 10,
+                max: 30,
+              },
             },
             line: {
               showArea: false,
@@ -509,6 +514,18 @@ export default {
                 fontWeight: 'normal',
                 fontStyle: 'normal',
               },
+              axisLine: {
+                show: true,
+                lineStyle: {
+                  width: 1,
+                  color: '#333',
+                  type: 'solid',
+                },
+              },
+              axisTick: {
+                show: true,
+                length: 5,
+              },
             },
             slave: {
               name: '',
@@ -525,6 +542,18 @@ export default {
                 fontSize: 12,
                 fontWeight: 'normal',
                 fontStyle: 'normal',
+              },
+              axisLine: {
+                show: true,
+                lineStyle: {
+                  width: 1,
+                  color: '#333',
+                  type: 'solid',
+                },
+              },
+              axisTick: {
+                show: true,
+                length: 5,
               },
             },
           },
@@ -550,6 +579,18 @@ export default {
               fontSize: 12,
               fontWeight: 'normal',
               fontStyle: 'normal',
+            },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                width: 1,
+                color: '#333',
+                type: 'solid',
+              },
+            },
+            axisTick: {
+              show: true,
+              length: 5,
             },
           },
           legend: {

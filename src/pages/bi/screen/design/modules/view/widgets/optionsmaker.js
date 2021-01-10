@@ -110,11 +110,23 @@ const makeLineBarOption = (config, chartData) => {
     if (config.series.bar.barWidth > 0) {
       series.barWidth = config.series.bar.barWidth;
     }
+    if (config.type === 'scatter') {
+      series.symbolSize = function symbolSize(data) {
+        if (data * config.series.scatter.symbolSizeRatio < config.series.scatter.symbolSize.min) {
+          return config.series.scatter.symbolSize.min;
+        }
+        if (data * config.series.scatter.symbolSizeRatio > config.series.scatter.symbolSize.max) {
+          return config.series.scatter.symbolSize.max;
+        }
+        return data * config.series.scatter.symbolSizeRatio;
+      };
+    }
     seriesList.push(series);
   });
   const xAxis = [{
     ...config.xAxis,
     data: chartData.xAxisData,
+    axisLine: config.xAxis.axisLine,
   }];
   const yAxis = [];
   const master = {
@@ -124,6 +136,7 @@ const makeLineBarOption = (config, chartData) => {
     splitLine: {
       show: config.yAxis.master.splitLine.show,
     },
+    axisLine: config.yAxis.master.axisLine,
   };
   if (config.yAxis.master.name) {
     master.name = config.yAxis.master.name;
@@ -142,6 +155,7 @@ const makeLineBarOption = (config, chartData) => {
     splitLine: {
       show: config.yAxis.slave.splitLine.show,
     },
+    axisLine: config.yAxis.slave.axisLine,
   };
   if (config.yAxis.slave.name) {
     slave.name = config.yAxis.slave.name;

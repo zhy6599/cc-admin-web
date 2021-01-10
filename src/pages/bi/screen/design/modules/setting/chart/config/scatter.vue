@@ -29,14 +29,31 @@
           v-model="config.series.bar.itemStyle.color"
         >
           <template v-slot:append>
-            <q-icon name="colorize" class="cursor-pointer"
-              :style="{color:config.series.bar.itemStyle.color}">
+            <q-icon
+              name="colorize"
+              class="cursor-pointer"
+              :style="{color:config.series.bar.itemStyle.color}"
+            >
               <q-popup-proxy transition-show="scale" transition-hide="scale">
                 <q-color v-model="config.series.bar.itemStyle.color" />
               </q-popup-proxy>
             </q-icon>
           </template>
         </q-input>
+        <q-field dense borderless prefix="标记的大小范围：">
+          <template v-slot:control>
+            <q-range v-model="config.series.scatter.symbolSize" :min="0" :max="100" />
+          </template>
+        </q-field>
+        <q-input
+          dense
+          filled
+          type="number"
+          v-model="config.series.scatter.symbolSizeRatio"
+          prefix="标记系数："
+
+          input-class="text-left"
+        />
       </q-card-section>
     </q-card>
   </q-expansion-item>

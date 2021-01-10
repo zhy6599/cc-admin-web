@@ -55,6 +55,9 @@ export default {
           path: "/view",
           component: () => import('pages/bi/screen/design/view')
         },{
+          path: "/viewfull",
+          component: () => import('pages/bi/screen/design/viewfull')
+        },{
           path: "/baby/word/study",
           component: () => import('pages/baby/word/study')
         },{

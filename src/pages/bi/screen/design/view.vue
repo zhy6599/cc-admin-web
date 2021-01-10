@@ -32,9 +32,9 @@
 <script>
 import VueDraggableResizable from 'vue-draggable-resizable';
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
-import chartview from './modules/chartview';
-import textview from './modules/textview';
-import imageview from './modules/imageview';
+import chartview from './modules/view/chartview';
+import textview from './modules/view/textview';
+import imageview from './modules/view/imageview';
 
 export default {
   components: {
@@ -120,7 +120,7 @@ export default {
 
         };
         if (this.backgroundConfig.backPicSet === 'stretch') {
-          bkStyle.backgroundSize = '100%';
+          bkStyle.backgroundSize = '100% 100%';
         } else {
           delete bkStyle.backgroundSize;
         }

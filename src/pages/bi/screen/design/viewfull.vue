@@ -1,61 +1,43 @@
 <template>
-  <q-layout view="hHh lpR fFf">
-    <q-page-container>
-      <q-page class="column q-pa-sm">
-        <div class="col column shadow-2 q-pa-md justify-center items-center">
-          <grid-layout
-              class="col fit"
-              :layout="layout"
-              :col-num="colNum"
-              :row-height="rowHeight"
-              :autoSize="false"
-              :vertical-compact="false"
-              :use-css-transforms="false"
-              :is-mirrored="false"
-              :margin="[0, 0]"
-            >
-              <grid-item
-                v-for="item in layout"
-                :key="item.i"
-                :x="item.x"
-                :y="item.y"
-                :w="item.w"
-                :h="item.h"
-                :i="item.i"
-              >
-                <div class="col" :id="item.key" >
-                  <textview v-if="item.type === 'text'" :config="item.config" />
-                  <imageview v-if="item.type === 'image'" :config="item.config" />
-                  <chartview v-if="item.type === 'chart'" :config="item.config"/>
-                </div>
-              </grid-item>
-            </grid-layout>
-        </div>
-      </q-page>
-    </q-page-container>
-    <q-inner-loading :showing="loading">
-      <q-spinner-gears size="50px" color="primary" />
-    </q-inner-loading>
-  </q-layout>
+  <div :style="backgroundStyle">
+    <vue-draggable-resizable
+      v-for="item in layout"
+      :key="item.i"
+      :x="item.x"
+      :y="item.y"
+      :w="item.w"
+      :h="item.h"
+      :z="item.z"
+      :parent="true"
+      :resizable="false"
+      :class="'no-border'"
+    >
+      <div style="overflow: hidden;height:100%;" :id="item.key">
+        <textview v-if="item.type === 'text'" :config="item.config" />
+        <imageview v-if="item.type === 'image'" :config="item.config" />
+        <chartview v-if="item.type === 'chart'" :config="item.config" />
+      </div>
+    </vue-draggable-resizable>
+  </div>
 </template>
 
 <script>
-import VueGridLayout from 'vue-grid-layout';
-import chartview from './modules/chartview';
-import textview from './modules/textview';
-import imageview from './modules/imageview';
+import VueDraggableResizable from 'vue-draggable-resizable';
+import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
+import chartview from './modules/view/chartview';
+import textview from './modules/view/textview';
+import imageview from './modules/view/imageview';
 
 export default {
-  name: 'ScreenDesign',
   components: {
+    VueDraggableResizable,
     chartview,
     textview,
     imageview,
-    GridLayout: VueGridLayout.GridLayout,
-    GridItem: VueGridLayout.GridItem,
   },
   data() {
     return {
+      imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
       allParam: {}, // 所有请求参数
       right: true,
       loading: false,
@@ -64,12 +46,13 @@ export default {
       backgroundConfig: {
         width: 800, height: 600, color: '#fff', showGrid: true,
       },
-      colNum: 48,
-      rowHeight: 10,
+      colNum: 800,
+      rowHeight: 1,
       draggable: false,
       resizable: false,
       index: 0,
       layout: [],
+      biScreenConfig: '',
     };
   },
   created() {
@@ -82,27 +65,50 @@ export default {
       this.$root.$emit('allParamChange', this.allParam);
     },
     getScreen() {
+      this.loading = true;
       return this.$axios.get(`/bi/screen/queryById?id=${this.$route.query.id}`)
         .then(({ result }) => {
           const biScreen = result;
           if (biScreen && biScreen.config) {
-            const configObj = JSON.parse(biScreen.config);
-            this.layout = configObj.layout;
-            this.backgroundConfig = configObj.backgroundConfig;
-            let maxIndex = 0;
-            this.layout.forEach((item) => {
-              if (item.i > maxIndex) {
-                maxIndex = item.i;
-              }
-            });
-            this.index = maxIndex + 1;
+            this.biScreenConfig = biScreen.config;
+            this.resizChart();
           }
         }).catch(() => {
           this.$q.notify({
             color: 'red',
             message: '还原电子报告出错！',
           });
+        }).finally(() => {
+          this.loading = false;
         });
+    },
+    calcItem(item, width, height, screenWidth, screenHeight) {
+      if (width !== screenWidth) {
+        item.x *= (screenWidth / width);
+        item.w *= (screenWidth / width);
+      }
+      if (height !== screenHeight) {
+        item.y *= (screenHeight / height);
+        item.h *= (screenHeight / height);
+      }
+    },
+    resizChart() {
+      const configObj = JSON.parse(this.biScreenConfig);
+      this.layout = configObj.layout;
+      this.backgroundConfig = { ...configObj.backgroundConfig };
+      const { width, height } = this.$q.screen;
+      this.layout.forEach((item) => {
+        this.calcItem(item, this.backgroundConfig.width,
+          this.backgroundConfig.height, width, height);
+      });
+    },
+  },
+  watch: {
+    '$q.screen': {
+      handler() {
+        window.location.reload();
+      },
+      deep: true,
     },
   },
   mounted() {
@@ -115,8 +121,42 @@ export default {
   beforeDestroy() {
     this.$root.$off('paramChange', this.paramChange);
   },
+  computed: {
+    backgroundStyle() {
+      let bkStyle = {};
+      if (this.backgroundConfig.src) {
+        bkStyle = {
+          background: `url('${this.imgUrl}/${this.backgroundConfig.src}')`,
+          backgroundRepeat: this.backgroundConfig.backPicSet,
+
+        };
+        if (this.backgroundConfig.backPicSet === 'stretch') {
+          bkStyle.backgroundSize = '100% 100%';
+        } else {
+          delete bkStyle.backgroundSize;
+        }
+      } else {
+        bkStyle = {
+          background: this.backgroundConfig.color,
+          backgroundSize: '10px 10px',
+          backgroundImage: this.backgroundConfig.showGrid
+            ? 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),'
+            + 'linear-gradient(#f2f2f2 10%, rgba(0, 0, 0, 0) 10%)' : '',
+        };
+      }
+
+      const { width, height } = this.$q.screen;
+      bkStyle.width = `${width}px`;
+      bkStyle.height = `${height}px`;
+      return bkStyle;
+    },
+  },
 };
 </script>
 
 <style lang="stylus">
+.gridBackground {
+  backgroundImage: 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),
+linear-gradient(#f2f2f2 10%, rgba(0, 0, 0, 0) 10%)';
+}
 </style>

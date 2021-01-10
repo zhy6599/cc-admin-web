@@ -7,18 +7,15 @@
             <q-toolbar-title>
               <q-avatar>
                 <q-icon name="dashboard" />
-              </q-avatar>Design
+              </q-avatar>cc-admin
             </q-toolbar-title>
           </q-toolbar>
         </div>
         <div class="col">
           <div class="row no-warp justify-center items-center content-center">
-            <ul class="ul-box-tool"
-              v-for="v in chartList"
-              :key="v.type">
-              <li class="text-center"
-              @click="selectChartIcon(v.type)">
-                <q-icon :name="v.icon" size='sm'>
+            <ul class="ul-box-tool" v-for="v in chartList" :key="v.type">
+              <li class="text-center" @click="selectChartIcon(v.type)">
+                <q-icon :name="v.icon" size="sm">
                   <q-tooltip>{{v.name}}</q-tooltip>
                 </q-icon>
                 <p>{{v.name}}</p>
@@ -26,17 +23,27 @@
             </ul>
             <q-space />
             <q-btn flat icon="mdi-undo" :disable="historyIndex === 0" @click="undo()" />
-            <q-btn flat icon="mdi-redo" @click="redo()" class="q-mr-lg"
-            :disable="historyIndex === history.length - 1|| history.length === 0"/>
+            <q-btn
+              flat
+              icon="mdi-redo"
+              @click="redo()"
+              class="q-mr-lg"
+              :disable="historyIndex === history.length - 1|| history.length === 0"
+            />
             <q-btn flat icon="mdi-content-cut" @click="cutItem()" />
             <q-btn flat icon="mdi-content-copy" @click="copyItem()" />
             <q-btn flat icon="mdi-content-paste" @click="pasteItem()" />
           </div>
         </div>
-        <div class="col-2 text-right q-pr-md q-gutter-sm">
+        <div class="col-3 text-right q-pr-md q-gutter-sm">
           <q-btn flat icon="mdi-format-float-left" @click="left=!left" />
           <q-btn flat icon="mdi-format-float-right" @click="right=!right" />
-          <q-btn flat icon="mdi-laptop" @click="viewScreen()" />
+          <q-btn flat icon="mdi-laptop" @click="viewScreen()">
+            <q-tooltip>原尺寸查看</q-tooltip>
+          </q-btn>
+          <q-btn flat icon="mdi-desktop-mac-dashboard" @click="viewFullScreen()">
+            <q-tooltip>全屏查看</q-tooltip>
+          </q-btn>
           <q-btn flat icon="mdi-content-save" @click="saveScreen()" />
         </div>
       </div>
@@ -62,9 +69,7 @@
     <q-page-container>
       <q-page class="column q-pa-sm">
         <div class="col column justify-center items-center">
-          <div
-            :style="backgroundStyle"
-          >
+          <div :style="backgroundStyle">
             <vue-draggable-resizable
               v-for="item in layout"
               :key="item.i"
@@ -81,12 +86,17 @@
               @deactivated="item.active=false"
               @dragging="onDrag"
             >
-              <div class="col column" style="overflow: hidden;height:100%;"
-              :id="item.key" @click="selectItem(item.i)" @dragenter.prevent>
+              <div
+                class="col column"
+                style="overflow: hidden;height:100%;"
+                :id="item.key"
+                @click="selectItem(item.i)"
+                @dragenter.prevent
+              >
                 <textview v-if="item.type === 'text'" :config="item.config" />
                 <imageview v-if="item.type === 'image'" :config="item.config" />
-                <chartview v-if="item.type === 'chart'" :config="item.config"/>
-                <videoview v-if="item.type === 'video'" :config="item.config"/>
+                <chartview v-if="item.type === 'chart'" :config="item.config" />
+                <videoview v-if="item.type === 'video'" :config="item.config" />
               </div>
             </vue-draggable-resizable>
           </div>
@@ -100,16 +110,16 @@
 import { themeMap, chartList } from 'boot/datatype';
 import VueDraggableResizable from 'vue-draggable-resizable';
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
-import backgroundsetting from './modules/backgroundsetting';
-import chartview from './modules/chartview';
-import datasource from './modules/datasource';
-import chartsetting from './modules/chartsetting';
-import textview from './modules/textview';
-import textsetting from './modules/textsetting';
-import imageview from './modules/imageview';
-import imagesetting from './modules/imagesetting';
-import videoview from './modules/videoview';
-import videosetting from './modules/videosetting';
+import backgroundsetting from './modules/setting/backgroundsetting';
+import chartview from './modules/view/chartview';
+import datasource from './modules/setting/datasource';
+import chartsetting from './modules/setting/chartsetting';
+import textview from './modules/view/textview';
+import textsetting from './modules/setting/textsetting';
+import imageview from './modules/view/imageview';
+import imagesetting from './modules/setting/imagesetting';
+import videoview from './modules/view/videoview';
+import videosetting from './modules/setting/videosetting';
 import layout from './modules/layout';
 
 export default {
@@ -609,6 +619,13 @@ export default {
       });
       window.open(href, '_blank');
     },
+    viewFullScreen() {
+      const { id } = this.$route.query;
+      const { href } = this.$router.resolve({
+        path: `/viewfull?id=${id}`,
+      });
+      window.open(href, '_blank');
+    },
     saveScreen() {
       const { id } = this.$route.query;
       if (!id) {
@@ -699,22 +716,32 @@ export default {
 <style lang="stylus">
 @import '~src/css/quasar.variables.styl';
 @import '~src/css/app.styl';
-.ul-box-tool
-  list-style none
-  height 30px
-  cursor pointer
 
-.w_l_list
-  >div
-    padding 8px
-    cursor pointer
-    >.col
-      padding-right 8px
-      word-break break-all
-  .w_l_cat:hover
-    background $primary-light
-  .w_l_val:hover
-    background $positive-light
+.ul-box-tool {
+  list-style: none;
+  height: 30px;
+  cursor: pointer;
+}
+
+.w_l_list {
+  >div {
+    padding: 8px;
+    cursor: pointer;
+
+    >.col {
+      padding-right: 8px;
+      word-break: break-all;
+    }
+  }
+
+  .w_l_cat:hover {
+    background: $primary-light;
+  }
+
+  .w_l_val:hover {
+    background: $positive-light;
+  }
+}
 
 .gridBackground {
   backgroundImage: 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),

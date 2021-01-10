@@ -127,7 +127,17 @@
               icon="mdi-laptop"
               @click="viewScreen(props.row)"
             >
-              <q-tooltip>查看</q-tooltip>
+              <q-tooltip>原尺寸查看</q-tooltip>
+            </q-btn>
+            <q-btn
+              flat
+              round
+              dense
+              color="primary"
+              icon="mdi-desktop-mac-dashboard"
+              @click="viewFullScreen(props.row)"
+            >
+              <q-tooltip>全屏查看</q-tooltip>
             </q-btn>
             <q-btn
               flat
@@ -300,6 +310,12 @@ export default {
     viewScreen({ id }) {
       const { href } = this.$router.resolve({
         path: `/view?id=${id}`,
+      });
+      window.open(href, '_blank');
+    },
+    viewFullScreen({ id }) {
+      const { href } = this.$router.resolve({
+        path: `/viewfull?id=${id}`,
       });
       window.open(href, '_blank');
     },

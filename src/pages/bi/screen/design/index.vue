@@ -22,29 +22,47 @@
               </li>
             </ul>
             <q-space />
-            <q-btn flat icon="mdi-undo" :disable="historyIndex === 0" @click="undo()" />
+            <q-btn flat icon="mdi-auto-fix" :disable="layout.length === 0" @click="autoFix()" >
+              <q-tooltip>解决因为系统升级导致原有图形不能使用的问题</q-tooltip>
+            </q-btn>
+            <q-btn flat icon="mdi-undo" :disable="historyIndex === 0" @click="undo()" >
+              <q-tooltip>撤回</q-tooltip>
+            </q-btn>
             <q-btn
               flat
               icon="mdi-redo"
               @click="redo()"
               class="q-mr-lg"
-              :disable="historyIndex === history.length - 1|| history.length === 0"
-            />
-            <q-btn flat icon="mdi-content-cut" @click="cutItem()" />
-            <q-btn flat icon="mdi-content-copy" @click="copyItem()" />
-            <q-btn flat icon="mdi-content-paste" @click="pasteItem()" />
+              :disable="historyIndex === history.length - 1|| history.length === 0" >
+              <q-tooltip>重做</q-tooltip>
+            </q-btn>
+            <q-btn flat icon="mdi-content-cut" @click="cutItem()" >
+              <q-tooltip>剪切</q-tooltip>
+            </q-btn>
+            <q-btn flat icon="mdi-content-copy" @click="copyItem()" >
+              <q-tooltip>复制</q-tooltip>
+            </q-btn>
+            <q-btn flat icon="mdi-content-paste" @click="pasteItem()" >
+              <q-tooltip>粘贴</q-tooltip>
+            </q-btn>
           </div>
         </div>
-        <div class="col-3 text-right q-pr-md q-gutter-sm">
-          <q-btn flat icon="mdi-format-float-left" @click="left=!left" />
-          <q-btn flat icon="mdi-format-float-right" @click="right=!right" />
+        <div class="row no-wrap justify-end col-4 text-right q-pr-md q-gutter-sm">
+          <q-btn flat icon="mdi-format-float-left" @click="left=!left">
+            <q-tooltip>隐藏左侧菜单</q-tooltip>
+          </q-btn>
+          <q-btn flat icon="mdi-format-float-right" @click="right=!right">
+            <q-tooltip>隐藏右侧菜单</q-tooltip>
+          </q-btn>
           <q-btn flat icon="mdi-laptop" @click="viewScreen()">
             <q-tooltip>原尺寸查看</q-tooltip>
           </q-btn>
           <q-btn flat icon="mdi-desktop-mac-dashboard" @click="viewFullScreen()">
             <q-tooltip>全屏查看</q-tooltip>
           </q-btn>
-          <q-btn flat icon="mdi-content-save" @click="saveScreen()" />
+          <q-btn flat icon="mdi-content-save" @click="saveScreen()">
+            <q-tooltip>保存图形</q-tooltip>
+          </q-btn>
         </div>
       </div>
     </q-header>
@@ -87,8 +105,7 @@
               @dragging="onDrag"
             >
               <div
-                class="col column"
-                style="overflow: hidden;height:100%;"
+                :class="getItemClass(item)"
                 :id="item.key"
                 @click="selectItem(item.i)"
                 @dragenter.prevent
@@ -107,7 +124,7 @@
 </template>
 
 <script>
-import { themeMap, chartList } from 'boot/datatype';
+import { themeMap, chartList, chartConfig } from 'boot/datatype';
 import VueDraggableResizable from 'vue-draggable-resizable';
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 import backgroundsetting from './modules/setting/backgroundsetting';
@@ -192,7 +209,7 @@ export default {
         }).catch(() => {
           this.$q.notify({
             color: 'red',
-            message: '还原大屏出错！',
+            message: '还原电子报告出错！',
           });
         });
     },
@@ -228,6 +245,13 @@ export default {
         this.selType = selChart.type;
       }
     },
+    getItemClass(item) {
+      const itemClsList = ['col', 'column'];
+      if (item.type !== 'image') {
+        itemClsList.push('draggable-item-class');
+      }
+      return itemClsList;
+    },
     removeItem() {
       const selItem = this.layout.filter((item) => item.i === this.selChartId);
       if (selItem.length === 1) {
@@ -253,6 +277,26 @@ export default {
       if (this.historyIndex > 0) {
         this.historyIndex -= 1;
         this.layout = JSON.parse(this.history[this.historyIndex]);
+      }
+    },
+    applyIf(object, config) {
+      if (object && config) {
+        Object.keys(config).forEach((key) => {
+          if (object[key] === undefined) {
+            object[key] = config[key];
+          } else if (typeof config[key] === 'object') {
+            this.applyIf(object[key], config[key]);
+          }
+        });
+      }
+      return object;
+    },
+    autoFix() {
+      if (this.layout.length > 0) {
+        this.layout.forEach((item) => {
+          this.applyIf(item.config, chartConfig(item.type));
+        });
+        this.$info('修复完成');
       }
     },
     cutItem() {
@@ -288,360 +332,13 @@ export default {
         active: true,
         i: this.index += 1,
       };
-      if (type === 'text') {
-        item.config = {
-          asDate: false,
-          dateFormat: 'YYYY-MM-DD HH:mm:ss',
-          marquee: {
-            loop: false,
-            direction: 'left',
-            scrolldelay: 60,
-            alternate: false,
-          },
-          text: '请输入文字',
-          color: '#000',
-          fontSize: 12,
-          fontWeight: 'normal',
-          textAlign: 'left',
-          letterSpacing: 0,
-          datas: [],
-          viewId: null,
-          length: 100,
-          slice: true,
-          interval: 60,
-          loop: true,
-          dragState: {
-            type: '',
-            data: [],
-          },
-          draging: {
-            type: '',
-            data: [],
-          },
-          useBackground: false,
-          bgColor: '#fff',
-          src: '',
-          backPicSet: 'repeat',
-          opacity: 100,
-        };
-      } else if (type === 'image') {
-        item.config = {
-          src: '',
-          opacity: 0,
-          loop: false,
-          scrolldelay: 6,
-          alternate: false,
-        };
-      } else if (type === 'video') {
-        item.config = {
-          src: '',
-        };
-      } else if (type === 'chart') {
-        item.config = {
-          rows: [],
-          cols: [],
-          theme: 'shine',
-          colors: this.themeMap.shine,
-          orders: [],
-          type: 'line',
-          name: '',
-          custom: {
-            option: '',
-          },
-          table: {
-            horizontal: false,
-            loop: false,
-            direction: 'up',
-            scrolldelay: 6,
-            alternate: true,
-          },
-          title: {
-            show: true,
-            text: '',
-            subtext: '',
-            left: 'center',
-            top: 'top',
-            orient: 'horizontal',
-            textStyle: {
-              color: '#000',
-              fontWeight: 'normal',
-              fontSize: 18,
-            },
-            subtextStyle: {
-              color: '#000',
-              fontWeight: 'normal',
-              fontSize: 12,
-            },
-          },
-          series: {
-            horizontal: false,
-            maps: {
-              id: '',
-              zoom: 10,
-              label: {
-                show: true,
-                color: '#000',
-              },
-              itemStyle: {
-                borderColor: '#fff',
-                borderWidth: 1,
-                borderType: 'solid',
-                opacity: 100,
-              },
-            },
-            bar: {
-              stack: false,
-              barWidth: 0,
-              itemStyle: {
-                opacity: 100,
-                barBorderRadius: 0,
-                show: false,
-                position: 'top',
-                color: 'auto',
-              },
-            },
-            scatter: {
-              itemStyle: {
-                opacity: 100,
-                show: false,
-                position: 'top',
-                color: 'auto',
-              },
-              symbolSizeRatio: 1,
-              symbolSize: {
-                min: 10,
-                max: 30,
-              },
-            },
-            line: {
-              showArea: false,
-              showSymbol: true,
-              smooth: false,
-              itemStyle: {
-                show: false,
-                position: 'top',
-                color: 'auto',
-              },
-            },
-            pie: {
-              radius: { min: 0, max: 100 },
-              roseType: false,
-              hoverAnimation: false,
-              avoidLabelOverlap: false,
-            },
-            donut: {
-              total: 100,
-              width: 10,
-              roseType: false,
-              hoverAnimation: false,
-              avoidLabelOverlap: false,
-              noDataColor: '#fff',
-              lable: {
-                show: false,
-                template: 'name',
-                color: '#000',
-                fontWeight: 'normal',
-                fontSize: 18,
-                position: 'center',
-              },
-            },
-            gauge: {
-              radius: 90,
-              startAngle: 225,
-              endAngle: -45,
-              showDataName: true,
-              detail: {
-                show: true,
-                formatter: '{value}',
-                offsetCenter: { x: 0, y: 40 },
-                color: '#91c7af',
-                fontWeight: 'normal',
-                fontStyle: 'normal',
-                fontSize: 18,
-              },
-              axisLine: {
-                show: true,
-                lineStyle: {
-                  width: 30,
-                  color: JSON.stringify([[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]),
-                },
-              },
-              splitLine: {
-                show: true,
-                length: 30,
-              },
-              axisTick: {
-                show: true,
-                length: 8,
-              },
-              axisLabel: {
-                show: true,
-                length: 8,
-              },
-              pointer: {
-                show: true,
-                length: 80,
-                width: 8,
-              },
-              itemStyle: {
-                color: '#91c7af',
-                borderWidth: 0,
-                borderColor: '#000',
-                borderType: 'solid',
-                opacity: 100,
-              },
-              hoverAnimation: false,
-              avoidLabelOverlap: false,
-            },
-            center: {
-              x: 50,
-              y: 50,
-            },
-          },
-          yAxis: {
-            master: {
-              name: '',
-              show: true,
-              splitLine: {
-                show: true,
-              },
-              unit: '',
-              axisLabel: {
-                show: true,
-                color: '#000',
-                rotate: 0,
-                fontSize: 12,
-                fontWeight: 'normal',
-                fontStyle: 'normal',
-              },
-              axisLine: {
-                show: true,
-                lineStyle: {
-                  width: 1,
-                  color: '#333',
-                  type: 'solid',
-                },
-              },
-              axisTick: {
-                show: true,
-                length: 5,
-              },
-            },
-            slave: {
-              name: '',
-              show: false,
-              asLine: false,
-              unit: '',
-              splitLine: {
-                show: true,
-              },
-              axisLabel: {
-                show: true,
-                color: '#000',
-                rotate: 0,
-                fontSize: 12,
-                fontWeight: 'normal',
-                fontStyle: 'normal',
-              },
-              axisLine: {
-                show: true,
-                lineStyle: {
-                  width: 1,
-                  color: '#333',
-                  type: 'solid',
-                },
-              },
-              axisTick: {
-                show: true,
-                length: 5,
-              },
-            },
-          },
-          xAxis: {
-            show: true,
-            nameRotate: 0,
-            position: 'bottom',
-            type: 'category',
-            axisPointer: {
-              type: 'shadow',
-            },
-            name: '',
-            nameTextStyle: {
-              color: '#333',
-              fontSize: 12,
-              fontWeight: 'normal',
-              fontStyle: 'normal',
-            },
-            axisLabel: {
-              show: true,
-              rotate: 0,
-              color: '#000',
-              fontSize: 12,
-              fontWeight: 'normal',
-              fontStyle: 'normal',
-            },
-            axisLine: {
-              show: true,
-              lineStyle: {
-                width: 1,
-                color: '#333',
-                type: 'solid',
-              },
-            },
-            axisTick: {
-              show: true,
-              length: 5,
-            },
-          },
-          legend: {
-            show: true,
-            left: 'right',
-            top: 'top',
-            orient: 'horizontal',
-            textStyle: {
-              color: '#333',
-              fontSize: 12,
-              fontWeight: 'normal',
-              fontStyle: 'normal',
-            },
-          },
-          grid: {
-            left: 10,
-            top: 10,
-            right: 5,
-            bottom: 10,
-          },
-          tooltip: {
-            show: true,
-            trigger: 'item',
-            animation: true,
-            formatter: '{a} <br/>{b} : {c}',
-          },
-          needResize: false,
-          fillOpacity: 0,
-          cornerRadius: 0,
-          stacked: false,
-          showLoop: true,
-          description: '',
-          viewId: null,
-          length: 100,
-          slice: true,
-          interval: 60,
-          loop: true,
-          dragState: {
-            type: '',
-            data: [],
-          },
-          draging: {
-            type: '',
-            data: [],
-          },
-        };
-      } else if (type === 'cursor') {
+      if (type === 'cursor') {
         this.selType = 'cursor';
         this.selChartId = null;
         return;
       }
+      item.config = chartConfig(type);
+
       this.layout.push(item);
       this.selectItem(this.index);
       this.addHistory();
@@ -758,34 +455,23 @@ export default {
 @import '~src/css/quasar.variables.styl';
 @import '~src/css/app.styl';
 
-.ul-box-tool {
-  list-style: none;
-  height: 30px;
-  cursor: pointer;
-}
+.draggable-item-class
+  overflow hidden
+  height 100%
+.ul-box-tool
+  list-style none
+  height 30px
+  cursor pointer
+.w_l_list
+  >div
+    padding 8px
+    cursor pointer
+    >.col
+      padding-right 8px
+      word-break break-all
+  .w_l_cat:hover
+    background $primary-light
+  .w_l_val:hover
+    background $positive-light
 
-.w_l_list {
-  >div {
-    padding: 8px;
-    cursor: pointer;
-
-    >.col {
-      padding-right: 8px;
-      word-break: break-all;
-    }
-  }
-
-  .w_l_cat:hover {
-    background: $primary-light;
-  }
-
-  .w_l_val:hover {
-    background: $positive-light;
-  }
-}
-
-.gridBackground {
-  backgroundImage: 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),
-linear-gradient(#f2f2f2 10%, rgba(0, 0, 0, 0) 10%)';
-}
 </style>

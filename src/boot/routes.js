@@ -1,6 +1,6 @@
 export default [
   {
-    id: 1,
+    id: 10,
     path: '/home',
     component: 'home',
     meta: {
@@ -65,28 +65,10 @@ export default [
       },
       {
         id: 106,
-        path: '/sys/quartz',
-        component: 'sys/quartz',
-        meta: {
-          title: '定时任务',
-          icon: 'mdi-menu',
-        },
-      },
-      {
-        id: 107,
         path: '/sys/datasource',
         component: 'sys/datasource',
         meta: {
           title: '多数据源',
-        },
-      },
-      {
-        id: 197,
-        path: '/sys/log',
-        component: 'sys/log',
-        meta: {
-          title: '系统日志',
-          icon: 'mdi-note-text-outline',
         },
       },
       {
@@ -182,6 +164,23 @@ export default [
     children: [
       {
         id: 701,
+        path: '/sys/online',
+        component: 'sys/online',
+        meta: {
+          title: '在线用户',
+        },
+      },
+      {
+        id: 702,
+        path: '/sys/log',
+        component: 'sys/log',
+        meta: {
+          title: '系统日志',
+          icon: 'mdi-note-text-outline',
+        },
+      },
+      {
+        id: 799,
         path: '/monitor/task',
         component: 'monitor/task',
         meta: {

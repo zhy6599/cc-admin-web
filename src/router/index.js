@@ -10,7 +10,13 @@ export default () => {
     scrollBehavior: () => ({ x: 0, y: 0 }),
     routes: [{
       path: '/login/:from?',
-      component: () => import('pages/login.vue'),
+      component: () => import('layouts/LoginLayout.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('pages/login.vue'),
+        },
+      ],
       meta: {
         title: '登录',
       },

@@ -12,7 +12,7 @@
         :pagination.sync="pagination"
         :visible-columns="group"
         @request="query"
-        :rows-per-page-options="[10,20,50,100]"
+        :rows-per-page-options="[100]"
         :loading="loading"
         selection="multiple"
         :selected.sync="selected"
@@ -40,7 +40,6 @@
         </template>
         <template #top-right="table">
           <q-btn-group outline>
-            <q-btn outline icon="add" color="primary" label="新建地图管理" @click="add" />
             <q-btn
               outline
               color="primary"
@@ -60,23 +59,31 @@
                 </q-item>
               </q-list>
             </q-btn-dropdown>
-            <q-btn
-              :disable="selected.length === 0"
-              outline
-              color="primary"
-              label="批量删除"
-              @click="showConfirm()"
-              icon="mdi-delete-variant"
-            />
           </q-btn-group>
         </template>
 
         <template #body-cell-opt="props">
           <q-td :props="props" :auto-width="true">
-            <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
-              <q-tooltip>编辑</q-tooltip>
+            <q-btn flat round dense color="warning" icon="mdi-login" @click.stop>
+              <q-tooltip>用户下线</q-tooltip>
+              <q-menu auto-close anchor="center left" self="center right">
+                <div class="row no-wrap items-center q-pa-sm">
+                  <span class="text-no-wrap">
+                    用户下线？
+                  </span>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    color="warning"
+                    icon="mdi-login"
+                    @click="officeLine(props.row)"
+                  >
+                    <q-tooltip>确认下线</q-tooltip>
+                  </q-btn>
+                </div>
+              </q-menu>
             </q-btn>
-            <btn-del label="地图管理" @confirm="del(props.row)" />
           </q-td>
         </template>
       </q-table>
@@ -84,24 +91,46 @@
     <q-dialog maximized flat persistent ref="dialog" position="right">
       <q-form @submit="submit" class="dialog_card column">
         <h5 class="view_title justify-between q-px-md">
-          {{editType}}地图管理
+          {{editType}}在线用户
           <q-btn dense outline round icon="clear" size="sm" v-close-popup />
         </h5>
         <q-scroll-area class="col">
           <div class="row q-col-gutter-x-md dialog_form q-pa-md">
             <div class="col-12">
-              <h5>
-                <q-icon name="star" color="red" />名称：
-              </h5>
-              <q-input outlined dense v-model="form.name" type="text" :rules="[requiredTest]" />
+              <h5>用户账号：</h5>
+              <q-input outlined dense v-model="form.id" type="text" />
             </div>
             <div class="col-12">
-              <h5>地图轮廓：</h5>
-              <q-input outlined dense v-model="form.json" type="textarea" />
+              <h5>用户姓名：</h5>
+              <q-input outlined dense v-model="form.name" type="text" />
             </div>
             <div class="col-12">
-              <h5>视觉映射：</h5>
-              <q-input outlined dense v-model="form.visualMap" type="textarea" />
+              <h5>IP：</h5>
+              <q-input outlined dense v-model="form.ip" type="text" />
+            </div>
+            <div class="col-12">
+              <h5>IP地址：</h5>
+              <q-input outlined dense v-model="form.ipAddress" type="text" />
+            </div>
+            <div class="col-12">
+              <h5>浏览器：</h5>
+              <q-input outlined dense v-model="form.explorer" type="text" />
+            </div>
+            <div class="col-12">
+              <h5>登录时间：</h5>
+              <q-field outlined dense v-model="form.loginTime">
+                <template v-slot:control>{{form.loginTime}}</template>
+                <template v-slot:append>
+                  <q-btn flat dense round color="primary" icon="schedule">
+                    <q-popup-proxy>
+                      <div class="row">
+                        <q-date flat square v-model="form.loginTime" mask="YYYY-MM-DD HH:mm:ss" />
+                        <q-time flat square v-model="form.loginTime" mask="YYYY-MM-DD HH:mm:ss" />
+                      </div>
+                    </q-popup-proxy>
+                  </q-btn>
+                </template>
+              </q-field>
             </div>
           </div>
         </q-scroll-area>
@@ -119,10 +148,9 @@
 import { IndexMixin } from 'boot/mixins';
 import { getDictLabel } from 'boot/dictionary';
 import confirm from 'components/confirm';
-import { requiredTest } from 'boot/inputTest';
 
 export default {
-  name: 'BiMap',
+  name: 'SysOnlineUser',
   mixins: [IndexMixin],
   components: {
     confirm,
@@ -137,39 +165,47 @@ export default {
           field: 'index',
         },
         {
-          name: 'name', align: 'left', label: '名称', field: 'name',
+          name: 'id', align: 'left', label: '用户账号', field: 'id',
+        },
+        {
+          name: 'name', align: 'left', label: '用户姓名', field: 'name',
+        },
+        {
+          name: 'ip', align: 'left', label: 'IP', field: 'ip',
+        },
+        {
+          name: 'ipAddress', align: 'left', label: 'IP地址', field: 'ipAddress',
+        },
+        {
+          name: 'browser', align: 'left', label: '浏览器', field: 'browser',
+        },
+        {
+          name: 'os', align: 'left', label: '操作系统', field: 'os',
+        },
+        {
+          name: 'loginTime', align: 'left', label: '登录时间', field: 'loginTime',
         },
         {
           name: 'opt', align: 'center', label: '操作', field: 'id',
         },
       ],
       url: {
-        list: '/bi/map/list',
-        add: '/bi/map/add',
-        edit: '/bi/map/edit',
-        delete: '/bi/map/delete',
-        deleteBatch: '/bi/map/deleteBatch',
-        exportXlsUrl: '/bi/map/exportXls',
-        importExcelUrl: '/bi/map/importExcel',
+        list: '/sys/onlineUser/list',
+        add: '/sys/onlineUser/add',
+        edit: '/sys/onlineUser/edit',
+        delete: '/sys/onlineUser/delete',
+        deleteBatch: '/sys/onlineUser/deleteBatch',
+        exportXlsUrl: '/sys/onlineUser/exportXls',
+        importExcelUrl: '/sys/onlineUser/importExcel',
       },
     };
   },
   methods: {
-    requiredTest,
     getDictLabel,
     initDict() {
     },
-    edit(p) {
-      this.loading = true;
-      this.$info('地图文件较大，请耐心等待！');
-      return this.$axios.get(`/bi/map/queryById?id=${p.id}`).then(({ result }) => {
-        this.form = {
-          ...result,
-        };
-        this.$refs.dialog.show();
-      }).finally(() => {
-        this.loading = false;
-      });
+    officeLine() {
+      this.$error('权限不足');
     },
   },
   mounted() {

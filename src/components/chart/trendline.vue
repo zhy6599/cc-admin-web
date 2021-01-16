@@ -1,5 +1,5 @@
 <template>
-  <div id="mainTrend" :style="{height:'300px'}"></div>
+  <div ref="homeTrendLine" :style="{height:'300px'}"></div>
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
   created() {
   },
   mounted() {
-    const mainTrendChart = echarts.init(document.getElementById('mainTrend'));
+    const homeTrendLineChart = echarts.init(this.$refs.homeTrendLine);
     const colors = ['#5793f3', '#d14a61', '#675bba'];
     const option = {
       color: colors,
@@ -31,6 +31,12 @@ export default {
       },
       legend: {
         data: [],
+      },
+      grid: {
+        left: '5%',
+        top: '15%',
+        right: '1%',
+        bottom: '15%',
       },
       xAxis: [
         {
@@ -47,8 +53,8 @@ export default {
           name: '销售额',
           min: 0,
           position: 'left',
-          axisLine: { // y轴
-            show: false,
+          axisLine: {
+            show: true,
           },
           axisLabel: {
             formatter: '{value}万元',
@@ -63,7 +69,7 @@ export default {
         },
       ],
     };
-    mainTrendChart.setOption(option);
+    homeTrendLineChart.setOption(option);
   },
 };
 </script>

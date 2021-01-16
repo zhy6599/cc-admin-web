@@ -174,10 +174,10 @@
                 </q-td>
                 <q-td key="sortNo">{{ btn.sortNo }}</q-td>
                 <q-td key="opt">
-                  <q-btn flat round dense color="primary" icon="edit" @click.stop="edit(menu)">
+                  <q-btn flat round dense color="primary" icon="edit" @click.stop="edit(btn)">
                     <q-tooltip>编辑</q-tooltip>
                   </q-btn>
-                  <btn-del label="删除" @confirm="del(menu)" />
+                  <btn-del label="删除" @confirm="del(btn)" />
                 </q-td>
               </q-tr>
             </template>
@@ -388,6 +388,21 @@ export default {
       this.form.parentId = p.id;
       this.form.menuType = p.menuType + 1;
       this.$refs.dialog.show();
+    },
+    editBefore(row) {
+      this.list.forEach((menu) => {
+        if (menu.id === row.parentId) {
+          this.parent = menu;
+        }
+        if (menu.children && menu.children.length > 0) {
+          menu.children.forEach((child) => {
+            if (child.id === row.parentId) {
+              this.parent = child;
+            }
+          });
+        }
+      });
+      return true;
     },
   },
   mounted() {

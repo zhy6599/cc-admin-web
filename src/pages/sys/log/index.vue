@@ -63,8 +63,14 @@
         </div>
         <div class="row items-center q-mb-md col-3">
           <span class="q-ml-md">耗时大于：</span>
-          <q-input outlined dense v-model="searchForm.costTime_begin" type="text"
-          clearable class="col" />
+          <q-input
+            outlined
+            dense
+            v-model="searchForm.costTime_begin"
+            type="text"
+            clearable
+            class="col"
+          />
         </div>
         <div class="row items-center q-mb-md col-3 q-ml-md">
           <q-btn
@@ -174,6 +180,9 @@ export default {
         },
         {
           name: 'ip', align: 'left', label: 'IP', field: 'ip',
+        },
+        {
+          name: 'ipAddress', align: 'left', label: 'IP地址', field: 'ipAddress',
         },
         {
           name: 'createTime', align: 'left', label: '操作时间', field: 'createTime',

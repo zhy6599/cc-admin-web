@@ -18,7 +18,7 @@
                 :rules="[v=>!!v||'不可以为空']"/>
             </div>
             <div class="col-12">
-              <h5><q-icon name="star" color="red"/> 包名（com.dstc.modules.）：</h5>
+              <h5><q-icon name="star" color="red"/> 包名（cc.admin.modules.）：</h5>
               <q-input outlined dense autogrow v-model="form.packageName"
                 :rules="[v=>!!v||'不可以为空']"/>
             </div>

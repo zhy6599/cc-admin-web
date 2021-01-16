@@ -880,7 +880,6 @@ export default {
 
   },
   mounted() {
-
   },
   methods: {
     changeTheme(value) {

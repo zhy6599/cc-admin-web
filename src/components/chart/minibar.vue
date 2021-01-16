@@ -1,5 +1,5 @@
 <template>
-  <div id="mainBar" :style="{height:'46px'}"></div>
+  <div ref="homeMinBar" :style="{height:'46px'}"></div>
 </template>
 
 <script>
@@ -20,7 +20,7 @@ export default {
   created() {
   },
   mounted() {
-    const myChart = echarts.init(document.getElementById('mainBar'));
+    const homeMinBarChart = echarts.init(this.$refs.homeMinBar);
     const beginDay = new Date().getTime();
     for (let i = 0; i < 10; i += 1) {
       this.xData.push(date.formatDate(new Date(beginDay + 1000 * 60 * 60 * 24 * i), 'YYYY-MM-DD'));
@@ -53,7 +53,7 @@ export default {
       }],
     };
 
-    myChart.setOption(option);
+    homeMinBarChart.setOption(option);
   },
 };
 </script>

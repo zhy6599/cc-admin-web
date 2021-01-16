@@ -268,3 +268,374 @@ export const chartList = [
     type: 'cursor',
   },
 ];
+
+export const chartConfig = (v) => {
+  let t = {};
+  switch (v) {
+    case 'text':
+      t = {
+        asDate: false,
+        dateFormat: 'YYYY-MM-DD HH:mm:ss',
+        marquee: {
+          loop: false,
+          direction: 'left',
+          scrolldelay: 60,
+          alternate: false,
+        },
+        text: '请输入文字',
+        color: '#000',
+        fontSize: 12,
+        fontWeight: 'normal',
+        textAlign: 'left',
+        letterSpacing: 0,
+        datas: [],
+        viewId: null,
+        length: 100,
+        slice: true,
+        interval: 60,
+        loop: true,
+        dragState: {
+          type: '',
+          data: [],
+        },
+        draging: {
+          type: '',
+          data: [],
+        },
+        useBackground: false,
+        bgColor: '#fff',
+        src: '',
+        backPicSet: 'repeat',
+        opacity: 100,
+      };
+      break;
+    case 'image':
+      t = {
+        src: '',
+        opacity: 0,
+        loop: false,
+        scrolldelay: 6,
+        alternate: false,
+      };
+      break;
+    case 'video':
+      t = {
+        src: '',
+      };
+      break;
+    case 'chart':
+      t = {
+        rows: [],
+        cols: [],
+        theme: 'shine',
+        colors: themeMap.shine,
+        orders: [],
+        type: 'line',
+        name: '',
+        custom: {
+          option: '',
+        },
+        table: {
+          horizontal: false,
+          loop: false,
+          direction: 'up',
+          scrolldelay: 6,
+          alternate: true,
+        },
+        title: {
+          show: true,
+          text: '',
+          subtext: '',
+          left: 'center',
+          top: 'top',
+          orient: 'horizontal',
+          textStyle: {
+            color: '#000',
+            fontWeight: 'normal',
+            fontSize: 18,
+          },
+          subtextStyle: {
+            color: '#000',
+            fontWeight: 'normal',
+            fontSize: 12,
+          },
+        },
+        series: {
+          horizontal: false,
+          maps: {
+            id: '',
+            zoom: 10,
+            label: {
+              show: true,
+              color: '#000',
+            },
+            itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 1,
+              borderType: 'solid',
+              opacity: 100,
+            },
+          },
+          bar: {
+            stack: false,
+            barWidth: 0,
+            itemStyle: {
+              opacity: 100,
+              barBorderRadius: 0,
+              show: false,
+              position: 'top',
+              color: 'auto',
+            },
+          },
+          scatter: {
+            itemStyle: {
+              opacity: 100,
+              show: false,
+              position: 'top',
+              color: 'auto',
+            },
+            symbolSizeRatio: 1,
+            symbolSize: {
+              min: 10,
+              max: 30,
+            },
+          },
+          line: {
+            showArea: false,
+            showSymbol: true,
+            smooth: false,
+            itemStyle: {
+              show: false,
+              position: 'top',
+              color: 'auto',
+            },
+          },
+          pie: {
+            radius: { min: 0, max: 100 },
+            roseType: false,
+            hoverAnimation: false,
+            avoidLabelOverlap: false,
+          },
+          donut: {
+            total: 100,
+            width: 10,
+            roseType: false,
+            hoverAnimation: false,
+            avoidLabelOverlap: false,
+            noDataColor: '#fff',
+            lable: {
+              show: false,
+              template: 'name',
+              color: '#000',
+              fontWeight: 'normal',
+              fontSize: 18,
+              position: 'center',
+            },
+          },
+          gauge: {
+            radius: 90,
+            startAngle: 225,
+            endAngle: -45,
+            showDataName: true,
+            detail: {
+              show: true,
+              formatter: '{value}',
+              offsetCenter: { x: 0, y: 40 },
+              color: '#91c7af',
+              fontWeight: 'normal',
+              fontStyle: 'normal',
+              fontSize: 18,
+            },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                width: 30,
+                color: JSON.stringify([[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]),
+              },
+            },
+            splitLine: {
+              show: true,
+              length: 30,
+            },
+            axisTick: {
+              show: true,
+              length: 8,
+            },
+            axisLabel: {
+              show: true,
+              length: 8,
+            },
+            pointer: {
+              show: true,
+              length: 80,
+              width: 8,
+            },
+            itemStyle: {
+              color: '#91c7af',
+              borderWidth: 0,
+              borderColor: '#000',
+              borderType: 'solid',
+              opacity: 100,
+            },
+            hoverAnimation: false,
+            avoidLabelOverlap: false,
+          },
+          center: {
+            x: 50,
+            y: 50,
+          },
+        },
+        yAxis: {
+          master: {
+            name: '',
+            show: true,
+            splitLine: {
+              show: true,
+            },
+            unit: '',
+            axisLabel: {
+              show: true,
+              color: '#000',
+              rotate: 0,
+              fontSize: 12,
+              fontWeight: 'normal',
+              fontStyle: 'normal',
+            },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                width: 1,
+                color: '#333',
+                type: 'solid',
+              },
+            },
+            axisTick: {
+              show: true,
+              length: 5,
+            },
+          },
+          slave: {
+            name: '',
+            show: false,
+            asLine: false,
+            unit: '',
+            splitLine: {
+              show: true,
+            },
+            axisLabel: {
+              show: true,
+              color: '#000',
+              rotate: 0,
+              fontSize: 12,
+              fontWeight: 'normal',
+              fontStyle: 'normal',
+            },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                width: 1,
+                color: '#333',
+                type: 'solid',
+              },
+            },
+            axisTick: {
+              show: true,
+              length: 5,
+            },
+          },
+        },
+        xAxis: {
+          show: true,
+          nameRotate: 0,
+          position: 'bottom',
+          type: 'category',
+          axisPointer: {
+            type: 'shadow',
+          },
+          name: '',
+          nameTextStyle: {
+            color: '#333',
+            fontSize: 12,
+            fontWeight: 'normal',
+            fontStyle: 'normal',
+          },
+          axisLabel: {
+            show: true,
+            rotate: 0,
+            color: '#000',
+            fontSize: 12,
+            fontWeight: 'normal',
+            fontStyle: 'normal',
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              width: 1,
+              color: '#333',
+              type: 'solid',
+            },
+          },
+          axisTick: {
+            show: true,
+            length: 5,
+          },
+        },
+        legend: {
+          show: true,
+          left: 'right',
+          top: 'top',
+          orient: 'horizontal',
+          textStyle: {
+            color: '#333',
+            fontSize: 12,
+            fontWeight: 'normal',
+            fontStyle: 'normal',
+          },
+        },
+        grid: {
+          left: 10,
+          top: 10,
+          right: 5,
+          bottom: 10,
+        },
+        tooltip: {
+          show: true,
+          trigger: 'item',
+          animation: true,
+          formatter: '{a} <br/>{b} : {c}',
+        },
+        needResize: false,
+        fillOpacity: 0,
+        cornerRadius: 0,
+        stacked: false,
+        showLoop: true,
+        description: '',
+        viewId: null,
+        length: 100,
+        slice: true,
+        interval: 60,
+        loop: true,
+        dragState: {
+          type: '',
+          data: [],
+        },
+        draging: {
+          type: '',
+          data: [],
+        },
+      };
+      break;
+    case 'cursor':
+      t = {
+        src: '',
+        opacity: 0,
+        loop: false,
+        scrolldelay: 6,
+        alternate: false,
+      };
+      break;
+    default:
+      t = {};
+  }
+  return t;
+};

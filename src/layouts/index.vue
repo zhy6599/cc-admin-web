@@ -4,11 +4,43 @@
       <q-toolbar>
         <q-btn flat icon="menu" @click="drawer=!drawer" />
         <q-toolbar-title class="text-caption">欢迎进入 cc-admin 企业级快速开发平台</q-toolbar-title>
-        <q-btn flat size="sm" label="Quasar中文网"  type="a" href="http://www.quasarchs.com/"
-        icon="img:https://cdn.quasar.dev/logo/svg/quasar-logo.svg" target="__blank" />
-        <q-btn flat round size="sm" icon="mdi-card-search-outline" @click="drawer=!drawer" />
-        <q-btn flat round size="sm" icon="mdi-help-circle-outline" @click="drawer=!drawer" />
-        <q-btn flat round size="sm" icon="mdi-bell-outline" @click="drawer=!drawer" />
+        <q-btn
+          flat
+          size="sm"
+          label="Sika Design"
+          type="a"
+          icon="img:icons/logo/sikacode-logo.png"
+          href="http://quasar.sikacode.com/"
+          target="__blank" >
+          <q-tooltip>Sika Design精美漂亮的Quasar后台</q-tooltip>
+        </q-btn>
+        <q-btn
+          flat
+          size="sm"
+          type="a"
+          label="Quasar中文网"
+          href="http://www.quasarchs.com/"
+          icon="img:icons/logo/quasar-logo.svg"
+          target="__blank" >
+          <q-tooltip>最好的quasar中文帮助文档</q-tooltip>
+        </q-btn>
+
+        <q-btn flat round size="sm" icon="mdi-card-search-outline" @click="drawer=!drawer" >
+          <q-tooltip>全局搜索</q-tooltip>
+        </q-btn>
+        <q-btn flat round size="sm" icon="mdi-help-circle-outline" @click="drawer=!drawer" >
+          <q-tooltip>帮助文档</q-tooltip>
+        </q-btn>
+        <q-btn flat round size="sm" icon="mdi-bell-outline" @click="drawer=!drawer" >
+          <q-badge
+            color="negative"
+            style="padding: 2px 4px"
+            title-color="white"
+            floating
+          >8
+          </q-badge>
+          <q-tooltip>未读消息</q-tooltip>
+        </q-btn>
         <q-btn icon="mdi-badge-account-horizontal" flat label="欢迎您，管理员">
           <q-menu transition-show="rotate" transition-hide="rotate">
             <q-list style="min-width: 100px">
@@ -29,18 +61,19 @@
       </q-toolbar>
       <mainTabs :tabs="$store.state.Rule.routeTabs" @selectPanel="setDesTab" />
     </q-header>
-    <q-drawer elevated v-model="drawer" behavior="desktop" :width="190" content-class="column">
+    <q-drawer elevated v-model="drawer" behavior="desktop" :width="220" content-class="column">
       <q-btn flat class="ly-icon-btn bg-primary text-white">
-        <q-icon name="mdi-bike-fast" class="q-mr-md"/>cc-admin
+        <q-icon name="mdi-bike-fast" class="q-mr-md" />cc-admin
         <q-tooltip anchor="center right" self="center left">欢迎使用</q-tooltip>
       </q-btn>
       <q-scroll-area class="col main-menu">
-        <q-list dense v-for="u in $store.state.Rule.routes" :key="u.id">
+        <q-list v-for="u in $store.state.Rule.routes" :key="u.id">
           <q-expansion-item
             expand-separator
             v-if="u.children&&u.children.filter(v=>!v.hidden)"
             :icon="u.meta.icon"
             :label="u.meta.title"
+            group="mainitem"
           >
             <q-expansion-item
               :header-inset-level="1"
@@ -49,7 +82,7 @@
               v-for="s in u.children&&u.children.filter(v=>!v.hidden)"
               :key="s.id"
               :to="s.path"
-              active-class="bg-blue-2 text-primary"
+              active-class="text-primary bg-light-blue-1 cc-active-menu"
             />
           </q-expansion-item>
           <q-expansion-item
@@ -58,7 +91,8 @@
             :label="u.meta.title"
             expand-icon-class="hide-icon"
             :to="u.path"
-            active-class="bg-blue-2 text-primary"
+              active-class="text-primary bg-light-blue-1 cc-active-menu"
+            group="mainitem"
           />
         </q-list>
       </q-scroll-area>
@@ -94,7 +128,10 @@ export default {
       this.selectItem = val;
     },
     out() {
-      goLogin();
+      this.$axios.get('/sys/logout').then(() => {
+      }).finally(() => {
+        goLogin();
+      });
     },
     query() {
       return this.$a.getProjectUser().then((r) => {
@@ -127,10 +164,14 @@ export default {
       }
     },
   },
+  computed: {
+  },
 };
 </script>
 
 <style lang="stylus">
+.cc-active-menu
+  border-right '0.2em solid #1890ff'
 .hide-icon {
   display: none;
 }
@@ -143,10 +184,12 @@ export default {
 }
 
 .q-item__section--main ~ .q-item__section--side {
-    padding-left: 0px;
+  padding-left: 0px;
 }
 
-.main-menu
-  .q-item
-    min-height 35px
+.main-menu {
+  .q-item {
+    min-height: 35px;
+  }
+}
 </style>

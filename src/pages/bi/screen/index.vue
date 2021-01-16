@@ -322,7 +322,7 @@ export default {
     copy(p) {
       this.$q.dialog({
         title: '复制电子报告',
-        message: '请输入大屏名字',
+        message: '请输入电子报告名字',
         prompt: {
           model: '',
           outlined: true,

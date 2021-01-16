@@ -36,7 +36,7 @@ export default {
           if(`${window.location.pathname+window.location.search}`==='/') {
             isDefault=menu[0].path
           } else {
-            this.$store.commit('Rule/addRouteTabs',{ name: '首页',path: '/home' });
+            this.$store.commit('Rule/addRouteTabs',{ name: '首页',path: '/home/dashboard' });
           }
         }
         this.$store.commit('Rule/updateRoutes',menu);

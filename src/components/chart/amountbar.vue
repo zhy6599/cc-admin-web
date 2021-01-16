@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col">
-      <div id="mainAmount" :style="{height:'300px'}"></div>
+      <div ref="homeAmountBar" :style="{height:'300px'}"></div>
     </div>
     <div class="q-pa-md q-gutter-md">
       <q-list style="width: 350px">
@@ -51,7 +51,7 @@ export default {
         amount: (18.6 - i - Math.random() * 1).toFixed(1),
       });
     }
-    const mainAmountChart = echarts.init(document.getElementById('mainAmount'));
+    const homeAmountBarChart = echarts.init(this.$refs.homeAmountBar);
     const colors = ['#5793f3', '#d14a61', '#675bba'];
     const option = {
       color: colors,
@@ -64,6 +64,12 @@ export default {
       legend: {
         data: [],
       },
+      grid: {
+        left: '5%',
+        top: '15%',
+        right: '1%',
+        bottom: '15%',
+      },
       xAxis: [
         {
           type: 'category',
@@ -75,8 +81,8 @@ export default {
       ],
       yAxis: [
         {
-          axisLine: { // y轴
-            show: false,
+          axisLine: {
+            show: true,
           },
           type: 'value',
           name: '销售额',
@@ -95,7 +101,7 @@ export default {
         },
       ],
     };
-    mainAmountChart.setOption(option);
+    homeAmountBarChart.setOption(option);
   },
 };
 </script>

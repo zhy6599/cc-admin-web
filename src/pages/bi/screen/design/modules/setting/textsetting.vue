@@ -120,7 +120,13 @@
                 :url="uploadUrl"
                 :max-files="1"
                 @uploaded="uploaded"
-              />
+              >
+                <template v-slot:list>
+                  <q-img class="full-height"
+                  :src="imagePath"
+                  />
+                </template>
+              </q-uploader>
               <q-select
                 dense
                 filled
@@ -273,6 +279,7 @@ export default {
         { label: '上', value: 'up' },
         { label: '下', value: 'down' },
       ],
+      imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
     };
   },
   props: {
@@ -385,7 +392,15 @@ export default {
       return val.length < l ? val : `${val.slice(0, l)}…`;
     },
   },
-  computed: {},
+  computed: {
+    imagePath() {
+      let path = '';
+      if (this.config.src) {
+        path = `${this.imgUrl}/${this.config.src}`;
+      }
+      return path;
+    },
+  },
   watch: {},
   mounted() {
   },

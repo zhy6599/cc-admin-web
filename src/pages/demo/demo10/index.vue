@@ -1,5 +1,5 @@
 <template>
-  <q-page class="column q-pa-sm">
+  <q-page class="cc-admin column q-pa-sm">
     <div class="col row bg-blue">
       <div class="col column bg-lime">
         <div class="row col">

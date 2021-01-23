@@ -1,12 +1,22 @@
 <template>
     <q-dialog v-model="showDialog" :position="'right'" maximized flat persistent>
-      <q-form @submit="submit" class="dialog_card q-pa-md column">
-        <div class="view_title justify-between">
+      <q-form
+        @submit="submit"
+        class="dialog_card column"
+      >
+        <h5 class="view_title justify-between q-px-md">
           生成配置
-          <q-btn dense outline round icon="clear" size="sm" v-close-popup/>
-        </div>
+          <q-btn
+            dense
+            outline
+            round
+            icon="clear"
+            size="sm"
+            v-close-popup
+          />
+        </h5>
         <q-scroll-area class="col">
-          <div class="row q-col-gutter-x-md dialog_form">
+          <div class="row q-col-gutter-x-md dialog_form q-pa-md">
             <div class="col-12">
               <h5><q-icon name="star" color="red"/> 模块名称：</h5>
               <q-input outlined dense v-model="form.moduleName"

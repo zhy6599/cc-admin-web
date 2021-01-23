@@ -6,7 +6,17 @@
         <q-toolbar-title class="text-caption">欢迎进入 cc-admin 企业级快速开发平台</q-toolbar-title>
         <q-btn
           flat
-          size="sm"
+          size="md"
+          label="QQ群：965940297"
+          type="a"
+          icon="mdi-qqchat"
+          @click="copyNum"
+          target="__blank" >
+          <q-tooltip>点击复制QQ群号，交流反馈！</q-tooltip>
+        </q-btn>
+        <q-btn
+          flat
+          size="md"
           label="Sika Design"
           type="a"
           icon="img:icons/logo/sikacode-logo.png"
@@ -16,7 +26,7 @@
         </q-btn>
         <q-btn
           flat
-          size="sm"
+          size="md"
           type="a"
           label="Quasar中文网"
           href="http://www.quasarchs.com/"
@@ -41,7 +51,7 @@
           </q-badge>
           <q-tooltip>未读消息</q-tooltip>
         </q-btn>
-        <q-btn icon="mdi-badge-account-horizontal" flat label="欢迎您，管理员">
+        <q-btn icon="mdi-badge-account-horizontal" flat :label="welcomeInfo">
           <q-menu transition-show="rotate" transition-hide="rotate">
             <q-list style="min-width: 100px">
               <q-item clickable>
@@ -73,16 +83,19 @@
             v-if="u.children&&u.children.filter(v=>!v.hidden)"
             :icon="u.meta.icon"
             :label="u.meta.title"
+            :header-style="headerStyleActive(u)"
+            :value="openMenu(u)"
             group="mainitem"
           >
             <q-expansion-item
-              :header-inset-level="1"
+              :header-inset-level="1.2"
               :label="s.meta.title"
               expand-icon-class="hide-icon"
               v-for="s in u.children&&u.children.filter(v=>!v.hidden)"
               :key="s.id"
-              :to="s.path"
-              active-class="text-primary bg-light-blue-1 cc-active-menu"
+              @click="go(s)"
+              clickable
+              :style="itemStyleActive(s)"
             />
           </q-expansion-item>
           <q-expansion-item
@@ -90,8 +103,8 @@
             :icon="u.meta.icon"
             :label="u.meta.title"
             expand-icon-class="hide-icon"
-            :to="u.path"
-              active-class="text-primary bg-light-blue-1 cc-active-menu"
+            @click="go(u)"
+            :style="itemStyleActive(u)"
             group="mainitem"
           />
         </q-list>
@@ -99,7 +112,7 @@
     </q-drawer>
 
     <q-page-container>
-      <keep-alive>
+      <keep-alive exclude="ServerInfo">
         <router-view />
       </keep-alive>
     </q-page-container>
@@ -107,6 +120,7 @@
 </template>
 
 <script>
+import { openURL, copyToClipboard } from 'quasar';
 import { goLogin } from 'boot/api';
 import mainTabs from 'components/tabpanel/index.vue';
 
@@ -124,6 +138,15 @@ export default {
     };
   },
   methods: {
+    copyNum() {
+      copyToClipboard('965940297')
+        .then(() => {
+          this.$info('复制成功，欢迎进群');
+        })
+        .catch(() => {
+          this.$error('复制失败！群号是：965940297，手工复制吧!');
+        });
+    },
     setDesTab(val) {
       this.selectItem = val;
     },
@@ -133,28 +156,34 @@ export default {
         goLogin();
       });
     },
-    query() {
-      return this.$a.getProjectUser().then((r) => {
-        this.list = r.result;
-      });
-    },
-    showDialog() {
-      this.$refs.dialog.show();
-      this.query();
-    },
-    select(t) {
-      if (!t.isDefault) {
-        this.$a.setProject({ projectId: t.projectId }).then((r) => {
-          if (r.code === 200) {
-            window.location.reload();
-          }
-        });
-      }
-    },
     go(u) {
-      if (!u.children || !u.children.filter((v) => !v.hidden).length) {
-        this.$router.push(`${u.path}`);
+      if (u.internalOrExternal) {
+        openURL(u.path);
+      } else if (u.path !== this.$route.path) { this.$router.push(u); }
+    },
+    headerStyleActive(item) {
+      if (this.$route.path.startsWith(item.path)) {
+        return {
+          color: '#1890ff',
+        };
       }
+      return {};
+    },
+    openMenu(item) {
+      if (this.$route.path.startsWith(item.path)) {
+        return true;
+      }
+      return false;
+    },
+    itemStyleActive(item) {
+      if (item.path === this.$route.path) {
+        return {
+          color: '#1890ff',
+          backgroundColor: '#e6f7ff',
+          borderRight: '0.2em solid #1890ff',
+        };
+      }
+      return {};
     },
   },
   watch: {
@@ -165,6 +194,9 @@ export default {
     },
   },
   computed: {
+    welcomeInfo() {
+      return `欢迎您，${this.$store.state.User.info.realname}`;
+    },
   },
 };
 </script>

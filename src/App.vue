@@ -36,7 +36,7 @@ export default {
           if(`${window.location.pathname+window.location.search}`==='/') {
             isDefault=menu[0].path
           } else {
-            this.$store.commit('Rule/addRouteTabs',{ name: '首页',path: '/home/dashboard' });
+            this.$store.commit('Rule/addRouteTabs',{ name: '首页',path: '/home' });
           }
         }
         this.$store.commit('Rule/updateRoutes',menu);
@@ -50,22 +50,22 @@ export default {
           children: menu,
         },{
           path: "/screen/design",
-          component: () => import('pages/bi/screen/design')
-        },{
-          path: "/view",
-          component: () => import('pages/bi/screen/design/view')
+          component: () => import('pages/bi/screen/design'),
+          meta: {
+            title: '电子报告-设计器',
+          }
         },{
           path: "/viewfull",
-          component: () => import('pages/bi/screen/design/viewfull')
+          component: () => import('pages/bi/screen/design/viewfull'),
+          meta: {
+            title: '电子报告-查看',
+          }
         },{
-          path: "/baby/word/study",
-          component: () => import('pages/baby/word/study')
-        },{
-          path: "/baby/word/card",
-          component: () => import('pages/baby/word/card')
-        },{
-          path: "/baby/word/vertical",
-          component: () => import('pages/baby/word/vertical')
+          path: "/view",
+          component: () => import('pages/bi/screen/design/view'),
+          meta: {
+            title: '电子报告-查看',
+          }
         },{
           path: '*',
           redirect: `${menu[0].path}`,

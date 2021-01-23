@@ -1,6 +1,6 @@
 <template>
-  <q-page class="column q-pa-sm">
-    <div class="col column view_card shadow-2 q-pa-md justify-center items-center">
+  <q-page class="cc-admin column q-pa-sm">
+    <div class="col column bg-white shadow-2 q-pa-md justify-center items-center">
       <div class="text-h1">First column</div>
     </div>
   </q-page>

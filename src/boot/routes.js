@@ -37,7 +37,16 @@ export default [
         },
       },
       {
-        id: 103,
+        id: 111,
+        path: '/sys/depart',
+        component: 'sys/depart',
+        meta: {
+          title: '部门管理',
+          icon: 'mdi-account-box-outline',
+        },
+      },
+      {
+        id: 112,
         path: '/sys/position',
         component: 'sys/position',
         meta: {
@@ -46,7 +55,7 @@ export default [
         },
       },
       {
-        id: 104,
+        id: 194,
         path: '/sys/catalog',
         component: 'sys/catalog',
         meta: {
@@ -55,7 +64,7 @@ export default [
         },
       },
       {
-        id: 105,
+        id: 195,
         path: '/sys/menu',
         component: 'sys/menu',
         meta: {
@@ -64,7 +73,7 @@ export default [
         },
       },
       {
-        id: 106,
+        id: 196,
         path: '/sys/datasource',
         component: 'sys/datasource',
         meta: {
@@ -87,33 +96,6 @@ export default [
         meta: {
           title: '代码生成',
           icon: 'mdi-cloud-print-outline',
-        },
-      }],
-  },
-  {
-    id: 300,
-    path: '/baby',
-    component: 'baby',
-    redirect: '/baby/word',
-    meta: {
-      title: '宝宝学习',
-      icon: 'mdi-baby-face-outline',
-    },
-    children: [
-      {
-        id: 301,
-        path: '/baby/word',
-        component: 'baby/word',
-        meta: {
-          title: '字词管理',
-        },
-      },
-      {
-        id: 302,
-        path: '/baby/studylog',
-        component: 'baby/studylog',
-        meta: {
-          title: '学习记录',
         },
       }],
   },
@@ -164,27 +146,45 @@ export default [
     children: [
       {
         id: 701,
-        path: '/sys/online',
-        component: 'sys/online',
+        path: '/monitor/online',
+        component: 'monitor/online',
         meta: {
           title: '在线用户',
         },
       },
       {
         id: 702,
-        path: '/sys/log',
-        component: 'sys/log',
+        path: '/monitor/log',
+        component: 'monitor/log',
         meta: {
           title: '系统日志',
           icon: 'mdi-note-text-outline',
         },
       },
       {
-        id: 799,
+        id: 703,
+        path: '/monitor/serverinfo',
+        component: 'monitor/serverinfo',
+        meta: {
+          title: '性能监控',
+          icon: 'mdi-note-text-outline',
+        },
+      },
+      {
+        id: 780,
         path: '/monitor/task',
         component: 'monitor/task',
         meta: {
           title: '定时任务',
+        },
+      },
+      {
+        id: 799,
+        path: `${process.env.SERVER_URL}${process.env.BASE_URL}/druid/login.html`,
+        internalOrExternal: true,
+        meta: {
+          title: 'SQL监控',
+          icon: 'mdi-note-text-outline',
         },
       }],
   },
@@ -266,7 +266,7 @@ export default [
         path: '/demo/demo8',
         component: 'demo/demo8',
         meta: {
-          title: 'Layout8',
+          title: '表单',
           icon: 'assignment_ind',
         },
       },
@@ -330,6 +330,15 @@ export default [
         component: 'demo/demo15',
         meta: {
           title: 'Echarts自定义15',
+          icon: 'assignment_ind',
+        },
+      },
+      {
+        id: 816,
+        path: '/demo/demo16',
+        component: 'demo/demo16',
+        meta: {
+          title: '表格样式16',
           icon: 'assignment_ind',
         },
       },

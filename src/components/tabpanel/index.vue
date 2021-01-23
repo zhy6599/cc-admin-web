@@ -34,6 +34,7 @@ export default {
     },
     close(tab) {
       this.$store.commit('Rule/removeRouteTabs', tab.path);
+      this.$router.push('/home');
     },
   },
 };

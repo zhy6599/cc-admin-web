@@ -1,5 +1,5 @@
 <template>
-  <div class="col column view_card shadow-2 q-pl-md">
+  <div class="col column bg-white shadow-2 q-pl-md">
     <q-table
       flat
       color="primary"

@@ -15,6 +15,9 @@ export default () => {
         {
           path: '',
           component: () => import('pages/login.vue'),
+          meta: {
+            title: '登录',
+          },
         },
       ],
       meta: {

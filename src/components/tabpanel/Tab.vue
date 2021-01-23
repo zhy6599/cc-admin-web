@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     allowClose() {
-      return this.tabData.path !== '/home/dashboard';
+      return this.tabData.path !== '/home';
     },
   },
   methods: {

@@ -1,6 +1,6 @@
 <template>
-  <q-page class="row">
-    <div class="col column view_card shadow-2 q-pa-md q-ma-sm bg-gray-1">
+  <q-page class="cc-admin row">
+    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm bg-gray-1">
       <salestat />
       <visitline />
       <linkcard />

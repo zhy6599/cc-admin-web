@@ -1,6 +1,6 @@
 <template>
-  <q-page class="column q-pa-sm">
-    <div class="col column view_card shadow-2 q-pa-md">
+  <q-page class="cc-admin column q-pa-sm">
+    <div class="col column bg-white shadow-2 q-pa-md">
       <q-table
         flat
         row-key="id"

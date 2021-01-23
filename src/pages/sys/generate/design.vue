@@ -1,16 +1,12 @@
 <template>
   <div class="table-select row fit">
     <q-dialog v-model="showDialog" :maximized="true">
-      <q-card class="table-select-dialog">
-        <div class="row self-center bg-blue-grey-1">
-          <div class="text-h6" style="line-height: 45px;padding-left: 16px;">代码设计</div>
-          <q-space />
-          <q-btn dense flat icon="close" v-close-popup style="width: 45px;">
-            <q-tooltip>Close</q-tooltip>
-          </q-btn>
+      <q-card class="dialog_card column">
+        <div class="view_title justify-between q-px-md">
+          代码设计
+          <q-btn dense outline round size="sm" icon="clear" v-close-popup />
         </div>
-
-        <q-card-section>
+        <q-scroll-area class="col">
           <div class="row q-col-gutter-md q-pa-sm">
             <div class="col-12 row q-col-gutter-md">
               <div class="col">
@@ -515,7 +511,7 @@
               </q-tab-panels>
             </q-card>
           </div>
-        </q-card-section>
+        </q-scroll-area>
         <q-card-actions align="right">
           <q-btn flat color="primary" dense v-close-popup>取消</q-btn>
           <q-btn color="primary" label="确定" type="submit" :loading="loading" @click="save()"
@@ -1074,24 +1070,4 @@ export default {
 };
 </script>
 <style>
-.table-select-dialog .qInput {
-  height: 32px !important;
-}
-.table-select-dialog .qInput .q-field__control {
-  height: 32px !important;
-  min-height: 32px !important;
-}
-.table-select-dialog .qInput .q-field__control .q-field__control-container {
-  height: 32px !important;
-}
-.table-select-dialog
-  .qInput
-  .q-field__control
-  .q-field__control-container
-  .q-field__native {
-  min-height: 32px !important;
-}
-.table-select-dialog .qInput .q-field__append {
-  height: 32px !important;
-}
 </style>

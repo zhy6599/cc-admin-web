@@ -10,6 +10,12 @@ const makePieOption = (config, chartData) => {
       roseType: config.series.pie.roseType,
       hoverAnimation: config.series.pie.hoverAnimation,
       avoidLabelOverlap: config.series.pie.avoidLabelOverlap,
+      left: `${config.grid.left}%`,
+      top: `${config.grid.top}%`,
+      right: `${config.grid.right}%`,
+      bottom: `${config.grid.bottom}%`,
+      label: config.series.pie.label,
+      labelLine: config.series.pie.labelLine,
     };
     seriesList.push(series);
   });
@@ -127,16 +133,18 @@ const makeLineBarOption = (config, chartData) => {
     ...config.xAxis,
     data: chartData.xAxisData,
     axisLine: config.xAxis.axisLine,
+    axisTick: config.xAxis.axisTick,
   }];
   const yAxis = [];
   const master = {
     type: 'value',
     position: 'left',
     show: config.yAxis.master.show,
-    splitLine: {
-      show: config.yAxis.master.splitLine.show,
-    },
+    nameRotate: config.yAxis.master.nameRotate,
+    nameTextStyle: config.yAxis.master.nameTextStyle,
+    splitLine: config.yAxis.master.splitLine,
     axisLine: config.yAxis.master.axisLine,
+    axisTick: config.yAxis.master.axisTick,
   };
   if (config.yAxis.master.name) {
     master.name = config.yAxis.master.name;
@@ -152,10 +160,11 @@ const makeLineBarOption = (config, chartData) => {
     type: 'value',
     position: 'right',
     show: config.yAxis.slave.show,
-    splitLine: {
-      show: config.yAxis.slave.splitLine.show,
-    },
+    nameRotate: config.yAxis.slave.nameRotate,
+    nameTextStyle: config.yAxis.slave.nameTextStyle,
+    splitLine: config.yAxis.slave.splitLine,
     axisLine: config.yAxis.slave.axisLine,
+    axisTick: config.yAxis.slave.axisTick,
   };
   if (config.yAxis.slave.name) {
     slave.name = config.yAxis.slave.name;
@@ -341,10 +350,7 @@ const makeGaugeOption = (config, chartData) => {
       show: config.series.gauge.splitLine.show,
       length: config.series.gauge.splitLine.length,
     },
-    axisTick: {
-      show: config.series.gauge.axisTick.show,
-      length: config.series.gauge.axisTick.length,
-    },
+    axisTick: config.series.gauge.axisTick,
     axisLabel: {
       show: config.series.gauge.axisLabel.show,
     },

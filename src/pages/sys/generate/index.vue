@@ -1,6 +1,6 @@
 <template>
-  <q-page class="column q-pa-sm">
-    <div class="col column view_card shadow-2 q-pa-md">
+  <q-page class="cc-admin column q-pa-sm">
+    <div class="col column bg-white shadow-2 q-pa-md">
       <q-table
         :data="list"
         row-key="id"
@@ -136,10 +136,20 @@
           />
           <div class="q-ml-lg">数据库表将被删除重建!</div>
         </q-card-section>
-
         <q-card-actions align="right">
-          <q-btn flat label="取消" color="grey-4" text-color="grey-6" v-close-popup />
-          <q-btn flat label="确定" color="primary" @click="doSync" />
+          <q-btn
+            outline
+            color="primary"
+            label="取消"
+            v-close-popup
+          />
+          <q-btn
+            unelevated
+            color="primary"
+            class="on-right"
+            label="提交"
+            @click="doSync"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>

@@ -344,7 +344,7 @@
       dense
       dense-toggle
       expand-separator
-      label="Y轴设置"
+      label="Y左轴设置"
     >
       <q-card>
         <q-card-section>
@@ -365,7 +365,107 @@
             class="q-my-sm"
             input-class="text-left"
           />
-          <q-toggle label="显示分隔线" v-model="config.yAxis.master.splitLine.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.master.nameRotate"
+            prefix="旋转角度："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-input
+            dense
+            filled
+            prefix="字体颜色："
+            class="q-my-sm"
+            input-class="text-left"
+            v-model="config.yAxis.master.nameTextStyle.color"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="colorize"
+                class="cursor-pointer"
+                :style="{color:config.yAxis.master.nameTextStyle.color}"
+              >
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-color v-model="config.yAxis.master.nameTextStyle.color" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.yAxis.master.nameTextStyle.fontWeight"
+            prefix="字体粗细："
+            class="q-my-sm"
+            :options="fontWeightOptions"
+            emit-value
+            map-options
+          />
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.yAxis.master.nameTextStyle.fontStyle"
+            prefix="字体风格："
+            class="q-my-sm"
+            :options="fontStyleOptions"
+            emit-value
+            map-options
+          />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.master.nameTextStyle.fontSize"
+            prefix="字体大小："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-toggle label="显示轴线" v-model="config.yAxis.master.axisLine.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.master.axisLine.lineStyle.width"
+            prefix="轴线线宽："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-input
+            dense
+            filled
+            prefix="轴线颜色："
+            class="q-my-sm"
+            input-class="text-left"
+            v-model="config.yAxis.master.axisLine.lineStyle.color"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="colorize"
+                class="cursor-pointer"
+                :style="{color:config.yAxis.master.axisLine.lineStyle.color}"
+              >
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-color v-model="config.yAxis.master.axisLine.lineStyle.color" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.yAxis.master.axisLine.lineStyle.type"
+            prefix="轴线类型："
+            class="q-my-sm"
+            :options="borderTypeOptions"
+            emit-value
+            map-options
+          />
           <q-input
             dense
             filled
@@ -426,32 +526,32 @@
             class="q-my-sm"
             input-class="text-left"
           />
-          <q-toggle label="显示轴线" v-model="config.yAxis.master.axisLine.show" />
+          <q-toggle label="显示分隔线" v-model="config.yAxis.master.splitLine.show" />
           <q-input
             dense
             filled
             type="number"
-            v-model="config.yAxis.master.axisLine.lineStyle.width"
-            prefix="轴线线宽："
+            v-model="config.yAxis.master.splitLine.lineStyle.width"
+            prefix="分隔线宽："
             class="q-my-sm"
             input-class="text-left"
           />
           <q-input
             dense
             filled
-            prefix="轴线颜色："
+            prefix="分隔线颜色："
             class="q-my-sm"
             input-class="text-left"
-            v-model="config.yAxis.master.axisLine.lineStyle.color"
+            v-model="config.yAxis.master.splitLine.lineStyle.color"
           >
             <template v-slot:append>
               <q-icon
                 name="colorize"
                 class="cursor-pointer"
-                :style="{color:config.yAxis.master.axisLine.lineStyle.color}"
+                :style="{color:config.yAxis.master.splitLine.lineStyle.color}"
               >
                 <q-popup-proxy transition-show="scale" transition-hide="scale">
-                  <q-color v-model="config.yAxis.master.axisLine.lineStyle.color" />
+                  <q-color v-model="config.yAxis.master.splitLine.lineStyle.color" />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -460,8 +560,8 @@
             dense
             filled
             options-dense
-            v-model="config.yAxis.master.axisLine.lineStyle.type"
-            prefix="轴线类型："
+            v-model="config.yAxis.master.splitLine.lineStyle.type"
+            prefix="分隔线类型："
             class="q-my-sm"
             :options="borderTypeOptions"
             emit-value
@@ -477,11 +577,28 @@
             class="q-my-sm"
             input-class="text-left"
           />
+        </q-card-section>
+      </q-card>
+    </q-expansion-item>
+
+    <q-expansion-item
+      v-if="config.type !== 'maps'"
+      dense
+      dense-toggle
+      expand-separator
+      label="Y右轴设置"
+    >
+      <q-card>
+        <q-card-section>
           <q-toggle label="显示右轴" v-model="config.yAxis.slave.show" />
-          <q-toggle label="右轴折线图" v-model="config.yAxis.slave.asLine" />
-          <q-toggle label="面积显示：" v-model="config.series.line.showArea" />
-          <q-toggle label="显示圆点：" v-model="config.series.line.showSymbol" />
-          <q-toggle label="平滑曲线：" v-model="config.series.line.smooth" />
+          <q-toggle
+            v-if="config.type === 'bar'" label="右轴折线图" v-model="config.yAxis.slave.asLine" />
+          <q-toggle
+            v-if="config.type === 'bar'" label="面积显示：" v-model="config.series.line.showArea" />
+          <q-toggle
+            v-if="config.type === 'bar'" label="显示圆点：" v-model="config.series.line.showSymbol" />
+          <q-toggle
+            v-if="config.type === 'bar'" label="平滑曲线：" v-model="config.series.line.smooth" />
           <q-input
             dense
             filled
@@ -498,7 +615,107 @@
             class="q-my-sm"
             input-class="text-left"
           />
-          <q-toggle label="显示分隔线" v-model="config.yAxis.slave.splitLine.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.slave.nameRotate"
+            prefix="旋转角度："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-input
+            dense
+            filled
+            prefix="字体颜色："
+            class="q-my-sm"
+            input-class="text-left"
+            v-model="config.yAxis.slave.nameTextStyle.color"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="colorize"
+                class="cursor-pointer"
+                :style="{color:config.yAxis.slave.nameTextStyle.color}"
+              >
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-color v-model="config.yAxis.slave.nameTextStyle.color" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.yAxis.slave.nameTextStyle.fontWeight"
+            prefix="字体粗细："
+            class="q-my-sm"
+            :options="fontWeightOptions"
+            emit-value
+            map-options
+          />
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.yAxis.slave.nameTextStyle.fontStyle"
+            prefix="字体风格："
+            class="q-my-sm"
+            :options="fontStyleOptions"
+            emit-value
+            map-options
+          />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.slave.nameTextStyle.fontSize"
+            prefix="字体大小："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-toggle label="显示轴线" v-model="config.yAxis.slave.axisLine.show" />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.yAxis.slave.axisLine.lineStyle.width"
+            prefix="轴线线宽："
+            class="q-my-sm"
+            input-class="text-left"
+          />
+          <q-input
+            dense
+            filled
+            prefix="轴线颜色："
+            class="q-my-sm"
+            input-class="text-left"
+            v-model="config.yAxis.slave.axisLine.lineStyle.color"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="colorize"
+                class="cursor-pointer"
+                :style="{color:config.yAxis.slave.axisLine.lineStyle.color}"
+              >
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-color v-model="config.yAxis.slave.axisLine.lineStyle.color" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.yAxis.slave.axisLine.lineStyle.type"
+            prefix="轴线类型："
+            class="q-my-sm"
+            :options="borderTypeOptions"
+            emit-value
+            map-options
+          />
           <q-input
             dense
             filled
@@ -559,32 +776,32 @@
             class="q-my-sm"
             input-class="text-left"
           />
-          <q-toggle label="显示轴线" v-model="config.yAxis.slave.axisLine.show" />
+          <q-toggle label="显示分隔线" v-model="config.yAxis.slave.splitLine.show" />
           <q-input
             dense
             filled
             type="number"
-            v-model="config.yAxis.slave.axisLine.lineStyle.width"
-            prefix="轴线线宽："
+            v-model="config.yAxis.slave.splitLine.lineStyle.width"
+            prefix="分隔线宽："
             class="q-my-sm"
             input-class="text-left"
           />
           <q-input
             dense
             filled
-            prefix="轴线颜色："
+            prefix="分隔线颜色："
             class="q-my-sm"
             input-class="text-left"
-            v-model="config.yAxis.slave.axisLine.lineStyle.color"
+            v-model="config.yAxis.slave.splitLine.lineStyle.color"
           >
             <template v-slot:append>
               <q-icon
                 name="colorize"
                 class="cursor-pointer"
-                :style="{color:config.yAxis.slave.axisLine.lineStyle.color}"
+                :style="{color:config.yAxis.slave.splitLine.lineStyle.color}"
               >
                 <q-popup-proxy transition-show="scale" transition-hide="scale">
-                  <q-color v-model="config.yAxis.slave.axisLine.lineStyle.color" />
+                  <q-color v-model="config.yAxis.slave.splitLine.lineStyle.color" />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -593,8 +810,8 @@
             dense
             filled
             options-dense
-            v-model="config.yAxis.slave.axisLine.lineStyle.type"
-            prefix="轴线类型："
+            v-model="config.yAxis.slave.splitLine.lineStyle.type"
+            prefix="分隔线类型："
             class="q-my-sm"
             :options="borderTypeOptions"
             emit-value
@@ -613,6 +830,7 @@
         </q-card-section>
       </q-card>
     </q-expansion-item>
+
     <q-expansion-item
       v-if="config.type !== 'maps'"
       dense
@@ -744,7 +962,7 @@
         </q-card-section>
       </q-card>
     </q-expansion-item>
-    <q-expansion-item v-if="config.type !== 'pie'" dense dense-toggle expand-separator label="绘图网格">
+    <q-expansion-item dense dense-toggle expand-separator label="绘图网格">
       <q-card>
         <q-card-section>
           <q-field dense borderless prefix="顶部：" :suffix="config.grid.top+'%'" class="q-my-sm">

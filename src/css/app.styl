@@ -1,9 +1,9 @@
 // app global css in Stylus form
-::-webkit-scrollbar
+-webkit-scrollbar
   width 9px
   height 9px
   background-color transparent
-.q-scrollarea__thumb,::-webkit-scrollbar-thumb
+.q-scrollarea__thumb,-webkit-scrollbar-thumb
   border-radius 9px
   opacity .4
   background-color $primary
@@ -25,11 +25,6 @@ h1,h2,h3,h4,h5,h6
 a
   color $primary
 
-.view_card
-  position relative
-  background $white
-  border-radius 4px
-  max-width 100%
 .view_title
   display flex
   align-items center
@@ -56,8 +51,8 @@ a
     min-height 95px
   h5
     font-size 14px
-    >i:first-child
-      transform: translate(0,-2px)
+    >ifirst-child
+      transform translate(0,-2px)
 .q_b_toggle
   width 100%
   border 1px $primary solid
@@ -90,7 +85,7 @@ a
         font-size 16px
         transition none
         opacity 1
-        z-index: 1
+        z-index 1
         color $t-dark
       tr
         background #eee
@@ -98,10 +93,10 @@ a
           position sticky
           top 0
           z-index 1
-      tr:nth-child(even)
+      trnth-child(even)
         background #eee
     tbody
-      tr:nth-child(even)
+      trnth-child(even)
         background #f8f8f8
       td
         font-size 14px
@@ -109,26 +104,17 @@ a
     td,th
       border-left-width 0
       border-right-width 1px
-      &:last-child
+      &last-child
         border-right-width 0
   &.left_sticky
-    td:first-child
+    tdfirst-child
       position sticky
       left 0
       z-index 2
-    thead th:first-child
+    thead thfirst-child
       top 0
       left 0
       z-index 3
-
-.amcharts-AmChartsLogo-group
-  display none
-  visibility hidden
-  width 0
-  height 0
-  overflow hidden
-  pointer-events none
-
 .text-t-dark
   color $t-dark
 .bg-t-dark
@@ -146,9 +132,64 @@ a
   margin-bottom 16px
   
 .grid-item-select {
-  flex: 1;
-  border-style: dashed;
-  border-width: 2px;
-  border-color: #00bfff;
-  touch-action: none;
+  flex 1
+  border-style dashed
+  border-width 2px
+  border-color #00bfff
+  touch-action none
 }
+
+.cc-admin
+  .q-field--auto-height.q-field--labeled
+    .q-field__control-container
+      padding-top 8px
+  .q-item__section--side
+    padding-right 0
+
+  .q-field--dense
+    .q-field__control
+      height 36px
+
+    .q-field__marginal
+      height 36px
+
+  .q-field--auto-height.q-field--dense
+    .q-field__control, .q-field__native
+      min-height 36px
+  .q-table th
+    font-size 16px
+  .q-tab__label
+    font-size 16px
+
+.cc-admin-min
+  .q-item__section--side
+    padding-right 0
+
+  .q-field--dense
+    .q-field__control
+      height auto
+
+    .q-field__marginal
+      height auto
+
+  .q-field--auto-height.q-field--dense .q-field__control, .q-field--auto-height.q-field--dense .q-field__native
+    padding 2px
+    min-height 28px
+
+.cc-active-class
+  border 1px dashed #1890ff
+
+.cc-un-active-class
+  border 1px dashed lightgrey
+
+.cc-shadow-blue
+  box-shadow 0 0 6px 0 #1890ff
+/* 滚动条宽度 */
+-webkit-scrollbar
+  width 7px
+  height 3px
+
+/* 滚动条的滑块 */
+-webkit-scrollbar-thumb
+  background-color lightskyblue
+  border-radius 3px

@@ -200,6 +200,18 @@ export const orientOptions = [
   { label: '水平', value: 'horizontal' },
   { label: '垂直', value: 'vertical' },
 ];
+export const labelPositionOptions = [
+  { label: '外部', value: 'outside' },
+  { label: '内部', value: 'inside' },
+  { label: '中间', value: 'center' },
+];
+export const picSetOptions = [
+  { label: '重复', value: 'repeat' },
+  { label: '拉伸', value: 'stretch' },
+  { label: '不重复', value: 'no-repeat' },
+  { label: '水平重复', value: 'repeat-x' },
+  { label: '垂直重复', value: 'repeat-y' },
+];
 export const fontWeightOptions = [
   { label: 'normal', value: 'normal' },
   { label: 'bold', value: 'bold' },
@@ -316,6 +328,7 @@ export const chartConfig = (v) => {
         loop: false,
         scrolldelay: 6,
         alternate: false,
+        overflowHiden: false,
       };
       break;
     case 'video':
@@ -341,6 +354,35 @@ export const chartConfig = (v) => {
           direction: 'up',
           scrolldelay: 6,
           alternate: true,
+          tableStyle: {
+            borderWidth: 1,
+            borderStyle: '',
+            color: '#fff',
+            backgroundColor: 'transparent',
+          },
+          tableHead: {
+            show: true,
+            color: '#000',
+            fontSize: 12,
+            fontWeight: 'bold',
+            borderWidth: 1,
+            borderStyle: '',
+            borderColor: '#feffff',
+            backgroundColor: '#eee',
+            textAlign: 'center',
+            opacity: 100,
+          },
+          tableBody: {
+            color: '#000',
+            fontSize: 12,
+            fontWeight: 'bold',
+            borderWidth: 1,
+            borderStyle: '',
+            borderColor: '#feffff',
+            textAlign: 'center',
+            backgroundColor: '#f8f8f8',
+            opacity: 100,
+          },
         },
         title: {
           show: true,
@@ -415,6 +457,24 @@ export const chartConfig = (v) => {
             roseType: false,
             hoverAnimation: false,
             avoidLabelOverlap: false,
+            label: {
+              show: true,
+              position: 'outside',
+              formatter: '{b}: {c}',
+              rotate: 0,
+              color: '#fff',
+              fontStyle: 'normal',
+              fontWeight: 'normal',
+              fontSize: 12,
+              align: 'left',
+              verticalAlign: 'top',
+            },
+            labelLine: {
+              show: true,
+              length: 15,
+              length2: 5,
+              smooth: true,
+            },
           },
           donut: {
             total: 100,
@@ -489,8 +549,20 @@ export const chartConfig = (v) => {
           master: {
             name: '',
             show: true,
+            nameRotate: 0,
+            nameTextStyle: {
+              color: '#333',
+              fontSize: 12,
+              fontWeight: 'normal',
+              fontStyle: 'normal',
+            },
             splitLine: {
               show: true,
+              lineStyle: {
+                width: 1,
+                color: '#333',
+                type: 'solid',
+              },
             },
             unit: '',
             axisLabel: {
@@ -517,10 +589,22 @@ export const chartConfig = (v) => {
           slave: {
             name: '',
             show: false,
+            nameRotate: 0,
+            nameTextStyle: {
+              color: '#333',
+              fontSize: 12,
+              fontWeight: 'normal',
+              fontStyle: 'normal',
+            },
             asLine: false,
             unit: '',
             splitLine: {
               show: true,
+              lineStyle: {
+                width: 1,
+                color: '#333',
+                type: 'solid',
+              },
             },
             axisLabel: {
               show: true,

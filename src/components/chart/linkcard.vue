@@ -2,7 +2,7 @@
   <div class="row q-mb-md">
     <div class="col row">
         <div
-          class="col text-center view_card shadow-2"
+          class="col text-center bg-white shadow-2"
           v-for="(data, index) in linkData"
           :key="index"
           :class="getMarginClass(index,linkData)"

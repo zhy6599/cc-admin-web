@@ -1,6 +1,6 @@
 <template>
-  <q-page class="column">
-    <div class="col column view_card shadow-2 q-pa-md q-ma-sm">
+  <q-page class="cc-admin column">
+    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm">
       <div class="row items-center justify-start q-mb-md">
         <div class="row items-center q-mb-md col-3">
           <span class="q-ml-md">字词编号：</span>

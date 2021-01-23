@@ -1,6 +1,6 @@
 <template>
-  <q-page class="column q-pa-sm">
-    <div class="col column view_card shadow-2 q-pa-md">
+  <q-page class="cc-admin column q-pa-sm">
+    <div class="col column bg-white shadow-2 q-pa-md">
       <q-table
         color="primary"
         class="cross_table"
@@ -244,15 +244,20 @@
                 <h5>菜单排序：</h5>
                 <q-input outlined dense v-model="form.sortNo" type="number"/>
               </div>
-              <div class="col-6">
+              <div class="col-4">
                 <h5><q-icon name="star" color="red"/> 是否路由菜单：</h5>
                 <q-btn-toggle class="q_b_toggle" v-model="form.route"
                   :options="[{label:'路由',value:true},{label:'不路由',value:false}]"/>
               </div>
-              <div class="col-6">
+              <div class="col-4">
                 <h5><q-icon name="star" color="red"/> 是否显示菜单：</h5>
                 <q-btn-toggle class="q_b_toggle" v-model="form.hidden"
                   :options="[{label:'显示',value:false},{label:'隐藏',value:true}]"/>
+              </div>
+              <div class="col-4">
+                <h5><q-icon name="star" color="red"/> 打开方式：</h5>
+                <q-btn-toggle class="q_b_toggle" v-model="form.internalOrExternal"
+                  :options="[{label:'内部',value:false},{label:'外部',value:true}]"/>
               </div>
             </template>
             <div class="col-6" v-if="form.menuType===2" key="2">
@@ -374,6 +379,7 @@ export default {
         hidden: false,
         perms: '',
         status: '1',
+        internalOrExternal: false,
       };
     },
     add() {

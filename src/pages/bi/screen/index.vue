@@ -1,11 +1,11 @@
 <template>
-  <q-page class="row">
+  <q-page class="cc-admin row">
     <viewcatalog
       class="q-mt-sm q-mb-sm q-ml-sm"
       type="BiScreen"
       @select="selectCatalog"
     />
-    <div class="col column view_card shadow-2 q-pa-md q-ma-sm">
+    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm">
       <q-table
         flat
         color="primary"

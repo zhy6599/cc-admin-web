@@ -1,12 +1,9 @@
 <template>
   <q-dialog v-model="showDialog" maximized flat persistent position="right">
-    <q-card class="dialog_card">
-      <div class="row self-center bg-blue-grey-1">
-        <div class="text-h6" style="line-height: 45px;padding-left: 16px;">从数据库导入表</div>
-        <q-space />
-        <q-btn dense flat icon="close" v-close-popup style="width: 45px;">
-          <q-tooltip>Close</q-tooltip>
-        </q-btn>
+    <q-card class="dialog_card column">
+      <div class="view_title justify-between q-px-md">
+        从数据库导入表
+        <q-btn dense outline round size="sm" icon="clear" v-close-popup />
       </div>
       <q-card-section>
         <div class="row justify-between" style="padding-bottom: 16px;">

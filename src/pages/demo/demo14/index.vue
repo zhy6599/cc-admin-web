@@ -1,6 +1,6 @@
 <template>
-  <q-page class="column q-pa-sm">
-    <div class="col column view_card shadow-2">
+  <q-page class="cc-admin column q-pa-sm">
+    <div class="col column bg-white shadow-2">
       <div id="mainChart" class="col"></div>
     </div>
   </q-page>

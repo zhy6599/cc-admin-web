@@ -6,8 +6,9 @@
           <q-toolbar>
             <q-toolbar-title>
               <q-avatar>
-                <q-icon name="dashboard" />
-              </q-avatar>cc-admin
+                <q-icon name="mdi-image-edit-outline" size="sm" />
+              </q-avatar>
+              <span class="text-subtitle1">{{name}}</span>
             </q-toolbar-title>
           </q-toolbar>
         </div>
@@ -85,7 +86,7 @@
     </q-drawer>
 
     <q-page-container>
-      <q-page class="column q-pa-sm">
+      <q-page class="cc-admin column q-pa-sm">
         <div class="col column justify-center items-center">
           <div :style="backgroundStyle">
             <vue-draggable-resizable
@@ -99,6 +100,7 @@
               :active="item.active"
               :parent="true"
               :class="selChartId === item.i?'grid-item-select':'no-border'"
+              :grid="[1,1]"
               @resizestop="resizedEvent"
               @activated="selectItem(item.i)"
               @deactivated="item.active=false"
@@ -156,6 +158,11 @@ export default {
   },
   data() {
     return {
+      name: 'cc-admin',
+      onShfit: false,
+      onCtrl: false,
+      shiftMove: 1,
+      move: 10,
       imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
       backgroundImage: '',
       themeMap,
@@ -194,6 +201,7 @@ export default {
       return this.$axios.get(`/bi/screen/queryById?id=${this.$route.query.id}`)
         .then(({ result }) => {
           const biScreen = result;
+          this.name = biScreen.name;
           if (biScreen && biScreen.config) {
             const configObj = JSON.parse(biScreen.config);
             this.layout = configObj.layout;
@@ -248,6 +256,8 @@ export default {
     getItemClass(item) {
       const itemClsList = ['col', 'column'];
       if (item.type !== 'image') {
+        itemClsList.push('draggable-item-class');
+      } else if (item.config.overflowHiden) {
         itemClsList.push('draggable-item-class');
       }
       return itemClsList;
@@ -405,6 +415,67 @@ export default {
     caclBackground() {
 
     },
+    moveItem(dir, type) {
+      this.layout.forEach((item) => {
+        if (item.i === this.selChartId) {
+          const step = this.onShfit ? this.shiftMove : this.move;
+          if (type === 'add') {
+            item[dir] += step;
+          } else if (item[dir] >= step) {
+            item[dir] -= step;
+          }
+          if (dir === 'w' || dir === 'h') {
+            item.config.needResize = true;
+          }
+        }
+      });
+    },
+    setKeyStatus(e, status) {
+      if (e.code === 'ShiftLeft') {
+        this.onShfit = status;
+      }
+      if (e.code === 'ControlLeft') {
+        this.onCtrl = status;
+      }
+      if (status) {
+        switch (e.code) {
+          case 'ArrowUp':
+            if (this.onCtrl) {
+              this.moveItem('h', 'sub');
+            } else {
+              this.moveItem('y', 'sub');
+            }
+            e.preventDefault();
+            break;
+          case 'ArrowDown':
+            if (this.onCtrl) {
+              this.moveItem('h', 'add');
+            } else {
+              this.moveItem('y', 'add');
+            }
+            e.preventDefault();
+            break;
+          case 'ArrowLeft':
+            if (this.onCtrl) {
+              this.moveItem('w', 'sub');
+            } else {
+              this.moveItem('x', 'sub');
+            }
+            e.preventDefault();
+            break;
+          case 'ArrowRight':
+            if (this.onCtrl) {
+              this.moveItem('w', 'add');
+            } else {
+              this.moveItem('x', 'add');
+            }
+            e.preventDefault();
+            break;
+          default:
+            break;
+        }
+      }
+    },
   },
   created() {
     // 这里监听所有请求参数
@@ -416,6 +487,12 @@ export default {
     } else {
       this.config.data.name = '新建组件 ';
     }
+    document.onkeydown = (e) => {
+      this.setKeyStatus(e, true);
+    };
+    document.onkeyup = (e) => {
+      this.setKeyStatus(e, false);
+    };
   },
   computed: {
     backgroundStyle() {

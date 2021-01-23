@@ -2,23 +2,21 @@
   <div>
     <q-dialog v-model="showDialog" :maximized="true">
       <q-card class="dialog_card column">
-        <q-card-section class=" row no-wrap">
+        <q-card-section class="view_title justify-between q-px-md">
           <q-tabs
             v-model="tab"
             dense
             align="left"
-            class="row text-grey"
-            active-color="primary"
-            indicator-color="primary"
+            class="row text-white"
+            active-color="orange"
+            indicator-color="orange"
             narrow-indicator
             @input="changeTab"
           >
             <q-tab v-for="key in keys" :key="key" :name="key" :label="key" />
           </q-tabs>
           <q-space />
-          <q-btn dense flat icon="close" v-close-popup style="width: 45px;">
-            <q-tooltip>Close</q-tooltip>
-          </q-btn>
+          <q-btn dense outline round size="sm" icon="clear" v-close-popup />
         </q-card-section>
         <q-card-section class="col q-col-gutter-md q-pa-sm">
           <q-scroll-area class="fit">

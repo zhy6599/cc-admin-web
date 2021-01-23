@@ -2,7 +2,7 @@
   <q-page  class="row">
     <view-nav class="q-mt-sm q-mb-sm q-ml-sm" title="我的代办" v-model="proTypes"
       :selected.sync="proType" @select="query"/>
-    <div class="col column view_card shadow-2 q-pa-md q-ma-sm">
+    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm">
       <q-table
         flat
         color="primary"

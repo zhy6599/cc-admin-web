@@ -32,17 +32,23 @@
       </q-input>
       <q-uploader
         class="full-width"
-        label="背景图片"
-        no-thumbnails
+        ref="uploadPic"
+        label="上传图片"
         auto-upload
         fieldName="file"
         :headers="headers"
         accept="image/*"
         :url="uploadUrl"
         :max-files="1"
-        ref="uploadPic"
+        no-thumbnails
         @uploaded="uploaded"
-      />
+      >
+        <template v-slot:list>
+          <q-img class="full-height"
+          :src="imagePath"
+          />
+        </template>
+      </q-uploader>
       <q-select
         dense
         filled
@@ -50,7 +56,7 @@
         v-model="config.backPicSet"
         prefix="背景设置："
         class="q-my-sm"
-        :options="backSetOptions"
+        :options="picSetOptions"
         emit-value
         map-options
       >
@@ -69,6 +75,7 @@
   </div>
 </template>
 <script>
+import { picSetOptions } from 'boot/datatype';
 
 export default {
   name: 'backgroundsetting',
@@ -76,15 +83,10 @@ export default {
   },
   data() {
     return {
+      picSetOptions,
       headers: [{ name: 'Authorization', value: localStorage.Authorization }],
       uploadUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/upload`,
-      backSetOptions: [
-        { label: '重复', value: 'repeat' },
-        { label: '拉伸', value: 'stretch' },
-        { label: '不重复', value: 'no-repeat' },
-        { label: '水平重复', value: 'repeat-x' },
-        { label: '垂直重复', value: 'repeat-y' },
-      ],
+      imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
     };
   },
   props: {
@@ -111,7 +113,15 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    imagePath() {
+      let path = '';
+      if (this.config.src) {
+        path = `${this.imgUrl}/${this.config.src}`;
+      }
+      return path;
+    },
+  },
   watch: {},
   mounted() {
   },

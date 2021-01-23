@@ -12,7 +12,7 @@
       :resizable="false"
       :class="'no-border'"
     >
-      <div style="overflow: hidden;height:100%;" :id="item.key">
+      <div :class="getItemClass(item)" :id="item.key">
         <textview v-if="item.type === 'text'" :config="item.config" />
         <imageview v-if="item.type === 'image'" :config="item.config" />
         <chartview v-if="item.type === 'chart'" :config="item.config" />
@@ -66,6 +66,15 @@ export default {
       // 将请求参数合并到一起
       Object.assign(this.allParam, param);
       this.$root.$emit('allParamChange', this.allParam);
+    },
+    getItemClass(item) {
+      const itemClsList = ['col', 'column'];
+      if (item.type !== 'image') {
+        itemClsList.push('draggable-item-class');
+      } else if (item.config.overflowHiden) {
+        itemClsList.push('draggable-item-class');
+      }
+      return itemClsList;
     },
     getScreen() {
       this.loading = true;
@@ -158,6 +167,9 @@ export default {
 </script>
 
 <style lang="stylus">
+.draggable-item-class
+  overflow hidden
+  height 100%
 .gridBackground {
   backgroundImage: 'linear-gradient(90deg, #f2f2f2 10%, rgba(0, 0, 0, 0) 10%),
 linear-gradient(#f2f2f2 10%, rgba(0, 0, 0, 0) 10%)';

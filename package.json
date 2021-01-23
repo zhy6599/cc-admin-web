@@ -19,7 +19,6 @@
     "lodash": "^4.17.20",
     "quasar": "^1.13.2",
     "vue-draggable-resizable": "^2.3.0",
-    "vue-grid-layout": "^2.3.11",
     "vuedraggable": "2.23.2"
   },
   "devDependencies": {

@@ -32,8 +32,8 @@
         align="justify"
       >
         <q-tab name="data" label="数据" />
-        <q-tab v-if="config.type !== 'table'" name="chartTab" label="图表样式" />
-        <q-tab v-if="config.type === 'table'" name="tableTab" label="表格样式" />
+        <q-tab v-if="config.type !== 'table'" name="chartTab" label="图表" />
+        <q-tab v-if="config.type === 'table'" name="tableTab" label="表格" />
       </q-tabs>
       <q-separator />
       <q-tab-panels

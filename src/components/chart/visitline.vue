@@ -1,15 +1,19 @@
 <template>
   <div class="row q-mb-md">
     <div class="col">
-      <div class="column view_card shadow-2">
+      <div class="column bg-white shadow-2">
         <div class="col row no-wrap justify-between items-center content-center">
           <div class="col text-center q-mt-lg">
             <div>在线用户</div>
-            <div class="text-h5">{{statInfo.onlineUserCount}}</div>
+            <q-btn flat round to="/monitor/online">
+              <div class="text-h5 text-primary">{{statInfo.onlineUserCount}}</div>
+            </q-btn>
           </div>
           <div class="col text-center q-mt-lg">
             <div>今日IP</div>
-            <div class="text-h5">{{statInfo.todayIp}}</div>
+            <q-btn flat round to="/monitor/log">
+              <div class="text-h5 text-primary">{{statInfo.todayIp}}</div>
+            </q-btn>
           </div>
           <div class="col text-center">
             <div>今日访问</div>

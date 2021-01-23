@@ -1,65 +1,115 @@
 <template>
-  <q-page class="column q-pa-sm">
-    <div class="col column view_card shadow-2 q-pa-md">
+  <q-page class="cc-admin column q-pa-sm">
+    <div class="col column bg-white shadow-2 q-pa-md">
       <div class="row items-center justify-start q-mb-md">
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">登录账号：</span>
-          <q-input outlined dense v-model="searchForm.username" type="text" class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">姓名：</span>
-          <q-input outlined dense v-model="searchForm.realname" type="text" class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">电子邮件：</span>
-          <q-input outlined dense v-model="searchForm.email" type="text" class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">电话：</span>
-          <q-input outlined dense v-model="searchForm.phone" type="text" class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">状态：</span>
-          <q-select
-            clearable
-            outlined
-            dense
-            emit-value
-            v-model="searchForm.status"
-            map-options
-            :options="userStatus"
-            class="col"
-          />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">工号：</span>
-          <q-input outlined dense v-model="searchForm.workNo" type="text" class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">职务：</span>
-          <q-select
-            clearable
-            outlined
-            dense
-            emit-value
-            v-model="searchForm.post"
-            map-options
-            :options="sysPosition"
-            class="col"
-          />
-        </div>
-        <div class="row justify-end items-center q-mb-md col-3">
-          <q-btn
-            color="primary"
-            label="搜索"
-            icon="search"
-            class="on-left"
-            @click="query()"
-            :loading="loading"
-            unelevated
-          />
-          <q-btn label="重置" icon="search_off" color="primary" outline @click="searchReset" />
-        </div>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>登录账号：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-input outlined dense square clearable v-model="searchForm.username" />
+          </q-item-section>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>姓名：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-input outlined dense square clearable v-model="searchForm.realname" />
+          </q-item-section>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>电子邮件：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-input outlined dense square clearable v-model="searchForm.email" />
+          </q-item-section>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>电话：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-input outlined dense square clearable v-model="searchForm.phone" />
+          </q-item-section>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>状态：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-select
+              clearable
+              outlined
+              dense
+              emit-value
+              v-model="searchForm.status"
+              map-options
+              :options="userStatus"
+              class="col"
+            />
+          </q-item-section>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>工号：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-input outlined dense square clearable v-model="searchForm.workNo" />
+          </q-item-section>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>职务：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-select
+              clearable
+              outlined
+              dense
+              emit-value
+              v-model="searchForm.post"
+              map-options
+              :options="sysPosition"
+              class="col"
+            />
+          </q-item-section>
+        </q-item>
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
+          <q-item-label class="col-12 text-right">
+            <q-btn
+              unelevated
+              label="查询"
+              color="primary"
+              class="q-mr-sm no-border-radius"
+              :loading="loading"
+              @click="query()"
+            >
+              <template v-slot:loading>
+                <q-spinner-ios class="on-center" />
+              </template>
+            </q-btn>
+            <q-btn
+              outline
+              unelevated
+              label="重置"
+              class="q-mr-sm no-border-radius"
+              color="secondary"
+              @click="searchReset"
+            />
+            <q-btn-dropdown
+              v-model="showQuery"
+              persistent
+              dense
+              flat
+              color="primary"
+              :label="tableLabel"
+              @before-show="show"
+              @before-hide="hide"
+            ></q-btn-dropdown>
+          </q-item-label>
+        </q-item>
       </div>
       <q-table
         flat
@@ -96,7 +146,7 @@
             />
             <q-btn-dropdown outline color="primary" label="自选列" icon="view_list">
               <q-list>
-                <q-item tag="label" v-for="item in columns" :key="item.name">
+                <q-item v-show="showQuery" tag="label" v-for="item in columns" :key="item.name">
                   <q-item-section avatar>
                     <q-checkbox v-model="group" :val="item.name" />
                   </q-item-section>
@@ -119,7 +169,7 @@
         <template #body-cell-avatar="props">
           <q-td key="avatar" :props="props">
             <q-avatar v-if="props.row.avatar">
-              <img :src="props.row.avatar" />
+              <img style="width: 30px;height: 30px;" :src="props.row.avatar" />
             </q-avatar>
           </q-td>
         </template>
@@ -226,13 +276,29 @@
               <h5>
                 <q-icon name="star" color="red" />登录账号：
               </h5>
-              <q-input outlined dense v-model="form.username" type="text" :rules="[requiredTest]" />
+              <q-input
+                outlined
+                dense
+                square
+                clearable
+                v-model="form.username"
+                type="text"
+                :rules="[requiredTest]"
+              />
             </div>
             <div class="col-6">
               <h5>
                 <q-icon name="star" color="red" />姓名：
               </h5>
-              <q-input outlined dense v-model="form.realname" type="text" :rules="[requiredTest]" />
+              <q-input
+                outlined
+                dense
+                square
+                clearable
+                v-model="form.realname"
+                type="text"
+                :rules="[requiredTest]"
+              />
             </div>
             <div v-if="editType==='新建'" class="col-6">
               <h5>
@@ -248,7 +314,7 @@
             </div>
             <div class="col-6">
               <h5>头像：</h5>
-              <q-input outlined dense v-model="form.avatar" type="text" />
+              <q-input outlined dense square clearable v-model="form.avatar" type="text" />
             </div>
             <div class="col-6">
               <h5>性别：</h5>
@@ -256,11 +322,11 @@
             </div>
             <div class="col-6">
               <h5>电子邮件：</h5>
-              <q-input outlined dense v-model="form.email" type="text" />
+              <q-input outlined dense square clearable v-model="form.email" type="text" />
             </div>
             <div class="col-6">
               <h5>电话：</h5>
-              <q-input outlined dense v-model="form.phone" type="text" />
+              <q-input outlined dense square clearable v-model="form.phone" type="text" />
             </div>
             <div class="col-6">
               <h5>状态：</h5>
@@ -275,7 +341,7 @@
             </div>
             <div class="col-6">
               <h5>工号：</h5>
-              <q-input outlined dense v-model="form.workNo" type="text" />
+              <q-input outlined dense square clearable v-model="form.workNo" type="text" />
             </div>
             <div class="col-6">
               <h5>职务：</h5>
@@ -324,6 +390,8 @@ export default {
   },
   data() {
     return {
+      showQuery: true,
+      tableLabel: '展开',
       columns: [
         {
           name: 'index',
@@ -392,6 +460,14 @@ export default {
   methods: {
     requiredTest,
     getDictLabel,
+    show() {
+      this.showQuery = true;
+      this.tableLabel = '收起';
+    },
+    hide() {
+      this.showQuery = false;
+      this.tableLabel = '展开';
+    },
     initDict() {
       this.$axios.get('/sys/dictItem/selectItemsByDefId?defId=sysPosition').then((r) => {
         this.sysPosition = r;

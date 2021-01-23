@@ -2,16 +2,17 @@
   <div
     :class="[this.config.table.horizontal ? 'chart-table-horizontal' : 'chart-table-vertical']"
     ref="chart"
+    class="cross-chart-table"
   >
-    <q-markup-table flat bordered color="primary" class="cross_table" separator="vertical">
+    <q-markup-table flat :style="config.table.tableStyle">
       <thead>
         <tr>
-          <th class="text-center" v-for="(v,idx) in list.head" :key="idx">{{v}}</th>
+          <th :style="thStyle" v-for="(v,idx) in list.head" :key="idx">{{v}}</th>
         </tr>
       </thead>
       <tbody :style="tableStyle()">
         <tr v-for="(v,i) in list.body" :key="i">
-          <td class="text-center" v-for="(d,idx) in v" :key="idx">{{d}}</td>
+          <td :style="tdStyle" v-for="(d,idx) in v" :key="idx">{{d}}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -40,7 +41,7 @@ export default {
   },
   methods: {
     tableStyle() {
-      const resultStyle = {};
+      const resultStyle = { };
       if (this.config.table.loop) {
         resultStyle.animationDuration = `${this.config.table.scrolldelay}s`;
         resultStyle.animationTimingFunction = 'linear';
@@ -173,12 +174,49 @@ export default {
     list() {
       return this.data;
     },
+    thStyle() {
+      const tableHead = {
+        ...this.config.table.tableHead,
+        fontSize: `${this.config.table.tableHead.fontSize}px`,
+        borderWidth: `${this.config.table.tableHead.borderWidth}px`,
+        opacity: this.config.table.tableHead.opacity / 100,
+      };
+      if (tableHead.backgroundColor === '') {
+        tableHead.backgroundColor = 'transparent';
+      }
+      return tableHead;
+    },
+    tdStyle() {
+      const tableBody = {
+        ...this.config.table.tableBody,
+        fontSize: `${this.config.table.tableBody.fontSize}px`,
+        borderWidth: `${this.config.table.tableBody.borderWidth}px`,
+        opacity: this.config.table.tableBody.opacity / 100,
+      };
+      if (tableBody.backgroundColor === '') {
+        tableBody.backgroundColor = 'transparent';
+      }
+      return tableBody;
+    },
   },
 };
 </script>
 
 <style lang="stylus">
-
+.bg-transparent-table
+  background-color transparent
+.cross-chart-table
+  .q-table
+    thead
+      th,td
+        position sticky
+        opacity 1
+        z-index: 1
+      tr
+        th
+          position sticky
+          top 0
+          z-index 1
 @keyframes tableLoopLeft {
   0% {
     transform: translateX(0);
@@ -216,14 +254,6 @@ export default {
   th:first-child {
     position: sticky;
     left: 0;
-    z-index: 1;
-    background: $light-blue !important;
-    color: #fff;
-    border-bottom: 0;
-  }
-
-  tbody td:first-child {
-    background: $positive !important;
   }
 }
 
@@ -231,14 +261,6 @@ export default {
   th:first-child {
     position: sticky;
     left: 0;
-    z-index: 1;
-    background: $light-blue !important;
-    color: #fff;
-    border-bottom: 0;
-  }
-
-  th:not(:first-child) {
-    background: $positive !important;
   }
 }
 </style>

@@ -66,6 +66,10 @@ https://www.ydyno.com/archives/1219.html
 
 #### 系统效果预览
 
+![可视化综合设计](https://github.com/zhy6599/preview/raw/master/gif/0-1.gif)
+![系统管理](https://github.com/zhy6599/preview/raw/master/gif/0-2.gif)
+![可视化](https://github.com/zhy6599/preview/raw/master/gif/0-3.gif)
+![系统监控](https://github.com/zhy6599/preview/raw/master/gif/0-4.gif)
 ![1](https://github.com/zhy6599/preview/raw/master/1.png)
 ![2](https://github.com/zhy6599/preview/raw/master/2.png)
 ![3](https://github.com/zhy6599/preview/raw/master/3.png)

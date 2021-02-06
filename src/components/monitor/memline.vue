@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-mb-md">
+  <div class="row q-px-sm q-mb-md">
     <div class="col">
       <div class="column bg-white shadow-2">
         <div class="col row no-wrap justify-between items-center content-center">
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { debounce } from 'quasar';
 import echarts from 'echarts';
 
 export default {
@@ -49,9 +50,14 @@ export default {
       chart: null,
     };
   },
-  computed: {
-  },
   methods: {
+    doResize() {
+      if (this.chart) {
+        this.$nextTick(() => {
+          this.chart.resize();
+        });
+      }
+    },
     refreshChart() {
       if (!this.chart) {
         return;
@@ -82,10 +88,10 @@ export default {
           data: [],
         },
         grid: {
-          left: '5%',
-          top: '15%',
-          right: '5%',
-          bottom: '25%',
+          left: '60px',
+          top: '40px',
+          right: '60px',
+          bottom: '80px',
         },
         xAxis: [
           {
@@ -137,9 +143,9 @@ export default {
       };
       this.chart.setOption(option);
     },
-
   },
   mounted() {
+    this.onResize = debounce(this.doResize, 500);
     this.renderChart();
   },
   watch: {
@@ -148,6 +154,14 @@ export default {
       handler() {
         this.refreshChart();
       },
+    },
+    clientWidth() {
+      this.onResize();
+    },
+  },
+  computed: {
+    clientWidth() {
+      return this.$q.screen.width;
     },
   },
 };

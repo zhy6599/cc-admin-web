@@ -1,7 +1,7 @@
 <template>
   <q-page class="cc-admin row">
-    <tree class="q-mt-sm q-mb-sm q-ml-sm" type="SysDepart" @select="selectCatalog" />
-    <div class="col column cc-admin shadow-2 q-ma-sm">
+    <tree class="col q-mt-sm q-mb-sm q-ml-sm" type="SysDepart" @select="selectCatalog" />
+    <div class="col-7 column cc-admin shadow-2 q-ma-sm" v-if="this.$q.screen.gt.md" >
       <div class="q-gutter-y-md col">
         <q-card class="full-height">
           <q-tabs
@@ -181,6 +181,8 @@ export default {
   },
   mounted() {
     this.initDict();
+  },
+  computed: {
   },
   watch: {
     tab: {

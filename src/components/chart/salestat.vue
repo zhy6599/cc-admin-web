@@ -1,7 +1,7 @@
 <template>
-  <div class="row q-mb-md q-gutter-md">
-    <div class="col">
-      <q-card class="main_card">
+  <div class="row">
+    <div class="col-md-3 col-sm-6 col-xs-12 q-px-sm q-mb-md">
+      <q-card class="sale-card">
         <q-card-section>
           <div class="row nowrap items-center">
             <q-avatar
@@ -36,8 +36,8 @@
       </q-card>
     </div>
 
-    <div class="col">
-      <q-card class="main_card">
+    <div class="col-md-3 col-sm-6 col-xs-12 q-px-sm q-mb-md">
+      <q-card class="sale-card">
         <q-card-section>
           <div class="row nowrap items-center">
             <q-avatar
@@ -55,7 +55,7 @@
           <div class="text-h5">8846</div>
         </q-card-section>
         <div class="q-mb-sm">
-          <miniarea />
+          <miniarea :screenWidth="screenWidth" />
         </div>
         <q-separator />
         <q-card-actions>
@@ -63,8 +63,8 @@
         </q-card-actions>
       </q-card>
     </div>
-    <div class="col">
-      <q-card class="main_card">
+    <div class="col-md-3 col-sm-6 col-xs-12 q-px-sm q-mb-md">
+      <q-card class="sale-card">
         <q-card-section>
           <div class="row nowrap items-center">
             <q-avatar
@@ -81,7 +81,7 @@
           <div class="text-h5">6560</div>
         </q-card-section>
         <div class="q-mb-sm">
-          <minibar />
+          <minibar :screenWidth="screenWidth"/>
         </div>
         <q-separator />
         <q-card-actions>
@@ -89,8 +89,8 @@
         </q-card-actions>
       </q-card>
     </div>
-    <div class="col">
-      <q-card class="main_card">
+    <div class="col-md-3 col-sm-6 col-xs-12 q-px-sm q-mb-md">
+      <q-card class="sale-card">
         <q-card-section>
           <div class="row nowrap items-center">
             <q-avatar
@@ -126,8 +126,10 @@ import minibar from 'components/chart/minibar';
 
 export default {
   name: 'SaleStat',
+  props: {
+    screenWidth: Number,
+  },
   components: {
-
     miniarea,
     minibar,
   },
@@ -144,5 +146,8 @@ export default {
 };
 </script>
 
-<style >
+<style lang="stylus">
+.sale-card
+  min-width: 200px
+  height 200px
 </style>

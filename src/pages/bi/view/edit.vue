@@ -271,7 +271,7 @@
 <script>
 import { debounce } from 'quasar';
 import {
-  columnToIcon, visualType, modelType, searchType, dbToVisualType, dbToModelType,
+  columnToIcon, visualType, modelType, searchType, dbToVisualType, dbToModelType, ellipsis,
 } from 'boot/datatype';
 import codemirror from 'codemirror';
 import 'codemirror/lib/codemirror.css';
@@ -331,6 +331,7 @@ export default {
     },
   },
   methods: {
+    ellipsis,
     show(viewId) {
       this.id = viewId;
       this.showDialog = true;
@@ -511,15 +512,6 @@ export default {
       }).finally(() => {
         this.tableLoading = false;
       });
-    },
-    ellipsis(value, vlength = 25) {
-      if (!value) {
-        return '';
-      }
-      if (value.length > vlength) {
-        return `${value.slice(0, vlength)}...`;
-      }
-      return value;
     },
     query() {
       if (this.view.viewSql) {

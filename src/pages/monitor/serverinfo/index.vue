@@ -1,44 +1,7 @@
 <template>
   <q-page class="cc-admin row">
-    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm bg-gray-1">
-      <div class="row q-mb-md">
-        <div class="col">
-          <div class="column bg-white shadow-2">
-            <div class="col row no-wrap justify-between items-center content-center q-mx-lg">
-              <div class="col">
-                <div>
-                  <q-icon name="mdi-microsoft" color="primary" size="sm" />
-                  系统名称：{{serverInfo.sysInfo.osName}}
-                </div>
-              </div>
-              <div class="col">
-                <div>
-                  <q-icon name="mdi-server" color="secondary" size="sm" />
-                  服务器架构：{{serverInfo.sysInfo.osArch}}
-                </div>
-              </div>
-              <div class="col">
-                <div>
-                  <q-icon name="mdi-ip" color="t-dark" size="sm" />
-                  系统IP：{{serverInfo.sysInfo.computerIp}}
-                </div>
-              </div>
-              <div class="col">
-                <div>
-                  <q-icon name="mdi-cpu-64-bit" color="positive" size="sm" />
-                  CUP内核数：{{serverInfo.cpuInfo.cpuNum}}
-                </div>
-              </div>
-              <div class="col">
-                <div>
-                  <q-icon name="mdi-memory" color="sky" size="sm" />
-                  内存总量: {{serverInfo.memInfo.total}}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="col bg-white shadow-2 q-pa-md q-ma-sm bg-gray-1">
+      <serverinfo :serverInfo="serverInfo" />
       <memline
         :cpuData="cpuData"
         :memData="memData"
@@ -54,12 +17,14 @@
 
 <script>
 import { debounce } from 'quasar';
+import serverinfo from 'components/monitor/serverinfo';
 import memline from 'components/monitor/memline';
 import diskbar from 'components/monitor/diskbar';
 
 export default {
   name: 'ServerInfo',
   components: {
+    serverinfo,
     memline,
     diskbar,
   },
@@ -98,46 +63,25 @@ export default {
           used: '13.79GB',
           free: '2.14GB',
         },
-        sysFileInfo: [{
-          total: '931.51GB',
-          usage: 32.49,
-          typeName: 'Local Fixed Disk (E:)',
-          sysTypeName: 'NTFS',
-          used: '302.66GB',
-          free: '628.85GB',
-          dirName: 'E:\\',
-        }, {
-          total: '200.07GB',
-          usage: 39.07,
-          typeName: 'Local Fixed Disk (C:)',
-          sysTypeName: 'NTFS',
-          used: '78.17GB',
-          free: '121.91GB',
-          dirName: 'C:\\',
-        }, {
-          total: '247.06GB',
-          usage: 13.56,
-          typeName: 'Local Fixed Disk (D:)',
-          sysTypeName: 'NTFS',
-          used: '33.49GB',
-          free: '213.56GB',
-          dirName: 'D:\\',
-        }, {
-          total: '0KB',
-          usage: 0,
-          typeName: 'CD-ROM Disc (G:)',
-          sysTypeName: 'unknown',
-          used: '0KB',
-          free: '0KB',
-          dirName: 'G:\\',
-        }],
+        sysFileInfo: {
+          diskTotal: '2T',
+          diskList: [{
+            total: '931.51GB',
+            usage: 32.49,
+            typeName: 'Local Fixed Disk',
+            sysTypeName: 'NTFS',
+            used: '302.66GB',
+            free: '628.85GB',
+            dirName: '/',
+          }],
+        },
         sysInfo: {
-          computerIp: '',
-          computerName: '',
-          osArch: '',
+          computerIp: '192.168.0.1',
+          computerName: 'Super Hero',
+          osArch: 'x86',
           userDir: '',
-          osName: '',
-          runningTime: '',
+          osName: 'CenterOs',
+          runningTime: '100小时',
         },
       },
     };
@@ -272,6 +216,7 @@ export default {
     // 离开页面生命周期函数
     this.websocketOnclose();
     this.refreshSysInfo = false;
+    clearTimeout(this.ti);
   },
 };
 </script>

@@ -1,38 +1,36 @@
 <template>
-  <div class="column q-pa-md bg-white shadow-4" style="min-width:420px;">
-    <q-scroll-area class="col">
-      <q-splitter v-model="splitterModel" unit="px" horizontal>
-        <template v-slot:before>
-          <div class="row no-wrap justify-center items-center content-center">
-            <b class="text-subtitle1">部门管理</b>
-            <q-space />
-            <div class="q-gutter-sm">
-              <q-btn size="sm" dense color="primary" label="添加部门" @click="addCatalog()" />
-              <q-btn size="sm" dense color="secondary" label="添加下级" @click="addCatalog('son')" />
-              <q-btn size="sm" dense color="accent" label="修改部门" @click="updateCatalog()" />
-              <q-btn size="sm"
-                dense
-                label="删除部门"
-                color="negative"
-                :disable="selected ===''"
-                @click="showConfirm()"
-              />
-            </div>
+  <div class="q-pa-md bg-white shadow-4">
+    <q-splitter v-model="splitterModel" unit="px" horizontal>
+      <template v-slot:before>
+        <div class="row no-wrap items-center">
+          <div class="col text-subtitle1" v-if="$q.screen.gt.md">部门管理</div>
+          <q-space />
+          <div class="col row q-gutter-sm justify-end">
+            <q-btn size="md" dense color="primary" label="添加部门" @click="addCatalog()" />
+            <q-btn size="md" dense color="secondary" label="添加下级" @click="addCatalog('son')" />
+            <q-btn size="md" dense color="accent" label="修改" @click="updateCatalog()" />
+            <q-btn size="md"
+              dense
+              label="删除"
+              color="negative"
+              :disable="selected ===''"
+              @click="showConfirm()"
+            />
           </div>
-        </template>
-        <template v-slot:after>
-          <q-tree
-            ref="qTree"
-            :nodes="allCatalogList"
-            node-key="id"
-            label-key="departName"
-            selected-color="primary"
-            :selected.sync="selected"
-            @update:selected="select"
-          />
-        </template>
-      </q-splitter>
-    </q-scroll-area>
+        </div>
+      </template>
+      <template v-slot:after>
+        <q-tree
+          ref="qTree"
+          :nodes="allCatalogList"
+          node-key="id"
+          label-key="departName"
+          selected-color="primary"
+          :selected.sync="selected"
+          @update:selected="select"
+        />
+      </template>
+    </q-splitter>
     <q-dialog maximized flat persistent ref="dialogCatalog" position="right">
       <q-form @submit="submitCatalog" ref="popform" class="dialog_card column">
         <h5 class="view_title justify-between q-px-md">

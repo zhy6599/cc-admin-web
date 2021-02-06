@@ -95,3 +95,14 @@ export const downFile = (url, data) => a({
   params: data,
   responseType: 'blob',
 });
+
+Vue.prototype.$downFile = downFile;
+
+export const uploadFile = (url, parameter) => a({
+  url,
+  data: parameter,
+  method: 'post',
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+});

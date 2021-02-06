@@ -1,85 +1,80 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
-    <div class="col column bg-white shadow-2 q-pa-md">
-      <q-splitter v-model="splitterModel" separator-style="width: 0px;">
-        <template v-slot:before>
-          <q-table
-            flat
-            color="primary"
-            class="cross_table"
-            separator="cell"
-            :columns="columns"
-            :data="list"
-            row-key="id"
-            :rows-per-page-options="[10, 20, 50, 100]"
-            :pagination.sync="pagination"
-            @request="query"
-            :loading="loading"
-          >
-            <template #top-left>
-              <div class="row no-wrap">
-                <q-input
-                  clearable
-                  outlined
-                  dense
-                  placeholder="请输入关键字搜索"
-                  class="on-left"
-                  @input="query"
-                  debounce="500"
-                  v-model="key"
-                >
-                  <template #append>
-                    <q-btn
-                      flat
-                      round
-                      icon="search"
-                      color="primary"
-                      @click="query"
-                      :loading="loading"
-                    >
-                      <q-tooltip>搜索</q-tooltip>
-                    </q-btn>
-                  </template>
-                </q-input>
-              </div>
-            </template>
-            <template #top-right="table">
-              <q-btn-group outline>
-                <q-btn outline icon="add" color="primary" label="新建数据字典" @click="add" />
+  <q-page class="cc-admin q-pa-sm row">
+    <div class="col-md-6 col-xs-12 bg-white q-pa-md">
+      <q-table
+        flat
+        color="primary"
+        class="cross_table"
+        separator="cell"
+        :columns="columns"
+        :data="list"
+        row-key="id"
+        :rows-per-page-options="[10, 20, 50, 100]"
+        :pagination.sync="pagination"
+        @request="query"
+        :loading="loading"
+      >
+        <template v-slot:top="table">
+          <div class="row no-wrap full-width">
+            <q-input
+              clearable
+              outlined
+              dense
+              placeholder="请输入关键字搜索"
+              class="on-left"
+              @input="query"
+              debounce="500"
+              v-model="key"
+            >
+              <template #append>
                 <q-btn
-                  outline
+                  flat
+                  round
+                  icon="search"
                   color="primary"
-                  label="切换全屏"
-                  @click="table.toggleFullscreen"
-                  :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                />
-              </q-btn-group>
-            </template>
-            <template v-slot:body="props">
-              <q-tr
-                :props="props"
-                :class="['cursor-pointer',
-              (selected.length === 1 && selected[0].id === props.row.id)?'bg-cyan-3':'']"
-                @click.native="selectDict(props.row)"
-              >
-                <q-td key="index" :props="props">{{ props.row.index }}</q-td>
-                <q-td key="dictName" :props="props">{{ props.row.dictName }}</q-td>
-                <q-td key="dictCode" :props="props">{{ props.row.dictCode }}</q-td>
-                <q-td key="description" :props="props">{{ props.row.description }}</q-td>
-                <q-td key="opt" :props="props" :auto-width="true">
-                  <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
-                    <q-tooltip>编辑</q-tooltip>
-                  </q-btn>
-                  <btn-del label="数据字典" @confirm="del(props.row)" />
-                </q-td>
-              </q-tr>
-            </template>
-          </q-table>
+                  @click="query"
+                  :loading="loading"
+                >
+                  <q-tooltip>搜索</q-tooltip>
+                </q-btn>
+              </template>
+            </q-input>
+            <q-space />
+            <q-btn-group outline>
+            <q-btn outline icon="add" color="primary" no-wrap label="新建数据字典" @click="add" />
+            <q-btn
+              outline
+              color="primary"
+              label="切换全屏" no-wrap v-if="$q.screen.gt.md"
+              @click="table.toggleFullscreen"
+              :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+            />
+          </q-btn-group>
+          </div>
         </template>
-        <template v-slot:after>
-          <item :selectedDictArray="selected" />
+        <template v-slot:body="props">
+          <q-tr
+            :props="props"
+            :class="['cursor-pointer',
+          (selected.length === 1 && selected[0].id === props.row.id)?'bg-cyan-3':'']"
+            @click.native="selectDict(props.row)"
+          >
+            <q-td key="index" :props="props">{{ props.row.index }}</q-td>
+            <q-td key="dictName" :props="props">{{ props.row.dictName }}</q-td>
+            <q-td key="dictCode" :props="props">{{ props.row.dictCode }}</q-td>
+            <q-td key="description" :props="props">{{ props.row.description }}</q-td>
+            <q-td key="opt" :props="props" :auto-width="true">
+              <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
+                <q-tooltip>编辑</q-tooltip>
+              </q-btn>
+              <btn-del label="数据字典" @confirm="del(props.row)" />
+            </q-td>
+          </q-tr>
         </template>
-      </q-splitter>
+      </q-table>
+    </div>
+    <div class="col-md-6 col-xs-12 bg-white q-pa-md">
+      <item :selectedDictArray="selected" />
     </div>
     <q-dialog maximized flat persistent ref="dialog" position="right">
       <q-form @submit="submit" class="dialog_card column">

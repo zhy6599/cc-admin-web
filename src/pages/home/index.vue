@@ -1,38 +1,49 @@
 <template>
   <q-page class="cc-admin row">
-    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm bg-gray-1">
-      <salestat />
-      <visitline />
-      <linkcard />
-      <saletab />
+    <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
+      <salestat :screenWidth="screenWidth" />
+      <visitline :screenWidth="screenWidth" />
+      <saletab :screenWidth="screenWidth" />
     </div>
   </q-page>
 </template>
 
 <script>
-import visitline from 'components/chart/visitline';
+import { debounce } from 'quasar';
 import salestat from 'components/chart/salestat';
-import linkcard from 'components/chart/linkcard';
+import visitline from 'components/chart/visitline';
 import saletab from 'components/chart/saletab';
 
 export default {
   name: 'Dashboard',
   components: {
-    saletab,
-    visitline,
-    linkcard,
     salestat,
+    visitline,
+    saletab,
   },
   data() {
     return {
+      screenWidth: document.body.clientWidth,
     };
   },
   methods: {
-    initDict() {
+    doResize() {
+      this.screenWidth = this.clientWidth;
     },
   },
   mounted() {
-    this.initDict();
+    this.onResize = debounce(this.doResize, 500);
+    this.onResize();
+  },
+  watch: {
+    clientWidth() {
+      this.onResize();
+    },
+  },
+  computed: {
+    clientWidth() {
+      return this.$q.screen.width;
+    },
   },
 };
 </script>

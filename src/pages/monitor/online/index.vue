@@ -1,6 +1,6 @@
 <template>
-  <q-page class="cc-admin column">
-    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm">
+  <q-page class="cc-admin">
+    <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
       <q-table
         flat
         color="primary"
@@ -17,51 +17,57 @@
         selection="multiple"
         :selected.sync="selected"
       >
-        <template #top-left>
-          <div class="row no-wrap">
-            <div class="row items-center">
-              <q-input
-                outlined
-                dense
-                placeholder="请输入关键字搜索"
-                class="on-left"
-                @input="query"
-                debounce="500"
-                v-model="key"
+        <template v-slot:top="table">
+          <div class="row no-wrap full-width">
+            <q-input
+              clearable
+              outlined
+              dense
+              placeholder="请输入关键字搜索"
+              class="on-left"
+              @input="query"
+              debounce="500"
+              v-model="key"
+            >
+              <template #append>
+                <q-btn flat round icon="search" color="primary" @click="query" :loading="loading">
+                  <q-tooltip>搜索</q-tooltip>
+                </q-btn>
+              </template>
+            </q-input>
+            <q-space />
+            <q-btn-group outline>
+              <q-btn
+                outline
+                color="primary"
+                label="切换全屏"
+                no-wrap
+                v-if="$q.screen.gt.md"
+                @click="table.toggleFullscreen"
+                :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              />
+              <q-btn-dropdown
+                outline
+                color="primary"
+                label="自选列"
+                no-wrap
+                v-if="$q.screen.gt.md"
+                icon="view_list"
               >
-                <template #append>
-                  <q-btn flat round icon="search" color="primary" @click="query" :loading="loading">
-                    <q-tooltip>搜索</q-tooltip>
-                  </q-btn>
-                </template>
-              </q-input>
-            </div>
+                <q-list>
+                  <q-item tag="label" v-for="item in columns" :key="item.name">
+                    <q-item-section avatar>
+                      <q-checkbox v-model="group" :val="item.name" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>{{item.label}}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+            </q-btn-group>
           </div>
         </template>
-        <template #top-right="table">
-          <q-btn-group outline>
-            <q-btn
-              outline
-              color="primary"
-              label="切换全屏"
-              @click="table.toggleFullscreen"
-              :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-            />
-            <q-btn-dropdown outline color="primary" label="自选列" icon="view_list">
-              <q-list>
-                <q-item tag="label" v-for="item in columns" :key="item.name">
-                  <q-item-section avatar>
-                    <q-checkbox v-model="group" :val="item.name" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{item.label}}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
-          </q-btn-group>
-        </template>
-
         <template #body-cell-opt="props">
           <q-td :props="props" :auto-width="true">
             <q-btn flat round dense color="warning" icon="mdi-login" @click.stop>
@@ -205,7 +211,7 @@ export default {
     initDict() {
     },
     officeLine() {
-      this.$error('权限不足');
+      this.$error('演示系统不支持此操作');
     },
   },
   mounted() {

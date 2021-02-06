@@ -342,6 +342,15 @@ export default [
           icon: 'assignment_ind',
         },
       },
+      {
+        id: 817,
+        path: '/demo/test',
+        component: 'demo/test',
+        meta: {
+          title: '测试',
+          icon: 'assignment_ind',
+        },
+      },
     ],
   },
 ];

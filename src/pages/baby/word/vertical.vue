@@ -29,7 +29,7 @@
       </q-toolbar>
     </q-header>
     <q-page-container>
-      <q-page class="cc-admin column q-pa-sm">
+      <q-page class="cc-admin q-pa-sm">
         <div class="q-pa-md">
           <q-table
             grid

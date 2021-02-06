@@ -1,10 +1,10 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
-    <div class="col column bg-white shadow-2 q-pa-md">
+  <q-page class="cc-admin q-pa-sm">
+    <div class="col bg-white shadow-2 q-pa-md">
       <div class="row items-center justify-start q-mb-md">
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
           <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>日志类型：</q-item-label>
+            <q-item-label>类型：</q-item-label>
           </q-item-section>
           <q-select
             outlined
@@ -17,9 +17,9 @@
             class="col"
           />
         </q-item>
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12" v-if="$q.screen.gt.md">
           <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>日志内容：</q-item-label>
+            <q-item-label>内容：</q-item-label>
           </q-item-section>
           <q-input
             outlined
@@ -32,7 +32,7 @@
         </q-item>
         <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
           <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>操作类型：</q-item-label>
+            <q-item-label>操作：</q-item-label>
           </q-item-section>
           <q-select
             outlined
@@ -45,9 +45,10 @@
             class="col"
           />
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        v-if="$q.screen.gt.md">
           <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>请求路径：</q-item-label>
+            <q-item-label>路径：</q-item-label>
           </q-item-section>
           <q-input
             outlined
@@ -58,9 +59,10 @@
             class="col"
           />
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        v-if="$q.screen.gt.md">
           <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>请求参数：</q-item-label>
+            <q-item-label>参数：</q-item-label>
           </q-item-section>
           <q-input
             outlined
@@ -71,9 +73,10 @@
             class="col"
           />
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        v-if="$q.screen.gt.md">
           <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>耗时大于：</q-item-label>
+            <q-item-label>耗时：</q-item-label>
           </q-item-section>
           <q-input
             outlined
@@ -84,11 +87,12 @@
             class="col"
           />
         </q-item>
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12" v-if="$q.screen.gt.md">
           <q-item-section class="col-3 text-right gt-sm">
             <q-item-label>IP：</q-item-label>
           </q-item-section>
           <q-input
+            placeholder="请输入IP"
             outlined
             dense
             v-model="searchForm.ip"
@@ -98,9 +102,9 @@
           />
         </q-item>
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
-          <q-item-label class="col-12 text-right">
+          <q-item-label class="col-12 text-right row no-wrap justify-center">
             <q-btn
-              unelevated
+              unelevated no-wrap
               label="查询"
               color="primary"
               class="q-mr-sm no-border-radius"
@@ -151,11 +155,12 @@
             <q-btn
               outline
               color="primary"
-              label="切换全屏"
+              label="切换全屏" no-wrap v-if="$q.screen.gt.md"
               @click="table.toggleFullscreen"
               :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
             />
-            <q-btn-dropdown outline color="primary" label="自选列" icon="view_list">
+            <q-btn-dropdown outline color="primary" label="自选列"
+            v-if="$q.screen.gt.md" icon="view_list">
               <q-list>
                 <q-item tag="label" v-for="item in columns" :key="item.name">
                   <q-item-section avatar>
@@ -195,6 +200,7 @@
 </template>
 
 <script>
+import { debounce } from 'quasar';
 import { IndexMixin } from 'boot/mixins';
 import { getDictLabel } from 'boot/dictionary';
 
@@ -254,9 +260,15 @@ export default {
       url: {
         list: '/sys/log/list',
       },
+      drawer: true,
     };
   },
   methods: {
+    doResize() {
+      this.$nextTick(() => {
+        this.drawer = this.$q.screen.gt.sm;
+      });
+    },
     show() {
       this.showQuery = true;
       this.tableLabel = '收起';
@@ -266,6 +278,19 @@ export default {
       this.tableLabel = '展开';
     },
     getDictLabel,
+  },
+  mounted() {
+    this.onResize = debounce(this.doResize, 500);
+  },
+  watch: {
+    screenWidth() {
+      this.onResize();
+    },
+  },
+  computed: {
+    screenWidth() {
+      return this.$q.screen.width;
+    },
   },
 };
 </script>

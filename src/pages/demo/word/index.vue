@@ -29,7 +29,7 @@
       </q-toolbar>
     </q-header>
     <q-page-container>
-      <q-page class="cc-admin column q-pa-sm bg-positive">
+      <q-page class="cc-admin q-pa-sm bg-positive">
         <div class="col column justify-center items-center">
           <q-card class="fit bg-cyan-2">
             <q-card-section>

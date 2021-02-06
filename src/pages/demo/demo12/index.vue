@@ -2,7 +2,7 @@
   <desTabs :tabs="tabs" @selectPanel="setDesTab" />
 </template>
 <script>
-import desTabs from 'components/tabpanel/index.vue';
+import desTabs from 'components/layout/tabpanel/index.vue';
 
 export default {
   name: 'App',

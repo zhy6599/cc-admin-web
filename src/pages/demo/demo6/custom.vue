@@ -1,5 +1,5 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
+  <q-page class="cc-admin q-pa-sm">
     <div class="col column bg-white shadow-2">
       <div id="mainChart" class="col"></div>
     </div>

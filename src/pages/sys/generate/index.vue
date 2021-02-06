@@ -1,6 +1,6 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
-    <div class="col column bg-white shadow-2 q-pa-md">
+  <q-page class="cc-admin q-pa-sm">
+    <div class="col bg-white shadow-2 q-pa-md">
       <q-table
         :data="list"
         row-key="id"
@@ -15,8 +15,8 @@
         :rows-per-page-options="[10,20,50]"
         :pagination.sync="pagination"
       >
-        <template #top-left>
-          <div class="row no-wrap">
+        <template v-slot:top="table">
+          <div class="row no-wrap full-width">
             <q-input
               clearable
               outlined
@@ -25,34 +25,41 @@
               class="on-left"
               @input="query"
               debounce="500"
-              v-model.trim="filter"
+              v-model="key"
             >
               <template #append>
-                <q-btn flat round icon="search" color="primary" @click="query" :loading="loading">
+                <q-btn
+                  flat
+                  round
+                  icon="search"
+                  color="primary"
+                  @click="query"
+                  :loading="loading"
+                >
                   <q-tooltip>搜索</q-tooltip>
                 </q-btn>
               </template>
             </q-input>
+            <q-space />
+            <q-btn-group outline>
+              <q-btn
+                outline no-wrap
+                icon="mdi-table-sync"
+                color="primary"
+                label="导入数据库表"
+                @click="openTableSelect()"
+              />
+              <q-btn
+                outline
+                color="primary"
+                label="切换全屏" no-wrap v-if="$q.screen.gt.md"
+                @click="table.toggleFullscreen"
+                :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              />
+            </q-btn-group>
           </div>
         </template>
-        <template #top-right="table">
-          <q-btn-group outline>
-            <q-btn
-              outline
-              icon="mdi-table-sync"
-              color="primary"
-              label="导入数据库表"
-              @click="openTableSelect()"
-            />
-            <q-btn
-              outline
-              color="primary"
-              label="切换全屏"
-              @click="table.toggleFullscreen"
-              :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-            />
-          </q-btn-group>
-        </template>
+
         <template v-slot:header="props">
           <q-tr :props="props" class="bg-grey-2">
             <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
@@ -95,6 +102,16 @@
               @click="viewCode(table)"
             >
               <q-tooltip>代码查看</q-tooltip>
+            </q-btn>
+            <q-btn
+              flat
+              round
+              dense
+              color="deep-purple-12"
+              icon="mdi-cloud-download"
+              @click="downCode(table)"
+            >
+              <q-tooltip>代码下载</q-tooltip>
             </q-btn>
             <q-btn
               flat
@@ -254,6 +271,31 @@ export default {
     viewCode(t) {
       this.id = t.row.id;
       this.$refs.preview.show(this.id);
+    },
+    downCode(t) {
+      const fileName = 'generate';
+      this.exporting = true;
+      this.$downFile(`/generate/downloadCode?id=${t.row.id}`).then((data) => {
+        if (!data) {
+          this.$message.warning('代码下载失败');
+          return;
+        }
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          window.navigator.msSaveBlob(new Blob([data], { type: 'application/octet-stream' }), `${fileName}.zip`);
+        } else {
+          const url = window.URL.createObjectURL(new Blob([data], { type: 'application/octet-stream' }));
+          const link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', `${fileName}.zip`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link); // 下载完成移除元素
+          window.URL.revokeObjectURL(url); // 释放掉blob对象
+        }
+      }).finally(() => {
+        this.exporting = false;
+      });
     },
     open(t) {
       this.base = this.reset();

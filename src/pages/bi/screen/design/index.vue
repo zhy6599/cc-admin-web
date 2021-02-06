@@ -70,12 +70,14 @@
 
     <q-drawer show-if-above v-model="left" side="left" bordered :width="230">
       <div class="row no-wrap fit overflow-hidden">
-        <layout :items.sync="layout" :selId="selChartId" @selectItem="selectItem" />
+        <layout :items.sync="layout" :selChartArray="selChartArray"
+        :selChart="selChart" @selectItem="selectItem" @addItem="addItem" @cutItem="cutItem" />
       </div>
     </q-drawer>
     <q-drawer show-if-above v-model="right" side="right" bordered :width="590">
       <div class="row no-wrap fit overflow-hidden">
         <chartsetting v-if="selType === 'chart'" :config.sync="config" />
+        <groupsetting v-if="selType === 'group'" :config.sync="config" />
         <backgroundsetting v-if="selType === 'cursor'" :config.sync="backgroundConfig" />
         <summarysetting v-if="selType === 'summary'" :config.sync="config" />
         <textsetting v-if="selType === 'text'" :config.sync="config" />
@@ -86,7 +88,7 @@
     </q-drawer>
 
     <q-page-container>
-      <q-page class="cc-admin column q-pa-sm">
+      <q-page class="cc-admin q-pa-sm scroll">
         <div class="col column justify-center items-center">
           <div :style="backgroundStyle">
             <vue-draggable-resizable
@@ -97,25 +99,25 @@
               :w="item.w"
               :h="item.h"
               :z="item.z"
-              :active="item.active"
               :parent="true"
-              :class="selChartId === item.i?'grid-item-select':'no-border'"
+              :class="selChartArray.indexOf(item)>-1?'grid-item-select':'no-border'"
               :grid="[1,1]"
               @resizestop="resizedEvent"
-              @activated="selectItem(item.i)"
+              @activated="selectItem(item)"
               @deactivated="item.active=false"
               @dragging="onDrag"
             >
               <div
                 :class="getItemClass(item)"
                 :id="item.key"
-                @click="selectItem(item.i)"
+                @click="selectItem(item)"
                 @dragenter.prevent
               >
                 <textview v-if="item.type === 'text'" :config="item.config" />
                 <imageview v-if="item.type === 'image'" :config="item.config" />
                 <chartview v-if="item.type === 'chart'" :config="item.config" />
                 <videoview v-if="item.type === 'video'" :config="item.config" />
+                <groupview v-if="item.type === 'group'" :config="item.config" />
               </div>
             </vue-draggable-resizable>
           </div>
@@ -126,6 +128,7 @@
 </template>
 
 <script>
+import { debounce } from 'quasar';
 import { themeMap, chartList, chartConfig } from 'boot/datatype';
 import VueDraggableResizable from 'vue-draggable-resizable';
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
@@ -139,6 +142,8 @@ import imageview from './modules/view/imageview';
 import imagesetting from './modules/setting/imagesetting';
 import videoview from './modules/view/videoview';
 import videosetting from './modules/setting/videosetting';
+import groupview from './modules/view/groupview';
+import groupsetting from './modules/setting/groupsetting';
 import layout from './modules/layout';
 
 export default {
@@ -155,6 +160,8 @@ export default {
     imagesetting,
     videoview,
     videosetting,
+    groupview,
+    groupsetting,
   },
   data() {
     return {
@@ -169,10 +176,12 @@ export default {
       allParam: {}, // 所有请求参数
       left: true,
       right: true,
+      moving: false, // 移动呢
       loading: false,
       saveLoading: false,
       selType: 'cursor',
-      selChartId: null,
+      selChart: null,
+      selChartArray: [],
       copyedItem: null,
       config: {
       },
@@ -230,27 +239,22 @@ export default {
         }
       });
     },
-    onActivated(i) {
-      this.selChartId = i;
-      if (this.layout.filter((item) => item.i === i).length === 1) {
-        const selChart = this.layout.filter((item) => item.i === i)[0];
-        this.config = selChart.config;
-        this.selType = selChart.type;
-      }
-    },
-    onDeactivated(i) {
-      this.selChartId = i;
-      if (this.layout.filter((item) => item.i === i).length === 1) {
-        const selChart = this.layout.filter((item) => item.i === i)[0];
-        selChart.active = false;
-      }
-    },
-    selectItem(i) {
-      this.selChartId = i;
-      if (this.layout.filter((item) => item.i === i).length === 1) {
-        const selChart = this.layout.filter((item) => item.i === i)[0];
-        this.config = selChart.config;
-        this.selType = selChart.type;
+
+    selectItem(selItem) {
+      if (this.moving) {
+        this.moving = false;
+      } else if (this.onCtrl && this.selChartArray.length > 0) {
+        if (this.selChartArray.indexOf(selItem) < 0) {
+          this.selChartArray.push(selItem);
+          this.selChart = selItem;
+        }
+      } else {
+        this.selChart = selItem;
+        this.selChartArray = [selItem];
+        if (selItem) {
+          this.config = selItem.config;
+          this.selType = selItem.type;
+        }
       }
     },
     getItemClass(item) {
@@ -263,9 +267,9 @@ export default {
       return itemClsList;
     },
     removeItem() {
-      const selItem = this.layout.filter((item) => item.i === this.selChartId);
-      if (selItem.length === 1) {
-        this.layout.splice(this.layout.indexOf(selItem[0]), 1);
+      const selItem = this.selChart;
+      if (selItem) {
+        this.layout.splice(this.layout.indexOf(selItem), 1);
         this.selType = 'cursor';
       }
       this.addHistory();
@@ -310,14 +314,14 @@ export default {
       }
     },
     cutItem() {
-      if (this.layout.filter((item) => item.i === this.selChartId).length === 1) {
-        [this.copyedItem] = (this.layout.filter((item) => item.i === this.selChartId));
+      if (this.layout.filter((item) => item === this.selChart).length === 1) {
+        [this.copyedItem] = (this.layout.filter((item) => item === this.selChart));
         this.removeItem();
       }
     },
     copyItem() {
-      if (this.layout.filter((item) => item.i === this.selChartId).length === 1) {
-        [this.copyedItem] = (this.layout.filter((item) => item.i === this.selChartId));
+      if (this.layout.filter((item) => item === this.selChart).length === 1) {
+        [this.copyedItem] = (this.layout.filter((item) => item === this.selChart));
       }
     },
     pasteItem() {
@@ -330,7 +334,7 @@ export default {
         this.addHistory();
       }
     },
-    addItem(type) {
+    addItem(type, itemConfig) {
       const item = {
         x: 0,
         y: 0,
@@ -344,13 +348,16 @@ export default {
       };
       if (type === 'cursor') {
         this.selType = 'cursor';
-        this.selChartId = null;
+        this.selChart = null;
         return;
       }
-      item.config = chartConfig(type);
-
+      if (type === 'group') {
+        Object.assign(item, itemConfig);
+      } else {
+        item.config = chartConfig(type);
+      }
       this.layout.push(item);
-      this.selectItem(this.index);
+      this.selectItem(item);
       this.addHistory();
     },
     viewScreen() {
@@ -394,18 +401,55 @@ export default {
         this.saveLoading = false;
       });
     },
-    resizedEvent(x, y, w, h) {
-      const selChart = this.layout.filter((item) => item.i === this.selChartId)[0];
-      selChart.x = x;
-      selChart.y = y;
-      selChart.w = w;
-      selChart.h = h;
-      selChart.config.needResize = true;
+    doSizeResize(cx, cy, cw, ch) {
+      this.selChartArray.filter((idx) => idx !== this.selChart).forEach((item) => {
+        if (item) {
+          this.sizeResizeItem(item, cx, cy, cw, ch);
+        }
+      });
+      // 如果当前是组合对象，那么子对象也要一起动
+      if (this.selChart.type === 'group') {
+        this.selChart.config.chartArray.forEach((sub) => {
+          this.sizeResizeItem(sub, cx, cy, cw, ch);
+        });
+      }
     },
-    onDrag(x, y) {
-      const selChart = this.layout.filter((item) => item.i === this.selChartId)[0];
-      selChart.x = x;
-      selChart.y = y;
+    sizeResizeItem(item, cx, cy, cw, ch) {
+      const clientWidth = this.backgroundConfig.width;
+      const clientHight = this.backgroundConfig.height;
+      // 调整尺寸
+      item.x += cx;
+      item.y += cy;
+      item.w += cw;
+      item.h += ch;
+      // 边界检查，最小尺寸是12*12
+      item.x = item.x < 0 ? 0 : item.x;
+      item.x = item.x > clientWidth ? clientWidth - 12 : item.x;
+      item.y = item.y < 0 ? 0 : item.y;
+      item.y = item.y > clientHight ? clientHight - 12 : item.y;
+      item.w = item.w < 12 ? 12 : item.w;
+      item.h = item.h < 12 ? 12 : item.h;
+    },
+
+    resizedEvent(x, y, w, h) {
+      const { selChart } = this;
+      if (selChart) {
+        this.sizeResize((x - selChart.x), (y - selChart.y), (w - selChart.w), (h - selChart.h));
+        selChart.x = x;
+        selChart.y = y;
+        selChart.w = w;
+        selChart.h = h;
+        selChart.config.needResize = true;
+      }
+    },
+    doOnDrag(x, y) {
+      const { selChart } = this;
+      this.moving = true;
+      if (selChart) {
+        this.sizeResize((x - selChart.x), (y - selChart.y), 0, 0);
+        selChart.x = x;
+        selChart.y = y;
+      }
     },
     paramChange(param) {
       // 将请求参数合并到一起
@@ -415,14 +459,16 @@ export default {
     caclBackground() {
 
     },
-    moveItem(dir, type) {
+    doMoveItem(dir, type) {
       this.layout.forEach((item) => {
-        if (item.i === this.selChartId) {
+        if (this.selChartArray.indexOf(item)) {
           const step = this.onShfit ? this.shiftMove : this.move;
           if (type === 'add') {
             item[dir] += step;
+            this.sizeResize(dir === 'x' ? step : 0, dir === 'y' ? step : 0, dir === 'w' ? step : 0, dir === 'h' ? step : 0);
           } else if (item[dir] >= step) {
             item[dir] -= step;
+            this.sizeResize(dir === 'x' ? -step : 0, dir === 'y' ? -step : 0, dir === 'w' ? -step : 0, dir === 'h' ? -step : 0);
           }
           if (dir === 'w' || dir === 'h') {
             item.config.needResize = true;
@@ -431,10 +477,10 @@ export default {
       });
     },
     setKeyStatus(e, status) {
-      if (e.code === 'ShiftLeft') {
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
         this.onShfit = status;
       }
-      if (e.code === 'ControlLeft') {
+      if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
         this.onCtrl = status;
       }
       if (status) {
@@ -493,6 +539,9 @@ export default {
     document.onkeyup = (e) => {
       this.setKeyStatus(e, false);
     };
+    this.moveItem = debounce(this.doMoveItem, 50);
+    this.sizeResize = debounce(this.doSizeResize, 50);
+    this.onDrag = debounce(this.doOnDrag, 50);
   },
   computed: {
     backgroundStyle() {

@@ -35,11 +35,11 @@
       </template>
       <template #top-right="table">
         <q-btn-group outline>
-          <q-btn outline icon="add" color="primary" label="新建字典列表" @click="add" />
+          <q-btn outline icon="add" color="primary" no-wrap label="新建字典列表" @click="add" />
           <q-btn
             outline
             color="primary"
-            label="切换全屏"
+            label="切换全屏" no-wrap v-if="$q.screen.gt.md"
             @click="table.toggleFullscreen"
             :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
           />

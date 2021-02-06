@@ -1,37 +1,55 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
-    <div class="col column bg-white shadow-2 q-pa-md">
+  <q-page class="cc-admin q-pa-sm">
+    <div class="col bg-white shadow-2 q-pa-md">
       <div class="row items-center justify-start q-mb-md">
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
           <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>登录账号：</q-item-label>
+            <q-item-label>账号：</q-item-label>
           </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.username" />
+            <q-input
+              outlined
+              dense
+              square
+              clearable
+              v-model="searchForm.username"
+              placeholder="账号"
+            />
           </q-item-section>
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
           <q-item-section class="col-3 text-right gt-sm">
             <q-item-label>姓名：</q-item-label>
           </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.realname" />
+            <q-input
+              outlined
+              dense
+              square
+              clearable
+              v-model="searchForm.realname"
+              placeholder="姓名"
+            />
           </q-item-section>
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item
+          v-show="showQuery"
+          v-if="$q.screen.gt.md"
+          class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        >
           <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>电子邮件：</q-item-label>
+            <q-item-label>邮箱：</q-item-label>
           </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.email" />
+            <q-input outlined dense square clearable v-model="searchForm.email" placeholder="邮箱" />
           </q-item-section>
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item v-if="$q.screen.gt.md" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
           <q-item-section class="col-3 text-right gt-sm">
             <q-item-label>电话：</q-item-label>
           </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.phone" />
+            <q-input outlined dense square clearable v-model="searchForm.phone" placeholder="电话" />
           </q-item-section>
         </q-item>
         <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
@@ -48,18 +66,27 @@
               map-options
               :options="userStatus"
               class="col"
+              placeholder="状态"
             />
           </q-item-section>
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item
+          v-show="showQuery"
+          v-if="$q.screen.gt.md"
+          class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        >
           <q-item-section class="col-3 text-right gt-sm">
             <q-item-label>工号：</q-item-label>
           </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.workNo" />
+            <q-input outlined dense square clearable v-model="searchForm.workNo" placeholder="工号" />
           </q-item-section>
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+        <q-item
+          v-show="showQuery"
+          v-if="$q.screen.gt.md"
+          class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        >
           <q-item-section class="col-3 text-right gt-sm">
             <q-item-label>职务：</q-item-label>
           </q-item-section>
@@ -73,14 +100,16 @@
               map-options
               :options="sysPosition"
               class="col"
+              placeholder="职务"
             />
           </q-item-section>
         </q-item>
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
-          <q-item-label class="col-12 text-right">
+          <q-item-label class="col-12 text-right row no-wrap justify-center">
             <q-btn
               unelevated
               label="查询"
+              no-wrap
               color="primary"
               class="q-mr-sm no-border-radius"
               :loading="loading"
@@ -94,6 +123,7 @@
               outline
               unelevated
               label="重置"
+              no-wrap
               class="q-mr-sm no-border-radius"
               color="secondary"
               @click="searchReset"
@@ -129,22 +159,23 @@
       >
         <template #top-right="table">
           <q-btn-group outline>
-            <q-btn
-              outline
-              icon="add"
-              color="primary"
-              label="新建用户表"
-              @click="add"
-              v-auth="'user:add'"
-            />
+            <q-btn outline icon="add" color="primary" label="新建" @click="add" />
             <q-btn
               outline
               color="primary"
               label="切换全屏"
+              no-wrap
+              v-if="$q.screen.gt.md"
               @click="table.toggleFullscreen"
               :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
             />
-            <q-btn-dropdown outline color="primary" label="自选列" icon="view_list">
+            <q-btn-dropdown
+              outline
+              color="primary"
+              label="自选列"
+              v-if="$q.screen.gt.md"
+              icon="view_list"
+            >
               <q-list>
                 <q-item v-show="showQuery" tag="label" v-for="item in columns" :key="item.name">
                   <q-item-section avatar>
@@ -157,10 +188,43 @@
               </q-list>
             </q-btn-dropdown>
             <q-btn
+              outline
+              no-wrap
+              v-if="$q.screen.gt.sm"
+              label="导入"
+              icon="mdi-cloud-upload-outline"
+              :loading="importing"
+              color="primary"
+              @click="importExcel"
+            >
+              <q-uploader
+                auto-upload
+                ref="excelUploader"
+                :max-files="1"
+                class="hidden"
+                :url="importExcelUrlFull"
+                field-name="file"
+                :headers="[{name: 'authorization', value: $store.state.User.authorization}]"
+                @uploaded="importedExcel"
+              />
+            </q-btn>
+            <q-btn
+              outline
+              no-wrap
+              v-if="$q.screen.gt.sm"
+              :loading="exporting"
+              label="导出"
+              icon="mdi-cloud-download-outline"
+              color="primary"
+              @click="exportExcel('用户列表')"
+            />
+            <q-btn
               :disable="selected.length === 0"
               outline
               color="primary"
               label="批量删除"
+              no-wrap
+              v-if="$q.screen.gt.sm"
               @click="showConfirm()"
               icon="mdi-delete-variant"
             />
@@ -169,7 +233,7 @@
         <template #body-cell-avatar="props">
           <q-td key="avatar" :props="props">
             <q-avatar v-if="props.row.avatar">
-              <img style="width: 30px;height: 30px;" :src="props.row.avatar" />
+              <img style="width: 30px;height: 30px;" :src="imagePath(props.row.avatar)" />
             </q-avatar>
           </q-td>
         </template>
@@ -215,7 +279,7 @@
       </q-table>
     </div>
     <q-dialog ref="changePassWord" maximized flat persistent position="right">
-      <q-form @submit="changePassWord" class="dialog_card column">
+      <q-form @submit="changePassWord" class="dialog_card">
         <div class="view_title justify-between q-px-md">
           修改密码
           <q-btn dense outline round size="sm" icon="clear" v-close-popup />
@@ -267,7 +331,7 @@
     <q-dialog maximized flat persistent ref="dialog" position="right">
       <q-form @submit="submit" class="dialog_card column">
         <h5 class="view_title justify-between q-px-md">
-          {{editType}}用户表
+          {{editType}}用户
           <q-btn dense outline round icon="clear" size="sm" v-close-popup />
         </h5>
         <q-scroll-area class="col">
@@ -314,7 +378,28 @@
             </div>
             <div class="col-6">
               <h5>头像：</h5>
-              <q-input outlined dense square clearable v-model="form.avatar" type="text" />
+              <div class="row wrap justify-center items-center content-center">
+                <q-btn round @click="importAvatar">
+                  <q-avatar size="100px">
+                    <q-img style="width:100px;height:100px;" :src="imagePath(form.avatar)"></q-img>
+                  </q-avatar>
+                  <q-uploader
+                    auto-upload
+                    ref="avatarUploader"
+                    :max-files="1"
+                    class="hidden"
+                    fieldName="file"
+                    :headers="headers"
+                    accept="image/*"
+                    :url="uploadUrl"
+                    field-name="file"
+                    @uploaded="importedAvatar"
+                  />
+                  <q-tooltip>
+                    点击上传图片
+                  </q-tooltip>
+                </q-btn>
+              </div>
             </div>
             <div class="col-6">
               <h5>性别：</h5>
@@ -392,6 +477,9 @@ export default {
     return {
       showQuery: true,
       tableLabel: '展开',
+      headers: [{ name: 'Authorization', value: localStorage.Authorization }],
+      uploadUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/upload`,
+      imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
       columns: [
         {
           name: 'index',
@@ -460,6 +548,32 @@ export default {
   methods: {
     requiredTest,
     getDictLabel,
+    importAvatar() {
+      this.$refs.avatarUploader.pickFiles();
+    },
+    importedAvatar({ xhr }) {
+      const response = JSON.parse(xhr.responseText);
+      if (response.success) {
+        this.form.avatar = response.message;
+        this.$q.notify('上传成功');
+      } else {
+        this.$q.notify({
+          color: 'red',
+          message: '上传失败',
+        });
+      }
+      this.$refs.avatarUploader.removeUploadedFiles();
+    },
+    imagePath(src) {
+      let path = '';
+      if (src) {
+        if (src.startsWith('http')) {
+          return src;
+        }
+        path = `${this.imgUrl}/${src}`;
+      }
+      return path;
+    },
     show() {
       this.showQuery = true;
       this.tableLabel = '收起';

@@ -1,5 +1,10 @@
 <template>
-  <div ref="chart"  :style="chartStyle"/>
+  <div ref="chart"  :style="chartStyle">
+    <q-img v-if='!config.viewId'
+    :style="imageStyle"
+    src="/img/bi/empty-chart.png"
+    />
+  </div>
 </template>
 
 <script>
@@ -42,6 +47,11 @@ export default {
       ti: 0,
       loading: false,
       tableData: [],
+      imageStyle: {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+      },
     };
   },
   computed: {

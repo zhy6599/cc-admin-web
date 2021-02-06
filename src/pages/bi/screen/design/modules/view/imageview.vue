@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     imagePath() {
-      let path = '';
+      let path = '/img/bi/empty-img.jpg';
       if (this.config.src) {
         path = `${this.imgUrl}/${this.config.src}`;
       }

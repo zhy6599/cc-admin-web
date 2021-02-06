@@ -1,6 +1,6 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
-    <div class="col column bg-white shadow-2 q-pa-md">
+  <q-page class="cc-admin q-pa-sm">
+    <div class="col bg-white shadow-2 q-pa-md">
       <div class="row items-center justify-start q-mb-md">
         <div class="row items-center q-mb-md col-3">
           <span class="q-ml-md">日志类型：</span>
@@ -120,11 +120,12 @@
             <q-btn
               outline
               color="primary"
-              label="切换全屏"
+              label="切换全屏" no-wrap v-if="$q.screen.gt.md"
               @click="table.toggleFullscreen"
               :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
             />
-            <q-btn-dropdown outline color="primary" label="自选列" icon="view_list">
+            <q-btn-dropdown outline color="primary" label="自选列"
+            v-if="$q.screen.gt.md" icon="view_list">
               <q-list>
                 <q-item tag="label" v-for="item in columns" :key="item.name">
                   <q-item-section avatar>

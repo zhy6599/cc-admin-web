@@ -1,6 +1,6 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
-    <div class="col column bg-white shadow-2 q-pa-md">
+  <q-page class="cc-admin q-pa-sm">
+    <div class="col bg-white shadow-2 q-pa-md">
       <q-table
         flat
         color="primary"
@@ -17,39 +17,35 @@
         selection="multiple"
         :selected.sync="selected"
       >
-        <template #top-left>
-          <div class="row no-wrap">
-            <div class="row items-center">
-              <q-input
-                clearable
-                outlined
-                dense
-                placeholder="请输入关键字搜索"
-                class="on-left"
-                @input="query"
-                debounce="500"
-                v-model="key"
-              >
-                <template #append>
-                  <q-btn
-                    flat
-                    round
-                    icon="search"
-                    color="primary"
-                    @click="query"
-                    :loading="loading"
-                  >
-                    <q-tooltip>搜索</q-tooltip>
-                  </q-btn>
-                </template>
-              </q-input>
-            </div>
-          </div>
-        </template>
-        <template #top-right="table">
+        <template v-slot:top="table">
+          <div class="row no-wrap full-width">
+            <q-input
+              clearable
+              outlined
+              dense
+              placeholder="请输入关键字搜索"
+              class="on-left"
+              @input="query"
+              debounce="500"
+              v-model="key"
+            >
+              <template #append>
+                <q-btn
+                  flat
+                  round
+                  icon="search"
+                  color="primary"
+                  @click="query"
+                  :loading="loading"
+                >
+                  <q-tooltip>搜索</q-tooltip>
+                </q-btn>
+              </template>
+            </q-input>
+            <q-space />
           <q-btn-group outline>
             <q-btn
-              outline
+              outline no-wrap
               icon="add"
               color="primary"
               label="新建"
@@ -58,14 +54,14 @@
             <q-btn
               outline
               color="primary"
-              label="切换全屏"
+              label="切换全屏" no-wrap v-if="$q.screen.gt.md"
               @click="table.toggleFullscreen"
               :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
             />
             <q-btn-dropdown
               outline
               color="primary"
-              label="自选列"
+              label="自选列" no-wrap v-if="$q.screen.gt.md"
               icon="view_list"
             >
               <q-list>
@@ -90,13 +86,13 @@
               :disable="selected.length === 0"
               outline
               color="primary"
-              label="批量删除"
+              label="批量删除"  no-wrap v-if="$q.screen.gt.sm"
               @click="showConfirm()"
               icon="mdi-delete-variant"
             />
           </q-btn-group>
+          </div>
         </template>
-
         <template #body-cell-status="props">
           <q-td
             key="status"

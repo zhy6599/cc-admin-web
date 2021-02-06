@@ -1,11 +1,12 @@
 <template>
   <q-page class="cc-admin row">
     <viewcatalog
-      class="q-mt-sm q-mb-sm q-ml-sm"
+      v-if="this.$q.screen.gt.md"
+      class="col-md-2 q-mt-sm q-mb-sm q-ml-sm"
       type="BiScreen"
       @select="selectCatalog"
     />
-    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm">
+    <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
       <q-table
         flat
         color="primary"
@@ -22,91 +23,70 @@
         selection="multiple"
         :selected.sync="selected"
       >
-        <template #top-left>
-          <div class="row no-wrap">
-            <div class="row items-center">
-              <q-input
-                outlined
-                dense
-                placeholder="请输入关键字搜索"
-                class="on-left"
-                clearable
-                @input="query"
-                debounce="500"
-                v-model="key"
+        <template v-slot:top="table">
+          <div class="row no-wrap full-width">
+            <q-input
+              clearable
+              outlined
+              dense
+              placeholder="请输入关键字搜索"
+              class="on-left"
+              @input="query"
+              debounce="500"
+              v-model="key"
+            >
+              <template #append>
+                <q-btn flat round icon="search" color="primary" @click="query" :loading="loading">
+                  <q-tooltip>搜索</q-tooltip>
+                </q-btn>
+              </template>
+            </q-input>
+            <q-space />
+            <q-btn-group outline>
+              <q-btn outline no-wrap icon="add" color="primary" label="新建电子报告" @click="add" />
+              <q-btn
+                outline
+                color="primary"
+                label="切换全屏"
+                no-wrap
+                v-if="$q.screen.gt.md"
+                @click="table.toggleFullscreen"
+                :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              />
+              <q-btn-dropdown
+                outline
+                color="primary"
+                label="自选列"
+                no-wrap
+                v-if="$q.screen.gt.md"
+                icon="view_list"
               >
-                <template #append>
-                  <q-btn
-                    flat
-                    round
-                    icon="search"
-                    color="primary"
-                    @click="query"
-                    :loading="loading"
-                  >
-                    <q-tooltip>搜索</q-tooltip>
-                  </q-btn>
-                </template>
-              </q-input>
-            </div>
+                <q-list>
+                  <q-item tag="label" v-for="item in columns" :key="item.name">
+                    <q-item-section avatar>
+                      <q-checkbox v-model="group" :val="item.name" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>{{item.label}}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+              <q-btn
+                :disable="selected.length === 0"
+                outline
+                color="primary"
+                label="批量删除"
+                no-wrap
+                v-if="$q.screen.gt.sm"
+                @click="showConfirm()"
+                icon="mdi-delete-variant"
+              />
+            </q-btn-group>
           </div>
         </template>
-        <template #top-right="table">
-          <q-btn-group outline>
-            <q-btn
-              outline
-              icon="add"
-              color="primary"
-              label="新建电子报告"
-              @click="add"
-            />
-            <q-btn
-              outline
-              color="primary"
-              label="切换全屏"
-              @click="table.toggleFullscreen"
-              :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-            />
-            <q-btn-dropdown
-              outline
-              color="primary"
-              label="自选列"
-              icon="view_list"
-            >
-              <q-list>
-                <q-item
-                  tag="label"
-                  v-for="item in columns"
-                  :key="item.name"
-                >
-                  <q-item-section avatar>
-                    <q-checkbox
-                      v-model="group"
-                      :val="item.name"
-                    />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{item.label}}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
-            <q-btn
-              :disable="selected.length === 0"
-              outline
-              color="primary"
-              label="批量删除"
-              @click="showConfirm()"
-              icon="mdi-delete-variant"
-            />
-          </q-btn-group>
-        </template>
-
         <template #body-cell-opt="props">
-          <q-td
-            :props="props"
-            :auto-width="true"
-          >
+          <q-td :props="props" :auto-width="true">
             <q-btn
               flat
               round
@@ -149,97 +129,43 @@
             >
               <q-tooltip>复制</q-tooltip>
             </q-btn>
-            <q-btn
-              flat
-              round
-              dense
-              color="primary"
-              icon="edit"
-              @click="edit(props.row)"
-            >
+            <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
               <q-tooltip>编辑</q-tooltip>
             </q-btn>
-            <btn-del
-              label="电子报告"
-              @confirm="del(props.row)"
-            />
+            <btn-del label="电子报告" @confirm="del(props.row)" />
           </q-td>
         </template>
       </q-table>
     </div>
-    <q-dialog
-      maximized
-      flat
-      persistent
-      ref="dialog"
-      position="right"
-    >
-      <q-form
-        @submit="submit"
-        class="dialog_card column"
-      >
+    <q-dialog maximized flat persistent ref="dialog" position="right">
+      <q-form @submit="submit" class="dialog_card column">
         <h5 class="view_title justify-between q-px-md">
           {{editType}}电子报告
-          <q-btn
-            dense
-            outline
-            round
-            icon="clear"
-            size="sm"
-            v-close-popup
-          />
+          <q-btn dense outline round icon="clear" size="sm" v-close-popup />
         </h5>
         <q-scroll-area class="col">
           <div class="row q-col-gutter-x-md dialog_form q-pa-md">
             <div class="col-12">
-              <h5> 名称：</h5>
-              <q-input
-                outlined
-                dense
-                v-model="form.name"
-                type="text"
-              />
+              <h5>名称：</h5>
+              <q-input outlined dense v-model="form.name" type="text" />
             </div>
             <div class="col-12">
-              <h5> 描述：</h5>
-              <q-input
-                outlined
-                dense
-                v-model="form.description"
-                type="text"
-              />
+              <h5>描述：</h5>
+              <q-input outlined dense v-model="form.description" type="text" />
             </div>
             <div class="col-12">
-              <h5> 目录编号：</h5>
-              <catalogselect
-                :form.sync="form"
-                type="BiScreen"
-              />
+              <h5>目录编号：</h5>
+              <catalogselect :form.sync="form" type="BiScreen" />
             </div>
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn
-            outline
-            color="primary"
-            label="取消"
-            v-close-popup
-          />
-          <q-btn
-            unelevated
-            color="primary"
-            class="on-right"
-            label="提交"
-            type="submit"
-          />
+          <q-btn outline color="primary" label="取消" v-close-popup />
+          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
-    <confirm
-      ref="confirmDialog"
-      :msg="confirmMsg"
-      @confirm="deleteBatch()"
-    />
+    <confirm ref="confirmDialog" :msg="confirmMsg" @confirm="deleteBatch()" />
   </q-page>
 </template>
 
@@ -341,6 +267,10 @@ export default {
   },
   mounted() {
     this.initDict();
+  },
+  watch: {
+  },
+  computed: {
   },
 };
 </script>

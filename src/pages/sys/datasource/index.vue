@@ -1,7 +1,8 @@
 <template>
   <q-page class="cc-admin row">
-    <viewcatalog class="q-mt-sm q-mb-sm q-ml-sm" type="2" @select="selectCatalog" />
-    <div class="col column bg-white shadow-2 q-pa-md q-ma-sm">
+    <viewcatalog class="col-md-2 q-mt-sm q-mb-sm q-ml-sm" v-if="drawer"
+    type="2" @select="selectCatalog" />
+    <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
       <q-table
         flat
         color="primary"
@@ -18,39 +19,42 @@
         selection="multiple"
         :selected.sync="selected"
       >
-        <template #top-left>
-          <div class="row no-wrap">
-            <div class="row items-center">
-              <q-input
-                outlined
-                dense
-                placeholder="请输入关键字搜索"
-                class="on-left"
-                clearable
-                @input="query"
-                debounce="500"
-                v-model="key"
-              >
-                <template #append>
-                  <q-btn flat round icon="search" color="primary" @click="query" :loading="loading">
-                    <q-tooltip>搜索</q-tooltip>
-                  </q-btn>
-                </template>
-              </q-input>
-            </div>
-          </div>
-        </template>
-        <template #top-right="table">
-          <q-btn-group outline>
-            <q-btn outline icon="add" color="primary" label="新建数据源管理" @click="add" />
+        <template v-slot:top="table">
+          <div class="row no-wrap full-width">
+            <q-input
+              clearable
+              outlined
+              dense
+              placeholder="请输入关键字搜索"
+              class="on-left"
+              @input="query"
+              debounce="500"
+              v-model="key"
+            >
+              <template #append>
+                <q-btn
+                  flat
+                  round
+                  icon="search"
+                  color="primary"
+                  @click="query"
+                  :loading="loading"
+                >
+                  <q-tooltip>搜索</q-tooltip>
+                </q-btn>
+              </template>
+            </q-input>
+            <q-space /><q-btn-group outline>
+            <q-btn outline icon="add" color="primary" no-wrap label="新建数据源管理" @click="add" />
             <q-btn
               outline
               color="primary"
-              label="切换全屏"
+              label="切换全屏" no-wrap v-if="$q.screen.gt.md"
               @click="table.toggleFullscreen"
               :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
             />
-            <q-btn-dropdown outline color="primary" label="自选列" icon="view_list">
+            <q-btn-dropdown outline color="primary" label="自选列"
+            v-if="$q.screen.gt.md" icon="view_list">
               <q-list>
                 <q-item tag="label" v-for="item in columns" :key="item.name">
                   <q-item-section avatar>
@@ -65,14 +69,14 @@
             <q-btn
               :disable="selected.length === 0"
               outline
-              label="批量删除"
+              label="批量删除"  no-wrap v-if="$q.screen.gt.sm"
               color="primary"
               @click="showConfirm()"
               icon="mdi-delete-variant"
             />
           </q-btn-group>
+          </div>
         </template>
-
         <template #body-cell-dbUrl="props">
           <q-td key="dbUrl" :props="props">
             <ellipsisvalue :value="props.row.dbUrl" :length="40" />
@@ -176,6 +180,7 @@
 </template>
 
 <script>
+import { debounce } from 'quasar';
 import ellipsisvalue from 'components/ellipsisvalue';
 import { IndexMixin } from 'boot/mixins';
 import { getDictLabel } from 'boot/dictionary';
@@ -234,10 +239,16 @@ export default {
         exportXlsUrl: '/sys/dataSource/exportXls',
         importExcelUrl: '/sys/dataSource/importExcel',
       },
+      drawer: true,
     };
   },
   methods: {
     requiredTest,
+    doResize() {
+      this.$nextTick(() => {
+        this.drawer = this.$q.screen.gt.md;
+      });
+    },
     getDictLabel,
     testConnection() {
       this.$axios.post('/sys/dataSource/testConnection', this.form).then((r) => {
@@ -257,6 +268,19 @@ export default {
     selectCatalog(n) {
       this.catalog = n;
       this.query();
+    },
+  },
+  mounted() {
+    this.onResize = debounce(this.doResize, 500);
+  },
+  watch: {
+    screenWidth() {
+      this.onResize();
+    },
+  },
+  computed: {
+    screenWidth() {
+      return this.$q.screen.width;
     },
   },
 };

@@ -17,10 +17,11 @@
               size="12px"
               dense
               label="访问源码"
-              href="https://gitee.com/zhy6599/cc-admin-api"
+              href="https://gitee.com/zhy6599/cc-admin-web"
             ></q-btn>
           </div>
           <div class="text-center">Copyright@2020 zhy6599作品！</div>
+          <div class="text-center"><a class="bg-white text-blue-grey-4 text-body2" href="https://beian.miit.gov.cn" target="_blank">京ICP备17070540号-2</a></div>
         </div>
       </q-footer>
       <q-page-container>

@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-mb-md">
+  <div class="row q-px-sm q-mb-md">
     <div class="col">
       <div class="column bg-white shadow-2">
         <div class="col row no-wrap justify-between items-center content-center">
@@ -15,13 +15,17 @@
               <div class="text-h5 text-primary">{{statInfo.todayIp}}</div>
             </q-btn>
           </div>
-          <div class="col text-center">
+          <div class="col text-center q-mt-lg">
             <div>今日访问</div>
-            <div class="text-h5">{{statInfo.todayVisitCount}}</div>
+            <q-btn flat round >
+              <div class="text-h5">{{statInfo.todayVisitCount}}</div>
+            </q-btn>
           </div>
-          <div class="col text-center">
+          <div class="col text-center q-mt-lg">
             <div>总访问量</div>
-            <div class="text-h5">{{statInfo.totalVisitCount}}</div>
+            <q-btn flat round >
+              <div class="text-h5">{{statInfo.totalVisitCount}}</div>
+            </q-btn>
           </div>
         </div>
         <div class="col" ref="homeVisitLine" :style="{height:'360px'}"></div>
@@ -35,6 +39,9 @@ import echarts from 'echarts';
 
 export default {
   name: 'VisitLine',
+  props: {
+    screenWidth: Number,
+  },
   data() {
     return {
       statInfo: {
@@ -43,27 +50,47 @@ export default {
       xData: [],
       yData: [],
       height: 100,
+      loading: false,
+      chart: '',
     };
   },
   computed: {
   },
-  created() {
-  },
-  mounted() {
-    this.$axios.get(`/sys/loginfo?token=${Math.random()}`).then(({ result }) => {
-      this.statInfo = result;
-    });
-
-    this.$axios.get(`/sys/visitInfo?token=${Math.random()}`).then(({ result }) => {
-      const xData = [];
-      const ipData = [];
-      const visitData = [];
-      result.forEach((dt) => {
-        xData.push(dt.tian);
-        ipData.push(dt.ip);
-        visitData.push(dt.visit);
+  methods: {
+    doResize() {
+      if (this.chart) {
+        this.$nextTick(() => {
+          this.chart.resize();
+        });
+      }
+    },
+    renderChart() {
+      if (!this.chart) {
+        this.chart = echarts.init(this.$refs.homeVisitLine);
+      }
+      const option = this.makeOptions();
+      this.chart.clear();
+      this.chart.setOption(option);
+      this.doResize();
+    },
+    loadData() {
+      this.$axios.get(`/sys/loginfo?token=${Math.random()}`).then(({ result }) => {
+        this.statInfo = result;
       });
-      const homeVisitLineChart = echarts.init(this.$refs.homeVisitLine);
+
+      this.$axios.get(`/sys/visitInfo?token=${Math.random()}`).then(({ result }) => {
+        this.xData = [];
+        this.ipData = [];
+        this.visitData = [];
+        result.forEach((dt) => {
+          this.xData.push(dt.tian);
+          this.ipData.push(dt.ip);
+          this.visitData.push(dt.visit);
+        });
+        this.renderChart();
+      });
+    },
+    makeOptions() {
       const colors = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae',
         '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
 
@@ -80,10 +107,10 @@ export default {
           data: [],
         },
         grid: {
-          left: '5%',
-          top: '15%',
-          right: '5%',
-          bottom: '25%',
+          left: '60px',
+          top: '40px',
+          right: '60px',
+          bottom: '80px',
         },
         xAxis: [
           {
@@ -91,7 +118,7 @@ export default {
             axisTick: {
               alignWithLabel: true,
             },
-            data: xData,
+            data: this.xData,
             axisLabel: {
               rotate: 30,
               margin: 18,
@@ -119,18 +146,28 @@ export default {
           {
             name: 'visit',
             type: 'bar',
-            data: visitData,
+            data: this.visitData,
           },
           {
             name: 'ip',
             yAxisIndex: 1,
             type: 'line',
-            data: ipData,
+            data: this.ipData,
           },
         ],
       };
-      homeVisitLineChart.setOption(option);
-    });
+      return option;
+    },
+  },
+  created() {
+  },
+  mounted() {
+    this.loadData();
+  },
+  watch: {
+    screenWidth() {
+      this.doResize();
+    },
   },
 };
 </script>

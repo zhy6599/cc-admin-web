@@ -199,6 +199,9 @@ export default {
       return tableBody;
     },
   },
+  beforeDestroy() {
+    clearTimeout(this.ti);
+  },
 };
 </script>
 

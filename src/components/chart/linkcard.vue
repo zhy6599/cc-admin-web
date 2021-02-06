@@ -1,19 +1,16 @@
 <template>
-  <div class="row q-mb-md">
-    <div class="col row">
-        <div
-          class="col text-center bg-white shadow-2"
-          v-for="(data, index) in linkData"
-          :key="index"
-          :class="getMarginClass(index,linkData)"
-        >
-          <ccshadow>
-            <q-card-section class="bg-white">
-              <q-avatar :icon="data.icon" :text-color="data.textColor"></q-avatar>
-              <q-item-label>{{ data.desc }}</q-item-label>
-            </q-card-section>
-          </ccshadow>
-        </div>
+  <div class="row justify-between">
+    <div
+      class="col-lg col-md-2 col-xs-4 text-center bg-white shadow-2 q-mx-sm q-mb-md"
+      v-for="(data, index) in linkData"
+      :key="index"
+    >
+      <ccshadow>
+        <q-card-section class="bg-white">
+          <q-avatar :icon="data.icon" :text-color="data.textColor"></q-avatar>
+          <q-item-label>{{ data.desc }}</q-item-label>
+        </q-card-section>
+      </ccshadow>
     </div>
   </div>
 </template>
@@ -82,14 +79,6 @@ export default {
   },
   methods: {
 
-    getMarginClass(index, linkData) {
-      if (index === 0) {
-        return 'q-mr-sm';
-      } if (index === linkData.length - 1) {
-        return 'q-ml-sm';
-      }
-      return 'q-mx-sm';
-    },
   },
 };
 </script>

@@ -7,6 +7,8 @@ export const IndexMixin = {
   data() {
     return {
       loading: false,
+      importing: false,
+      exporting: false,
       confirmMsg: '',
       selected: [],
       list: [],
@@ -132,15 +134,60 @@ export const IndexMixin = {
     editAfter() {
 
     },
-    uploaded({ xhr }) {
-      const url = `${process.env.SERVER_URL}/download/${JSON.parse(xhr.responseText).message}`;
-      this.form.imageUrl = url;
-      this.fileList.push({
-        label: xhr,
-        url,
-      });
-      this.$refs.up.removeUploadedFiles();
+    importExcel() {
+      this.importing = true;
+      this.$refs.excelUploader.pickFiles();
     },
+    importedExcel({ xhr }) {
+      this.$refs.excelUploader.removeUploadedFiles();
+      const { response } = xhr;
+      const res = JSON.parse(response);
+      if (res.code === 200) {
+        this.$info(res.message);
+      } else {
+        this.$error(res.message);
+      }
+      this.importing = false;
+      this.query();
+    },
+    exportExcel(fileName) {
+      if (!fileName || typeof fileName !== 'string') {
+        fileName = '导出文件';
+      }
+      this.exporting = true;
+      this.$downFile(this.url.exportXlsUrl, {
+        params:
+        {
+          ...this.queryParam(),
+          ...this.searchForm,
+          key: this.key,
+          catalog: this.catalog,
+          pageNo: 1,
+          pageSize: 1000,
+        },
+      }).then((data) => {
+        if (!data) {
+          this.$message.warning('文件下载失败');
+          return;
+        }
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          window.navigator.msSaveBlob(new Blob([data], { type: 'application/vnd.ms-excel' }), `${fileName}.xls`);
+        } else {
+          const url = window.URL.createObjectURL(new Blob([data], { type: 'application/vnd.ms-excel' }));
+          const link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', `${fileName}.xls`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link); // 下载完成移除元素
+          window.URL.revokeObjectURL(url); // 释放掉blob对象
+        }
+      }).finally(() => {
+        this.exporting = false;
+      });
+    },
+
     delFile({ url }) {
       this.fileList = this.fileList.filter((v) => v.url !== url);
     },
@@ -172,4 +219,10 @@ export const IndexMixin = {
       this.group.push(name);
     });
   },
+  computed: {
+    importExcelUrlFull() {
+      return process.env.BASE_URL + this.url.importExcelUrl;
+    },
+  },
+
 };

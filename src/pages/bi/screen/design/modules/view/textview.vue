@@ -227,6 +227,9 @@ export default {
   created() {
     this.getData = debounce(this.doLoadData, 500);
   },
+  beforeDestroy() {
+    clearTimeout(this.ti);
+  },
 };
 </script>
 

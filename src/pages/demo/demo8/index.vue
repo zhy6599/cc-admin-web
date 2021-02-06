@@ -1,5 +1,5 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
+  <q-page class="cc-admin q-pa-sm">
     <div class="q-px-md bg-white col shadow-2 q-pa-md">
       <div class="bg-white q-pa-md">
         <div class="text-h6">

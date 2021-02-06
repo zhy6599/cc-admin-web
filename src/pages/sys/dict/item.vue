@@ -1,5 +1,5 @@
 <template>
-  <div class="col column bg-white shadow-2 q-pl-md">
+  <div>
     <q-table
       flat
       color="primary"
@@ -13,8 +13,8 @@
       :pagination.sync="pagination"
       @request="query"
     >
-      <template #top-left>
-        <div class="row no-wrap">
+      <template v-slot:top="table">
+          <div class="row no-wrap full-width">
           <q-input
             clearable
             outlined
@@ -31,19 +31,19 @@
               </q-btn>
             </template>
           </q-input>
-        </div>
-      </template>
-      <template #top-right="table">
-        <q-btn-group outline>
-          <q-btn outline icon="add" color="primary" label="新建字典列表" @click="add" />
+          <q-space />
+          <q-btn-group outline>
+          <q-btn outline icon="add" color="primary" no-wrap label="新建字典列表" @click="add"
+          :disable="selectedDictArray.length!==1"/>
           <q-btn
             outline
             color="primary"
-            label="切换全屏"
+            label="切换全屏" no-wrap v-if="$q.screen.gt.md"
             @click="table.toggleFullscreen"
             :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
           />
         </q-btn-group>
+        </div>
       </template>
       <template #body-cell-status="props">
         <q-td :props="props">
@@ -171,10 +171,14 @@ export default {
       return this.selectedDictArray.length === 1;
     },
     addBefore() {
-      this.form.dictId = this.selectedDictArray[0].id;
-      this.form.sortOrder = 100;
-      this.form.status = 1;
-      return true;
+      if (this.selectedDictArray.length === 1) {
+        this.form.dictId = this.selectedDictArray[0].id;
+        this.form.sortOrder = 100;
+        this.form.status = 1;
+        return true;
+      }
+      this.$warn('请先选择字典');
+      return false;
     },
     changeStatus(row) {
       this.$axios.put(this.url.changeSysDictItemStatus, row)

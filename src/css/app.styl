@@ -32,13 +32,22 @@ a
   color $white
   font-size 18px
 
-.dialog_card
-  background $white
-  min-width 40vw
-  height 100vh
-  pointer-events all
-  >.view_title
-    background $primary
+@media screen and (min-width:780px)
+  .dialog_card
+    background $white
+    min-width 780px
+    height 100vh
+    pointer-events all
+    >.view_title
+      background $primary
+@media screen and (max-width:780px)
+  .dialog_card
+    background $white
+    min-width 400px
+    height 100vh
+    pointer-events all
+    >.view_title
+      background $primary
 .dialog_tool
   background $white
   min-width 100vw

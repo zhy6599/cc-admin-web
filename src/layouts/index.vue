@@ -3,7 +3,10 @@
     <q-header class="bg-primary text-white">
       <q-toolbar>
         <q-btn flat icon="menu" @click="drawer=!drawer" />
-        <q-toolbar-title class="text-caption">欢迎进入 cc-admin 企业级快速开发平台</q-toolbar-title>
+        <q-toolbar-title class="text-caption" v-if="$q.screen.gt.md">
+          欢迎进入 cc-admin 企业级快速开发平台
+        </q-toolbar-title>
+        <q-space />
         <q-btn
           flat
           size="md"
@@ -11,67 +14,65 @@
           type="a"
           icon="mdi-qqchat"
           @click="copyNum"
-          target="__blank" >
+          target="__blank"
+        >
           <q-tooltip>点击复制QQ群号，交流反馈！</q-tooltip>
         </q-btn>
-        <q-btn
-          flat
-          size="md"
-          label="Sika Design"
-          type="a"
-          icon="img:icons/logo/sikacode-logo.png"
-          href="http://quasar.sikacode.com/"
-          target="__blank" >
-          <q-tooltip>Sika Design精美漂亮的Quasar后台</q-tooltip>
-        </q-btn>
-        <q-btn
-          flat
-          size="md"
-          type="a"
-          label="Quasar中文网"
-          href="http://www.quasarchs.com/"
-          icon="img:icons/logo/quasar-logo.svg"
-          target="__blank" >
-          <q-tooltip>最好的quasar中文帮助文档</q-tooltip>
-        </q-btn>
+        <div v-if="$q.screen.gt.md">
+          <q-btn
+            flat
+            size="md"
+            label="Sika Design"
+            type="a"
+            icon="img:icons/logo/sikacode-logo.png"
+            href="http://quasar.sikacode.com/"
+            target="__blank"
+          >
+            <q-tooltip>Sika Design精美漂亮的Quasar后台</q-tooltip>
+          </q-btn>
+          <q-btn
+            flat
+            size="md"
+            type="a"
+            label="Quasar中文网"
+            href="http://www.quasarchs.com/"
+            icon="img:icons/logo/quasar-logo.svg"
+            target="__blank"
+          >
+            <q-tooltip>最好的quasar中文帮助文档</q-tooltip>
+          </q-btn>
 
-        <q-btn flat round size="sm" icon="mdi-card-search-outline" @click="drawer=!drawer" >
-          <q-tooltip>全局搜索</q-tooltip>
-        </q-btn>
-        <q-btn flat round size="sm" icon="mdi-help-circle-outline" @click="drawer=!drawer" >
-          <q-tooltip>帮助文档</q-tooltip>
-        </q-btn>
-        <q-btn flat round size="sm" icon="mdi-bell-outline" @click="drawer=!drawer" >
-          <q-badge
-            color="negative"
-            style="padding: 2px 4px"
-            title-color="white"
-            floating
-          >8
-          </q-badge>
-          <q-tooltip>未读消息</q-tooltip>
-        </q-btn>
-        <q-btn icon="mdi-badge-account-horizontal" flat :label="welcomeInfo">
-          <q-menu transition-show="rotate" transition-hide="rotate">
-            <q-list style="min-width: 100px">
-              <q-item clickable>
-                <q-item-section>个人中心</q-item-section>
-              </q-item>
-              <q-item clickable>
-                <q-item-section>账户设置</q-item-section>
-              </q-item>
-              <q-separator />
-              <q-item clickable>
-                <q-item-section>密码修改</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+          <q-btn flat round size="sm" icon="mdi-card-search-outline" @click="drawer=!drawer">
+            <q-tooltip>全局搜索</q-tooltip>
+          </q-btn>
+          <q-btn flat round size="sm" icon="mdi-help-circle-outline" @click="drawer=!drawer">
+            <q-tooltip>帮助文档</q-tooltip>
+          </q-btn>
+          <message />
+          <q-btn icon="mdi-badge-account-horizontal" flat :label="welcomeInfo">
+            <q-menu transition-show="rotate" transition-hide="rotate">
+              <q-list style="min-width: 100px">
+                <q-item clickable>
+                  <q-item-section>个人中心</q-item-section>
+                </q-item>
+                <q-item clickable>
+                  <q-item-section>账户设置</q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable>
+                  <q-item-section>密码修改</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
+
         <q-btn flat icon="mdi-power-standby" label="退出系统" @click="out" />
       </q-toolbar>
-      <mainTabs :tabs="$store.state.Rule.routeTabs" @selectPanel="setDesTab" />
+      <mainTabs v-if="$q.screen.gt.md"
+      :tabs="$store.state.Rule.routeTabs" @selectPanel="setDesTab" />
     </q-header>
-    <q-drawer elevated v-model="drawer" behavior="desktop" :width="220" content-class="column">
+    <q-drawer elevated v-model="drawer" :overlay="overlay" :width="220" content-class="column">
       <q-btn flat class="ly-icon-btn bg-primary text-white">
         <q-icon name="mdi-bike-fast" class="q-mr-md" />cc-admin
         <q-tooltip anchor="center right" self="center left">欢迎使用</q-tooltip>
@@ -120,24 +121,31 @@
 </template>
 
 <script>
-import { openURL, copyToClipboard } from 'quasar';
+import { openURL, copyToClipboard, debounce } from 'quasar';
 import { goLogin } from 'boot/api';
-import mainTabs from 'components/tabpanel/index.vue';
+import mainTabs from 'components/layout/tabpanel/index.vue';
+import message from 'components/layout/message.vue';
 
 export default {
   name: 'IndexLayout',
   components: {
     mainTabs,
+    message,
   },
   data() {
     return {
       selectItem: '',
       link: 'inbox',
       drawer: true,
+      overlay: false,
       list: [],
     };
   },
   methods: {
+    doResize() {
+      this.drawer = this.$q.screen.gt.sm;
+      this.overlay = this.$q.screen.lt.sm;
+    },
     copyNum() {
       copyToClipboard('965940297')
         .then(() => {
@@ -186,24 +194,36 @@ export default {
       return {};
     },
   },
+  mounted() {
+    this.onResize = debounce(this.doResize, 500);
+    this.onResize();
+  },
   watch: {
     $route(to) {
       if (!this.$store.state.Rule.routeTabs.some((r) => r.path === to.path)) {
         this.$store.commit('Rule/addRouteTabs', { name: to.meta.title, path: to.path });
       }
     },
+    screenWidth() {
+      this.onResize();
+    },
   },
   computed: {
     welcomeInfo() {
       return `欢迎您，${this.$store.state.User.info.realname}`;
+    },
+    screenWidth() {
+      return this.$q.screen.width;
     },
   },
 };
 </script>
 
 <style lang="stylus">
-.cc-active-menu
-  border-right '0.2em solid #1890ff'
+.cc-active-menu {
+  border-right: '0.2em solid #1890ff';
+}
+
 .hide-icon {
   display: none;
 }

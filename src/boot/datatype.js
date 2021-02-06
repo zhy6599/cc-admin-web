@@ -281,6 +281,16 @@ export const chartList = [
   },
 ];
 
+export const ellipsis = (value, vlength = 25) => {
+  if (!value) {
+    return '';
+  }
+  if (value.length > vlength) {
+    return `${value.slice(0, vlength)}...`;
+  }
+  return value;
+};
+
 export const chartConfig = (v) => {
   let t = {};
   switch (v) {
@@ -328,12 +338,17 @@ export const chartConfig = (v) => {
         loop: false,
         scrolldelay: 6,
         alternate: false,
-        overflowHiden: false,
+        overflowHiden: true,
       };
       break;
     case 'video':
       t = {
         src: '',
+      };
+      break;
+    case 'group':
+      t = {
+        chartArray: [],
       };
       break;
     case 'chart':

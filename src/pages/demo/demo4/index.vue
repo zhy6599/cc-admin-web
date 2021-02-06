@@ -1,10 +1,10 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
-    <div class="col column bg-white shadow-2 q-pa-md">
+  <q-page class="cc-admin q-pa-sm">
+    <div class="col bg-white shadow-2 q-pa-md">
       <div class="row items-center justify-between q-ma-md">
         <div class="col"></div>
         <q-btn-group outline>
-          <q-btn outline icon="add" color="primary" label="新建菜单" @click="add" />
+          <q-btn outline icon="add" color="primary" no-wrap label="新建菜单" @click="add" />
         </q-btn-group>
       </div>
       <q-markup-table flat separator="cell" class="cross_table col scroll">

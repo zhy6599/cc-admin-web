@@ -1,25 +1,25 @@
 <template>
-  <q-page class="cc-admin column q-pa-sm">
-    <div class="col column bg-white shadow-2 q-pa-md">
+  <q-page class="cc-admin q-pa-sm">
+    <div class="col bg-white shadow-2 q-pa-md">
       <div class="row no-wrap">
-        <b class="text-h6">数据源目录</b>
+        <b class="text-h6" v-if="$q.screen.gt.md">分类目录管理</b>
         <q-space />
 
         <q-btn-group outline>
-          <q-btn outline icon="add" color="primary" label="新建目录" @click="addCatalog()" />
+          <q-btn outline icon="add" color="primary" no-wrap label="新建" @click="addCatalog()" />
           <q-btn
-            outline
+            outline no-wrap
             icon="edit"
             :disable="selectedCatalog ===''"
             color="primary"
-            label="修改目录"
+            label="修改"
             @click="updateCatalog()"
           />
           <q-btn
             :disable="selectedCatalog ===''"
-            outline
+            outline no-wrap
             color="primary"
-            label="删除目录"
+            label="删除"
             @click="showConfirm()"
             icon="mdi-delete-empty"
           />

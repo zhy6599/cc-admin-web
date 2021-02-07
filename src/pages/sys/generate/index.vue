@@ -133,6 +133,16 @@
             >
               <q-tooltip>同步到数据库</q-tooltip>
             </q-btn>
+            <q-btn
+              flat
+              round
+              dense
+              color="indigo-7"
+              icon="mdi-database-export"
+              @click="syncTableToConfig(table.row.id)"
+            >
+              <q-tooltip>同步到配置信息</q-tooltip>
+            </q-btn>
             <btn-del :label="table.row.name" @confirm="del(table)" />
           </q-td>
         </template>
@@ -251,6 +261,18 @@ export default {
     syncTableToDb(id) {
       this.id = id;
       this.confirm = true;
+    },
+    syncTableToConfig(id) {
+      this.id = id;
+      this.loading = true;
+      this.$axios.get(`/generate/syncTableToConfig?id=${this.id}`).then((r) => {
+        this.$info(r.message);
+        if (r.success) {
+          this.query();
+        }
+      }).finally(() => {
+        this.loading = false;
+      });
     },
     doSync() {
       this.confirm = false;

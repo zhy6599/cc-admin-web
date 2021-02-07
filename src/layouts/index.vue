@@ -51,17 +51,14 @@
           <message />
           <q-btn icon="mdi-badge-account-horizontal" flat :label="welcomeInfo">
             <q-menu transition-show="rotate" transition-hide="rotate">
-              <q-list style="min-width: 100px">
-                <q-item clickable>
-                  <q-item-section>个人中心</q-item-section>
+              <q-list style="min-width: 160px">
+                <q-item clickable to="/account/info">
+                  <q-item-section>账户中心</q-item-section>
                 </q-item>
-                <q-item clickable>
+                <q-item  clickable to="/account/settings">
                   <q-item-section>账户设置</q-item-section>
                 </q-item>
                 <q-separator />
-                <q-item clickable>
-                  <q-item-section>密码修改</q-item-section>
-                </q-item>
               </q-list>
             </q-menu>
           </q-btn>

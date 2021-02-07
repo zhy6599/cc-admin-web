@@ -9,6 +9,36 @@ export default [
     },
   },
   {
+    id: 20,
+    path: '/account',
+    component: 'account',
+    redirect: '/account/info',
+    meta: {
+      title: '账户中心',
+      icon: 'mdi-account-outline',
+    },
+    children: [
+      {
+        id: 21,
+        path: '/account/info',
+        component: 'account/info',
+        meta: {
+          title: '账户信息',
+          icon: 'mdi-account-box-outline',
+        },
+      },
+      {
+        id: 22,
+        path: '/account/settings',
+        component: 'account/settings',
+        meta: {
+          title: '账户设置',
+          icon: 'mdi-account-box-outline',
+        },
+      },
+    ],
+  },
+  {
     id: 100,
     path: '/sys',
     component: 'sys',
@@ -187,6 +217,45 @@ export default [
           icon: 'mdi-note-text-outline',
         },
       }],
+  },
+  {
+    id: 900,
+    path: '/mnt',
+    component: 'mnt',
+    redirect: '/mnt',
+    meta: {
+      title: '运维管理',
+      icon: 'mdi-owl',
+    },
+    children: [
+      {
+        id: 901,
+        path: '/mnt/app',
+        component: 'mnt/app',
+        meta: {
+          title: '应用管理',
+          icon: 'mdi-apple',
+        },
+      },
+      {
+        id: 902,
+        path: '/mnt/server',
+        component: 'mnt/server',
+        meta: {
+          title: '服务器管理',
+          icon: 'mdi-apple',
+        },
+      },
+      {
+        id: 903,
+        path: '/mnt/deploy',
+        component: 'mnt/deploy',
+        meta: {
+          title: '部署管理',
+          icon: 'mdi-apple',
+        },
+      },
+    ],
   },
   {
     id: 800,

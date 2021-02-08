@@ -13,6 +13,7 @@ export const IndexMixin = {
       selected: [],
       list: [],
       form: {},
+      emptyForm: {},
       searchForm: {},
       key: '',
       catalog: '',
@@ -66,7 +67,7 @@ export const IndexMixin = {
       });
     },
     reset() {
-      this.form = {};
+      this.form = { ...this.emptyForm };
     },
     del({ id }) {
       this.loading = true;
@@ -135,7 +136,6 @@ export const IndexMixin = {
 
     },
     importExcel() {
-      this.importing = true;
       this.$refs.excelUploader.pickFiles();
     },
     importedExcel({ xhr }) {
@@ -147,7 +147,6 @@ export const IndexMixin = {
       } else {
         this.$error(res.message);
       }
-      this.importing = false;
       this.query();
     },
     exportExcel(fileName) {
@@ -217,6 +216,7 @@ export const IndexMixin = {
   created() {
     this.columns.forEach(({ name }) => {
       this.group.push(name);
+      this.emptyForm[name] = null;
     });
   },
   computed: {

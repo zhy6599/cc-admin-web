@@ -116,6 +116,11 @@
             </q-btn-group>
           </div>
         </template>
+        <template #body-cell-loginType="props">
+          <q-td key="loginType" :props="props">
+            {{getDictLabel(loginType,props.row.loginType) }}
+          </q-td>
+        </template>
         <template #body-cell-opt="props">
           <q-td :props="props" :auto-width="true">
             <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
@@ -147,20 +152,34 @@
               <q-input outlined dense v-model="form.userName" type="text" :rules="[requiredTest]" />
             </div>
             <div class="col-12">
-              <h5>
-                <q-icon name="star" color="red" />IP地址：
-              </h5>
-              <q-input outlined dense v-model="form.ip" type="text" :rules="[requiredTest]" />
+              <h5>登录方式：</h5>
+              <q-btn-toggle class="q_b_toggle" v-model="form.loginType" :options="loginType" />
             </div>
-            <div class="col-12">
+            <div class="col-12" v-if="form.loginType === 'keyFile'">
+              <h5>证书文件：</h5>
+              <div class="row no-wrap">
+                <q-input class="col" outlined dense v-model="form.keyFile" />
+                <q-btn outline no-wrap label="上传" color="primary" @click="importKeyFile">
+                  <q-uploader
+                    auto-upload
+                    ref="keyFileUploader"
+                    :max-files="1"
+                    class="hidden"
+                    :url="uploadUrl"
+                    field-name="file"
+                    :headers="headers"
+                    @uploaded="importedKeyFile"
+                  />
+                </q-btn>
+              </div>
+            </div>
+            <div class="col-12" v-if="form.loginType === 'password'">
               <h5>密码：</h5>
               <q-input outlined dense v-model="form.password" type="password" />
             </div>
             <div class="col-12">
-              <h5>
-                <q-icon name="star" color="red" />端口：
-              </h5>
-              <q-input outlined dense v-model="form.port" type="number" :rules="[requiredTest]" />
+              <h5>端口：</h5>
+              <q-input outlined dense v-model="form.port" type="number" />
             </div>
             <div class="col-12">
               <h5>分类目录：</h5>
@@ -216,12 +235,19 @@ export default {
           name: 'port', align: 'left', label: '端口', field: 'port',
         },
         {
+          name: 'loginType', align: 'left', label: '登录方式', field: 'loginType',
+        },
+        {
+          name: 'keyFile', align: 'left', label: '证书文件', field: 'keyFile',
+        },
+        {
           name: 'catalogId_dictText', align: 'left', label: '分类目录', field: 'catalogId_dictText',
         },
         {
           name: 'opt', align: 'center', label: '操作', field: 'id',
         },
       ],
+      loginType: [{ value: 'password', label: '密码' }, { value: 'keyFile', label: '证书文件' }],
       showQuery: true,
       headers: [{ name: 'Authorization', value: localStorage.Authorization }],
       uploadUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/upload`,
@@ -239,8 +265,22 @@ export default {
   },
   methods: {
     requiredTest,
+    importKeyFile() {
+      this.$refs.keyFileUploader.pickFiles();
+    },
+    importedKeyFile({ xhr }) {
+      this.$refs.keyFileUploader.removeUploadedFiles();
+      const { response } = xhr;
+      const res = JSON.parse(response);
+      if (res.success) {
+        this.form.keyFile = res.message;
+      } else {
+        this.$error(res.message);
+      }
+    },
     addBefore() {
       this.form.catalogId = this.catalog;
+      this.form.loginType = 'password';
       return true;
     },
     selectCatalog(n) {

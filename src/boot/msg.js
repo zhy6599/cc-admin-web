@@ -1,17 +1,20 @@
 import Vue from 'vue';
 import { Notify } from 'quasar';
 
-const error = (msg) => Notify.create({
+const error = (msg, html) => Notify.create({
   message: msg,
   timeout: 5000,
+  html: !!html,
   color: 'negative',
 });
-const info = (msg) => Notify.create({
+const info = (msg, html) => Notify.create({
   message: msg,
+  html: !!html,
   color: 'positive',
 });
-const warn = (msg) => Notify.create({
+const warn = (msg, html) => Notify.create({
   message: msg,
+  html: !!html,
   color: 'warning',
 });
 const retMsg = (r) => {

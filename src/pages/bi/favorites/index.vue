@@ -2,11 +2,73 @@
   <q-page class="cc-admin row">
     <viewcatalog
       class="q-mt-sm q-mb-sm q-ml-sm"
-      type="MntServer"
+      type="BiFavorites"
       @select="selectCatalog"
       v-if="this.$q.screen.gt.md"
     />
     <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
+      <div class="row items-center justify-start q-mb-md">
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>名称：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-input outlined dense v-model="searchForm.name" type="text" class="col" />
+          </q-item-section>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
+          <q-item-section class="col-3 text-right gt-sm">
+            <q-item-label>类型：</q-item-label>
+          </q-item-section>
+          <q-item-section class="col">
+            <q-select
+              outlined
+              dense
+              emit-value
+              v-model="searchForm.type"
+              map-options
+              :options="chartTypes"
+              class="col"
+            />
+          </q-item-section>
+        </q-item>
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
+          <q-item-label class="col-12 text-right row no-wrap justify-center">
+            <q-btn
+              unelevated
+              no-wrap
+              label="查询"
+              color="primary"
+              class="q-mr-sm no-border-radius"
+              :loading="loading"
+              @click="query()"
+            >
+              <template v-slot:loading>
+                <q-spinner-ios class="on-center" />
+              </template>
+            </q-btn>
+            <q-btn
+              outline
+              no-wrap
+              unelevated
+              label="重置"
+              class="q-mr-sm no-border-radius"
+              color="secondary"
+              @click="searchReset"
+            />
+            <q-btn-dropdown
+              v-model="showQuery"
+              persistent
+              dense
+              flat
+              color="primary"
+              :label="tableLabel"
+              @before-show="show"
+              @before-hide="hide"
+            ></q-btn-dropdown>
+          </q-item-label>
+        </q-item>
+      </div>
       <q-table
         flat
         color="primary"
@@ -25,22 +87,6 @@
       >
         <template v-slot:top="table">
           <div class="row no-wrap full-width">
-            <q-input
-              clearable
-              outlined
-              dense
-              placeholder="请输入关键字搜索"
-              class="on-left"
-              @input="query"
-              debounce="500"
-              v-model="key"
-            >
-              <template #append>
-                <q-btn flat round icon="search" color="primary" @click="query" :loading="loading">
-                  <q-tooltip>搜索</q-tooltip>
-                </q-btn>
-              </template>
-            </q-input>
             <q-space />
             <q-btn-group outline>
               <q-btn outline icon="add" no-wrap color="primary" label="新建" @click="add" />
@@ -101,7 +147,7 @@
                 label="导出"
                 icon="mdi-cloud-download-outline"
                 color="primary"
-                @click="exportExcel('服务器管理')"
+                @click="exportExcel('收藏夹')"
               />
               <q-btn
                 :disable="selected.length === 0"
@@ -116,17 +162,15 @@
             </q-btn-group>
           </div>
         </template>
-        <template #body-cell-loginType="props">
-          <q-td key="loginType" :props="props">
-            {{getDictLabel(loginType,props.row.loginType) }}
-          </q-td>
+        <template #body-cell-type="props">
+          <q-td key="type" :props="props">{{getDictLabel(chartTypes,props.row.type) }}</q-td>
         </template>
         <template #body-cell-opt="props">
           <q-td :props="props" :auto-width="true">
             <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
               <q-tooltip>编辑</q-tooltip>
             </q-btn>
-            <btn-del label="服务器管理" @confirm="del(props.row)" />
+            <btn-del label="收藏夹" @confirm="del(props.row)" />
           </q-td>
         </template>
       </q-table>
@@ -134,63 +178,33 @@
     <q-dialog maximized flat persistent ref="dialog" position="right">
       <q-form @submit="submit" class="dialog_card column">
         <h5 class="view_title justify-between q-px-md">
-          {{editType}}服务器管理
+          {{editType}}收藏夹
           <q-btn dense outline round icon="clear" size="sm" v-close-popup />
         </h5>
         <q-scroll-area class="col">
           <div class="row q-col-gutter-x-md dialog_form q-pa-md">
             <div class="col-12">
-              <h5>
-                <q-icon name="star" color="red" />名称：
-              </h5>
-              <q-input outlined dense v-model="form.name" type="text" :rules="[requiredTest]" />
+              <h5>名称：</h5>
+              <q-input outlined dense v-model="form.name" type="text" />
             </div>
             <div class="col-12">
-              <h5><q-icon name="star" color="red"/> IP地址：</h5>
-              <div class="row no-wrap">
-                <q-input class="col" outlined dense v-model="form.ip" />
-                <q-btn label="测试" color="primary" @click="testLogin" />
-              </div>
+              <h5>类型：</h5>
+              <q-select
+                outlined
+                dense
+                emit-value
+                v-model="form.type"
+                map-options
+                :options="chartTypes"
+              />
             </div>
             <div class="col-12">
-              <h5>
-                <q-icon name="star" color="red" />账号：
-              </h5>
-              <q-input outlined dense v-model="form.userName" type="text" :rules="[requiredTest]" />
-            </div>
-            <div class="col-12">
-              <h5>登录方式：</h5>
-              <q-btn-toggle class="q_b_toggle" v-model="form.loginType" :options="loginType" />
-            </div>
-            <div class="col-12" v-if="form.loginType === 'keyFile'">
-              <h5>证书文件：</h5>
-              <div class="row no-wrap">
-                <q-input class="col" readonly outlined dense v-model="form.keyFile" />
-                <q-btn outline no-wrap label="上传" color="primary" @click="importKeyFile">
-                  <q-uploader
-                    auto-upload
-                    ref="keyFileUploader"
-                    :max-files="1"
-                    class="hidden"
-                    :url="uploadUrl"
-                    field-name="file"
-                    :headers="headers"
-                    @uploaded="importedKeyFile"
-                  />
-                </q-btn>
-              </div>
-            </div>
-            <div class="col-12" v-if="form.loginType === 'password'">
-              <h5>密码：</h5>
-              <q-input outlined dense v-model="form.password" type="password" />
-            </div>
-            <div class="col-12">
-              <h5>端口：</h5>
-              <q-input outlined dense v-model="form.port" type="number" />
+              <h5>配置信息：</h5>
+              <q-input outlined dense v-model="form.config" type="textarea" />
             </div>
             <div class="col-12">
               <h5>分类目录：</h5>
-              <catalogselect :form.sync="form" type="MntServer" />
+              <catalogselect :form.sync="form" type="BiFavorites" />
             </div>
           </div>
         </q-scroll-area>
@@ -205,15 +219,15 @@
 </template>
 
 <script>
+import { chartList } from 'boot/datatype';
 import { IndexMixin } from 'boot/mixins';
 import { getDictLabel } from 'boot/dictionary';
 import confirm from 'components/confirm';
-import { requiredTest } from 'boot/inputTest';
 import catalogselect from 'components/catalogselect';
 import viewcatalog from 'components/viewcatalog';
 
 export default {
-  name: 'MntServer',
+  name: 'BiFavorites',
   mixins: [IndexMixin],
   components: {
     confirm,
@@ -222,6 +236,7 @@ export default {
   },
   data() {
     return {
+      chartList,
       columns: [
         {
           name: 'index',
@@ -233,16 +248,7 @@ export default {
           name: 'name', align: 'left', label: '名称', field: 'name',
         },
         {
-          name: 'userName', align: 'left', label: '账号', field: 'userName',
-        },
-        {
-          name: 'ip', align: 'left', label: 'IP地址', field: 'ip',
-        },
-        {
-          name: 'port', align: 'left', label: '端口', field: 'port',
-        },
-        {
-          name: 'loginType', align: 'left', label: '登录方式', field: 'loginType',
+          name: 'type', align: 'left', label: '类型', field: 'type',
         },
         {
           name: 'catalogId_dictText', align: 'left', label: '分类目录', field: 'catalogId_dictText',
@@ -251,53 +257,23 @@ export default {
           name: 'opt', align: 'center', label: '操作', field: 'id',
         },
       ],
-      loginType: [{ value: 'password', label: '密码' }, { value: 'keyFile', label: '证书文件' }],
-      showQuery: true,
       headers: [{ name: 'Authorization', value: localStorage.Authorization }],
       uploadUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/upload`,
       imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
       url: {
-        list: '/mnt/server/list',
-        add: '/mnt/server/add',
-        edit: '/mnt/server/edit',
-        testLogin: '/mnt/server/testLogin',
-        delete: '/mnt/server/delete',
-        deleteBatch: '/mnt/server/deleteBatch',
-        exportXlsUrl: '/mnt/server/exportXls',
-        importExcelUrl: '/mnt/server/importExcel',
+        list: '/bi/favorites/list',
+        add: '/bi/favorites/add',
+        edit: '/bi/favorites/edit',
+        delete: '/bi/favorites/delete',
+        deleteBatch: '/bi/favorites/deleteBatch',
+        exportXlsUrl: '/bi/favorites/exportXls',
+        importExcelUrl: '/bi/favorites/importExcel',
       },
     };
   },
   methods: {
-    requiredTest,
-    testLogin() {
-      this.$q.loading.show();
-      this.$axios.put(this.url.testLogin, this.form).then((r) => {
-        if (r.success) {
-          this.$info(r.message);
-        } else {
-          this.$error(r.message);
-        }
-      }).finally(() => {
-        this.$q.loading.hide();
-      });
-    },
-    importKeyFile() {
-      this.$refs.keyFileUploader.pickFiles();
-    },
-    importedKeyFile({ xhr }) {
-      this.$refs.keyFileUploader.removeUploadedFiles();
-      const { response } = xhr;
-      const res = JSON.parse(response);
-      if (res.success) {
-        this.form.keyFile = res.message;
-      } else {
-        this.$error(res.message);
-      }
-    },
     addBefore() {
       this.form.catalogId = this.catalog;
-      this.form.loginType = 'password';
       return true;
     },
     selectCatalog(n) {
@@ -306,6 +282,17 @@ export default {
     },
     getDictLabel,
     initDict() {
+    },
+  },
+  computed: {
+    chartTypes() {
+      const types = [];
+      this.chartList.forEach(((chart) => {
+        types.push({ value: chart.type, label: chart.name });
+      }));
+      types.push({ value: 'complex', label: '多个组件' });
+
+      return types;
     },
   },
   mounted() {

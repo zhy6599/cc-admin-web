@@ -6,6 +6,8 @@ export const IndexMixin = {
   },
   data() {
     return {
+      showQuery: true,
+      tableLabel: '展开',
       loading: false,
       importing: false,
       exporting: false,
@@ -207,6 +209,14 @@ export const IndexMixin = {
     searchReset() {
       this.searchForm = {};
       this.query();
+    },
+    show() {
+      this.showQuery = true;
+      this.tableLabel = '收起';
+    },
+    hide() {
+      this.showQuery = false;
+      this.tableLabel = '展开';
     },
   },
   mounted() {

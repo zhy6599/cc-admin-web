@@ -78,13 +78,75 @@
             <q-slider v-model="config.series.maps.itemStyle.opacity" :min="0" :max="100" />
           </template>
         </q-field>
+        <q-toggle label="显示视觉映射" v-model="config.series.maps.visualMap.show" />
+        <q-input
+          dense
+          filled
+          debounce="500"
+          v-model="config.series.maps.visualMap.textArray"
+          prefix="最大最小："
+          class="q-my-sm"
+          input-class="text-left"
+        />
+        <q-toggle label="反转" v-model="config.series.maps.visualMap.inverse" />
+          <q-input
+            dense
+            filled
+            prefix="字体颜色："
+            class="q-my-sm"
+            input-class="text-left"
+            v-model="config.series.maps.visualMap.textStyle.color"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="colorize"
+                class="cursor-pointer"
+                :style="{color:config.series.maps.visualMap.textStyle.color}"
+              >
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-color v-model="config.series.maps.visualMap.textStyle.color" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.series.maps.visualMap.textStyle.fontWeight"
+            prefix="字体粗细："
+            class="q-my-sm"
+            :options="fontWeightOptions"
+            emit-value
+            map-options
+          />
+          <q-select
+            dense
+            filled
+            options-dense
+            v-model="config.series.maps.visualMap.textStyle.fontStyle"
+            prefix="字体风格："
+            class="q-my-sm"
+            :options="fontStyleOptions"
+            emit-value
+            map-options
+          />
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.series.maps.visualMap.textStyle.fontSize"
+            prefix="字体大小："
+            class="q-my-sm"
+            input-class="text-left"
+          />
       </q-card-section>
     </q-card>
   </q-expansion-item>
 </template>
 
 <script>
-import { borderTypeOptions } from 'boot/datatype';
+import { borderTypeOptions, fontWeightOptions, fontStyleOptions } from 'boot/datatype';
 
 export default {
   name: 'configbar',
@@ -98,11 +160,27 @@ export default {
   data() {
     return {
       borderTypeOptions,
+      fontWeightOptions,
+      fontStyleOptions,
       biMap: [
       ],
     };
   },
-  watch: {},
+  watch: {
+    'config.series.maps.visualMap.textArray': {
+      handler(n, o) {
+        if (n !== o) {
+          const textArray = this.config.series.maps.visualMap.textArray.split(',');
+          if (textArray.length === 2) {
+            this.config.series.maps.visualMap.text = [
+              textArray[0],
+              textArray[1],
+            ];
+          }
+        }
+      },
+    },
+  },
   computed: {},
   methods: {
     initDict() {

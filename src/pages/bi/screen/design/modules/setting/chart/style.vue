@@ -84,6 +84,16 @@
           <q-input
             dense
             filled
+            type="text"
+            v-model="config.title.paddingTxt"
+            prefix="内边距："
+            class="q-my-sm"
+            input-class="text-left"
+            @input="setTitlePadding"
+          />
+          <q-input
+            dense
+            filled
             v-model="config.title.subtext"
             prefix="副标题："
             class="q-my-sm"
@@ -1102,6 +1112,24 @@ export default {
   methods: {
     changeTheme(value) {
       this.config.colors = this.themeMap[value];
+    },
+    parsePadding(str) {
+      try {
+        return parseInt(str, 10);
+      } catch (e) {
+        return 0;
+      }
+    },
+    setTitlePadding() {
+      const paddingArray = this.config.title.paddingTxt.split(',');
+      if (paddingArray.length === 4) {
+        this.config.title.padding = [
+          this.parsePadding(paddingArray[0]),
+          this.parsePadding(paddingArray[1]),
+          this.parsePadding(paddingArray[2]),
+          this.parsePadding(paddingArray[3]),
+        ];
+      }
     },
   },
 };

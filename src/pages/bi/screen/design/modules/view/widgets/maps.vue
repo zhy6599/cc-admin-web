@@ -1,5 +1,5 @@
 <template>
-  <div ref="chart"  :style="chartStyle"/>
+  <div ref="chart" :style="chartStyle" />
 </template>
 
 <script>
@@ -13,7 +13,7 @@ export default {
   props: {
     config: {
       required: true,
-      default: () => {},
+      default: () => { },
     },
     chartStyle: {
       require: false,
@@ -42,6 +42,8 @@ export default {
       ti: 0,
       loading: false,
       tableData: [],
+      color: ['#a6c84c', '#ffa022', '#46bee9'],
+      planePath: 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z',
     };
   },
   computed: {
@@ -128,8 +130,8 @@ export default {
           pageSize: this.config.length,
         }).then(({ result }) => {
           this.data = result.dataList || [];
-          this.min = result.min;
-          this.max = result.max;
+          this.config.series.maps.visualMap.min = result.min;
+          this.config.series.maps.visualMap.max = result.max;
           this.renderChart();
         }).finally(() => {
           this.loading = false;
@@ -175,40 +177,51 @@ export default {
       }
     },
     makeOptions() {
+      const series = [
+        {
+          type: 'map',
+          mapType: 'MP',
+          zoom: this.config.series.maps.zoom / 10,
+          label: {
+            show: this.config.series.maps.label.show,
+            color: this.config.series.maps.label.color,
+          },
+          itemStyle: {
+            borderColor: this.config.series.maps.itemStyle.borderColor,
+            borderWidth: this.config.series.maps.itemStyle.borderWidth,
+            borderType: this.config.series.maps.itemStyle.borderType,
+            opacity: this.config.series.maps.itemStyle.opacity / 100,
+          },
+          left: `${this.config.grid.left}%`,
+          top: `${this.config.grid.top}%`,
+          right: `${this.config.grid.right}%`,
+          bottom: `${this.config.grid.bottom}%`,
+          data: this.data,
+          effect: {
+            show: true,
+            period: 6,
+            trailLength: 0,
+            symbol: this.planePath,
+            symbolSize: 15,
+          },
+          zlevel: 2,
+          symbol: ['none', 'arrow'],
+          symbolSize: 10,
+          lineStyle: {
+            normal: {
+              color: this.color[0],
+              width: 1,
+              opacity: 0.6,
+              curveness: 0.2,
+            },
+          },
+        },
+      ];
       const option = {
         title: this.config.title,
         tooltip: this.config.tooltip,
-        visualMap: {
-          min: this.min,
-          max: this.max,
-          text: ['High', 'Low'],
-          realtime: false,
-          inRange: {
-            color: ['lightskyblue', 'yellow', 'orangered'],
-          },
-        },
-        series: [
-          {
-            type: 'map',
-            mapType: 'MP',
-            zoom: this.config.series.maps.zoom / 10,
-            label: {
-              show: this.config.series.maps.label.show,
-              color: this.config.series.maps.label.color,
-            },
-            itemStyle: {
-              borderColor: this.config.series.maps.itemStyle.borderColor,
-              borderWidth: this.config.series.maps.itemStyle.borderWidth,
-              borderType: this.config.series.maps.itemStyle.borderType,
-              opacity: this.config.series.maps.itemStyle.opacity / 100,
-            },
-            left: `${this.config.grid.left}%`,
-            top: `${this.config.grid.top}%`,
-            right: `${this.config.grid.right}%`,
-            bottom: `${this.config.grid.bottom}%`,
-            data: this.data,
-          },
-        ],
+        visualMap: this.config.series.maps.visualMap,
+        series,
       };
       this.chart.clear();
       this.chart.setOption(option);
@@ -240,5 +253,4 @@ export default {
 };
 </script>
 
-<style lang="stylus">
-</style>
+<style lang="stylus"></style>

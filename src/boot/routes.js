@@ -140,6 +140,14 @@ export default [
     },
     children: [
       {
+        id: 604,
+        path: '/bi/favorites',
+        component: 'bi/favorites',
+        meta: {
+          title: '收藏管理',
+        },
+      },
+      {
         id: 603,
         path: '/bi/map',
         component: 'bi/map',

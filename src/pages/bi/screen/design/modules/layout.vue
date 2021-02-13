@@ -427,6 +427,9 @@ export default {
       });
     },
     getIcon(item) {
+      if (item.type === 'group') {
+        return 'mdi-select-group';
+      }
       const chart = this.chartList.find((v) => v.type === item.type);
       if (chart) {
         return chart.icon;

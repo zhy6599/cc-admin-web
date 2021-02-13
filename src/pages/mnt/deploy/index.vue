@@ -23,7 +23,7 @@
         selection="multiple"
         :selected.sync="selected"
       >
-        <template v-slot:top="table">
+        <template v-slot:top>
           <div class="row no-wrap full-width">
             <q-input
               clearable
@@ -44,34 +44,6 @@
             <q-space />
             <q-btn-group outline>
               <q-btn outline icon="add" no-wrap color="primary" label="新建" @click="add" />
-              <q-btn
-                outline
-                color="primary"
-                label="切换全屏"
-                no-wrap
-                v-if="$q.screen.gt.md"
-                @click="table.toggleFullscreen"
-                :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-              />
-              <q-btn-dropdown
-                outline
-                color="primary"
-                label="自选列"
-                icon="view_list"
-                no-wrap
-                v-if="$q.screen.gt.md"
-              >
-                <q-list>
-                  <q-item tag="label" v-for="item in columns" :key="item.name">
-                    <q-item-section avatar>
-                      <q-checkbox v-model="group" :val="item.name" />
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label>{{item.label}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
               <q-btn
                 outline
                 no-wrap
@@ -113,6 +85,83 @@
                 @click="showConfirm()"
                 icon="mdi-delete-variant"
               />
+              <q-btn
+                outline
+                no-wrap
+                v-if="$q.screen.gt.sm"
+                label="系统还原"
+                icon="mdi-restore"
+                :loading="importing"
+                color="primary"
+                :disable="selected.length === 0"
+                @click="sysRestore"
+              />
+              <q-btn
+                outline
+                no-wrap
+                v-if="$q.screen.gt.sm"
+                label="状态查询"
+                icon="mdi-resistor-nodes"
+                :loading="importing"
+                color="primary"
+                :disable="selected.length === 0"
+                @click="serverStatus"
+              />
+              <q-btn
+                outline
+                no-wrap
+                v-if="$q.screen.gt.sm"
+                label="启动"
+                icon="mdi-play-circle-outline"
+                :loading="importing"
+                color="primary"
+                :disable="selected.length === 0"
+                @click="startServer"
+              />
+              <q-btn
+                outline
+                no-wrap
+                v-if="$q.screen.gt.sm"
+                label="停止"
+                icon="mdi-stop-circle-outline"
+                :loading="importing"
+                color="primary"
+                :disable="selected.length === 0"
+                @click="stopServer"
+              />
+              <q-btn
+                outline
+                no-wrap
+                v-if="$q.screen.gt.sm"
+                label="重启"
+                icon="mdi-restart"
+                :loading="importing"
+                color="primary"
+                :disable="selected.length === 0"
+                @click="restartServer"
+              />
+              <q-btn
+                outline
+                no-wrap
+                v-if="$q.screen.gt.sm"
+                label="一键部署"
+                icon="mdi-rivet"
+                :loading="importing"
+                color="primary"
+                :disable="selected.length === 0"
+                @click="deploy"
+              >
+                <q-uploader
+                  auto-upload
+                  ref="deployUploader"
+                  :max-files="1"
+                  class="hidden"
+                  :url="importExcelUrlFull"
+                  field-name="file"
+                  :headers="[{name: 'authorization', value: $store.state.User.authorization}]"
+                  @uploaded="importedDeploy"
+                />
+              </q-btn>
             </q-btn-group>
           </div>
         </template>
@@ -243,6 +292,7 @@ export default {
         deleteBatch: '/mnt/deploy/deleteBatch',
         exportXlsUrl: '/mnt/deploy/exportXls',
         importExcelUrl: '/mnt/deploy/importExcel',
+        serverStatus: '/mnt/deploy/serverStatus',
       },
     };
   },
@@ -263,6 +313,39 @@ export default {
       });
       this.$axios.get('/sys/dictItem/selectItemsByDefId?defId=mntServer').then((r) => {
         this.mntServer = r;
+      });
+    },
+    deploy() {
+      this.$refs.keyFileUploader.pickFiles();
+    },
+    importedDeploy({ xhr }) {
+      this.$refs.keyFileUploader.removeUploadedFiles();
+      const { response } = xhr;
+      const res = JSON.parse(response);
+      if (res.success) {
+        this.form.keyFile = res.message;
+      } else {
+        this.$error(res.message);
+      }
+    },
+    sysRestore() {
+      this.$refs.sysRestore.dialog = true;
+    },
+    startServer() {
+
+    },
+    stopServer() {
+
+    },
+    restartServer() {
+
+    },
+    serverStatus() {
+      const ids = [];
+      this.selected.forEach(({ id }) => { ids.push(id); });
+      return this.$axios.get(this.url.serverStatus, { params: { ids: ids.join(',') } }).then((r) => {
+        this.$info(r.message, true);
+      }).finally(() => {
       });
     },
   },

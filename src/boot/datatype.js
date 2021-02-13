@@ -275,6 +275,12 @@ export const chartList = [
   },
   {
     selected: false,
+    name: '万能组件',
+    icon: 'mdi-radiology-box-outline',
+    type: 'omnipotent',
+  },
+  {
+    selected: false,
     name: '背景设置',
     icon: 'mdi-cog-outline',
     type: 'cursor',
@@ -341,6 +347,11 @@ export const chartConfig = (v) => {
         overflowHiden: true,
       };
       break;
+    case 'omnipotent':
+      t = {
+        content: '',
+      };
+      break;
     case 'video':
       t = {
         src: '',
@@ -404,6 +415,8 @@ export const chartConfig = (v) => {
           text: '',
           subtext: '',
           left: 'center',
+          padding: [0, 0, 0, 0],
+          paddingTxt: '0, 0, 0, 0',
           top: 'top',
           orient: 'horizontal',
           textStyle: {
@@ -431,6 +444,24 @@ export const chartConfig = (v) => {
               borderWidth: 1,
               borderType: 'solid',
               opacity: 100,
+            },
+            visualMap: {
+              min: 0,
+              max: 0,
+              show: false,
+              text: ['High', 'Low'],
+              textArray: 'High,Low',
+              realtime: false,
+              inverse: false,
+              inRange: {
+                color: ['lightskyblue', 'yellow', 'orangered'],
+              },
+              textStyle: {
+                color: '#000',
+                fontWeight: 'normal',
+                fontStyle: 'normal',
+                fontSize: 18,
+              },
             },
           },
           bar: {

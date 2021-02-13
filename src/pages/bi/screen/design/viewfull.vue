@@ -17,6 +17,7 @@
         <imageview v-if="item.type === 'image'" :config="item.config" />
         <chartview v-if="item.type === 'chart'" :config="item.config" />
         <videoview v-if="item.type === 'video'" :config="item.config" />
+        <omnipotentview v-if="item.type === 'omnipotent'" :config="item.config" />
       </div>
     </vue-draggable-resizable>
   </div>
@@ -29,6 +30,7 @@ import chartview from './modules/view/chartview';
 import textview from './modules/view/textview';
 import imageview from './modules/view/imageview';
 import videoview from './modules/view/videoview';
+import omnipotentview from './modules/view/omnipotentview';
 
 export default {
   components: {
@@ -37,6 +39,7 @@ export default {
     textview,
     imageview,
     videoview,
+    omnipotentview,
   },
   data() {
     return {

@@ -49,6 +49,12 @@
           </div>
         </div>
         <div class="row no-wrap justify-end col-4 text-right q-pr-md q-gutter-sm">
+            <q-btn flat icon="mdi-folder-plus-outline" @click="addFav()" >
+              <q-tooltip>添加到收藏夹</q-tooltip>
+            </q-btn>
+            <q-btn flat icon="mdi-folder-star-outline" @click="fav()" >
+              <q-tooltip>收藏文件夹</q-tooltip>
+            </q-btn>
           <q-btn flat icon="mdi-format-float-left" @click="left=!left">
             <q-tooltip>隐藏左侧菜单</q-tooltip>
           </q-btn>
@@ -83,6 +89,7 @@
         <textsetting v-if="selType === 'text'" :config.sync="config" />
         <imagesetting v-if="selType === 'image'" :config.sync="config" />
         <videosetting v-if="selType === 'video'" :config.sync="config" />
+        <omnipotentsetting v-if="selType === 'omnipotent'" :config.sync="config" />
         <datasource :config.sync="config" />
       </div>
     </q-drawer>
@@ -118,10 +125,25 @@
                 <chartview v-if="item.type === 'chart'" :config="item.config" />
                 <videoview v-if="item.type === 'video'" :config="item.config" />
                 <groupview v-if="item.type === 'group'" :config="item.config" />
+                <omnipotentview v-if="item.type === 'omnipotent'" :config="item.config" />
               </div>
             </vue-draggable-resizable>
           </div>
         </div>
+        <q-dialog maximized flat persistent ref="favoriteDialog" position="right">
+          <q-form class="dialog_card column">
+            <h5 class="view_title justify-between q-px-md">
+              收藏夹
+              <q-btn dense outline round icon="clear" size="sm" v-close-popup />
+            </h5>
+            <q-scroll-area class="col">
+              <favorite @addFavorite="addFavorite" />
+            </q-scroll-area>
+            <div class="row justify-end q-pa-md">
+              <q-btn outline color="primary" label="关闭" v-close-popup />
+            </div>
+          </q-form>
+        </q-dialog>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -144,12 +166,16 @@ import videoview from './modules/view/videoview';
 import videosetting from './modules/setting/videosetting';
 import groupview from './modules/view/groupview';
 import groupsetting from './modules/setting/groupsetting';
+import omnipotentview from './modules/view/omnipotentview';
+import omnipotentsetting from './modules/setting/omnipotentsetting';
 import layout from './modules/layout';
+import favorite from './modules/favorite';
 
 export default {
   components: {
     VueDraggableResizable,
     layout,
+    favorite,
     backgroundsetting,
     datasource,
     chartview,
@@ -162,6 +188,8 @@ export default {
     videosetting,
     groupview,
     groupsetting,
+    omnipotentview,
+    omnipotentsetting,
   },
   data() {
     return {
@@ -217,6 +245,13 @@ export default {
             this.backgroundConfig = { ...configObj.backgroundConfig };
             let maxIndex = 0;
             this.layout.forEach((item) => {
+              if (item.type === 'group') {
+                const chartArray = [];
+                item.config.chartArray.forEach((chart) => {
+                  chartArray.push(this.layout.find((im) => im.i === chart.i));
+                });
+                item.config.chartArray = chartArray;
+              }
               if (item.i > maxIndex) {
                 maxIndex = item.i;
               }
@@ -460,65 +495,123 @@ export default {
 
     },
     doMoveItem(dir, type) {
-      this.layout.forEach((item) => {
-        if (this.selChartArray.indexOf(item)) {
-          const step = this.onShfit ? this.shiftMove : this.move;
-          if (type === 'add') {
-            item[dir] += step;
-            this.sizeResize(dir === 'x' ? step : 0, dir === 'y' ? step : 0, dir === 'w' ? step : 0, dir === 'h' ? step : 0);
-          } else if (item[dir] >= step) {
-            item[dir] -= step;
-            this.sizeResize(dir === 'x' ? -step : 0, dir === 'y' ? -step : 0, dir === 'w' ? -step : 0, dir === 'h' ? -step : 0);
-          }
-          if (dir === 'w' || dir === 'h') {
-            item.config.needResize = true;
-          }
+      this.selChartArray.forEach((item) => {
+        const step = this.onShfit ? this.shiftMove : this.move;
+        if (type === 'add') {
+          item[dir] += step;
+          this.sizeResize(dir === 'x' ? step : 0, dir === 'y' ? step : 0, dir === 'w' ? step : 0, dir === 'h' ? step : 0);
+        } else if (item[dir] >= step) {
+          item[dir] -= step;
+          this.sizeResize(dir === 'x' ? -step : 0, dir === 'y' ? -step : 0, dir === 'w' ? -step : 0, dir === 'h' ? -step : 0);
+        }
+        if (dir === 'w' || dir === 'h') {
+          item.config.needResize = true;
         }
       });
     },
     setKeyStatus(e, status) {
-      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        this.onShfit = status;
+      if (this.selChartArray.length > 0) {
+        if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+          this.onShfit = status;
+        }
+        if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
+          this.onCtrl = status;
+        }
+        if (status) {
+          switch (e.code) {
+            case 'ArrowUp':
+              if (this.onCtrl) {
+                this.moveItem('h', 'sub');
+              } else {
+                this.moveItem('y', 'sub');
+              }
+              e.preventDefault();
+              break;
+            case 'ArrowDown':
+              if (this.onCtrl) {
+                this.moveItem('h', 'add');
+              } else {
+                this.moveItem('y', 'add');
+              }
+              e.preventDefault();
+              break;
+            case 'ArrowLeft':
+              if (this.onCtrl) {
+                this.moveItem('w', 'sub');
+              } else {
+                this.moveItem('x', 'sub');
+              }
+              e.preventDefault();
+              break;
+            case 'ArrowRight':
+              if (this.onCtrl) {
+                this.moveItem('w', 'add');
+              } else {
+                this.moveItem('x', 'add');
+              }
+              e.preventDefault();
+              break;
+            default:
+              break;
+          }
+        }
       }
-      if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
-        this.onCtrl = status;
-      }
-      if (status) {
-        switch (e.code) {
-          case 'ArrowUp':
-            if (this.onCtrl) {
-              this.moveItem('h', 'sub');
-            } else {
-              this.moveItem('y', 'sub');
+    },
+    addFav() {
+      this.$q.dialog({
+        title: '添加到收藏夹',
+        message: '请输入名称',
+        prompt: {
+          model: '',
+          outlined: true,
+          isValid: (val) => val.length > 2,
+          type: 'text',
+        },
+        cancel: true,
+        persistent: true,
+      }).onOk((data) => {
+        let type = 'complex';
+        let config = JSON.stringify(this.selChartArray);
+        if (this.selChartArray.length === 0) {
+          type = 'cursor';
+          config = JSON.stringify(this.backgroundConfig);
+        } else if (this.selChartArray.length === 1) {
+          type = this.selChartArray[0].type;
+        }
+
+        this.$axios.post('/bi/favorites/add', {
+          name: data,
+          type,
+          config,
+        }).then((r) => {
+          this.$info(r.message);
+          this.query();
+        });
+      });
+    },
+    fav() {
+      this.$refs.favoriteDialog.show();
+    },
+    addFavorite(p) {
+      if (p.type === 'cursor') {
+        this.backgroundConfig = { ...JSON.parse(p.config) };
+      } else {
+        const favArray = JSON.parse(p.config);
+        if (favArray.length > 0) {
+          favArray.forEach((fav) => {
+            if (fav.type === 'group') {
+              fav.config.chartArray.forEach((chart) => {
+                this.index += 1;
+                chart.i = this.index;
+                this.layout.push(chart);
+              });
             }
-            e.preventDefault();
-            break;
-          case 'ArrowDown':
-            if (this.onCtrl) {
-              this.moveItem('h', 'add');
-            } else {
-              this.moveItem('y', 'add');
-            }
-            e.preventDefault();
-            break;
-          case 'ArrowLeft':
-            if (this.onCtrl) {
-              this.moveItem('w', 'sub');
-            } else {
-              this.moveItem('x', 'sub');
-            }
-            e.preventDefault();
-            break;
-          case 'ArrowRight':
-            if (this.onCtrl) {
-              this.moveItem('w', 'add');
-            } else {
-              this.moveItem('x', 'add');
-            }
-            e.preventDefault();
-            break;
-          default:
-            break;
+            this.index += 1;
+            fav.i = this.index;
+            this.layout.push(fav);
+            this.selectItem(fav);
+            this.addHistory();
+          });
         }
       }
     },
@@ -539,9 +632,9 @@ export default {
     document.onkeyup = (e) => {
       this.setKeyStatus(e, false);
     };
-    this.moveItem = debounce(this.doMoveItem, 50);
-    this.sizeResize = debounce(this.doSizeResize, 50);
-    this.onDrag = debounce(this.doOnDrag, 50);
+    this.moveItem = debounce(this.doMoveItem, 10);
+    this.sizeResize = debounce(this.doSizeResize, 10);
+    this.onDrag = debounce(this.doOnDrag, 1);
   },
   computed: {
     backgroundStyle() {

@@ -281,6 +281,12 @@ export const chartList = [
   },
   {
     selected: false,
+    name: '自定义',
+    icon: 'mdi-airplane-takeoff',
+    type: 'custom',
+  },
+  {
+    selected: false,
     name: '背景设置',
     icon: 'mdi-cog-outline',
     type: 'cursor',
@@ -352,6 +358,13 @@ export const chartConfig = (v) => {
         content: '',
       };
       break;
+    case 'custom':
+      t = {
+        needResize: false,
+        cmpName: '',
+        config: '',
+      };
+      break;
     case 'video':
       t = {
         src: '',
@@ -372,6 +385,7 @@ export const chartConfig = (v) => {
         type: 'line',
         name: '',
         custom: {
+          mapId: '',
           option: '',
         },
         table: {

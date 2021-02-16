@@ -12,6 +12,18 @@
       </div>
 
       <div v-if="config.type==='custom'" class="text-body2 q-pt-sm">自定义option</div>
+      <q-select
+        v-if="config.type==='custom'"
+        dense
+        filled
+        options-dense
+        v-model="config.custom.mapId"
+        prefix="地图设置："
+        class="q-my-sm"
+        :options="biMap"
+        emit-value
+        map-options
+      />
       <q-input
         v-if="config.type==='custom'"
         dense
@@ -88,6 +100,8 @@ export default {
       model: [],
       sortables: [],
       tabs: chartTypes,
+      biMap: [
+      ],
     };
   },
   props: {
@@ -97,8 +111,14 @@ export default {
     },
   },
   mounted() {
+    this.initDict();
   },
   methods: {
+    initDict() {
+      this.$axios.get('/sys/dictItem/selectItemsByDefId?defId=biMap').then((r) => {
+        this.biMap = r;
+      });
+    },
   },
   watch: {
     config: {

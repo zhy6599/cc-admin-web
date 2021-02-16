@@ -115,6 +115,14 @@ export default {
         }
       },
     },
+    'config.series.maps.id': {
+      handler(n, o) {
+        if (n !== o) {
+          this.registerMap();
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
     makeOptions,
@@ -206,9 +214,18 @@ export default {
         this.chart.resize();
       }
     },
+    registerMap() {
+      if (this.config.series.maps.id) {
+        this.$axios.get(`/bi/map/queryById?id=${this.config.series.maps.id}`).then(({ result }) => {
+          echarts.registerMap('MP', result.json);
+        }).finally(() => {
+        });
+      }
+    },
     renderChart() {
       if (!this.chart) {
         this.chart = echarts.init(this.$refs.chart, this.config.theme);
+        this.registerMap();
       }
       const option = this.makeOptions(this.config, this.chartData);
       this.chart.clear();

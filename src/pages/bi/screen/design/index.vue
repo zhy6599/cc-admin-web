@@ -90,6 +90,7 @@
         <imagesetting v-if="selType === 'image'" :config.sync="config" />
         <videosetting v-if="selType === 'video'" :config.sync="config" />
         <omnipotentsetting v-if="selType === 'omnipotent'" :config.sync="config" />
+        <customsetting v-if="selType === 'custom'" :config.sync="config" />
         <datasource :config.sync="config" />
       </div>
     </q-drawer>
@@ -126,6 +127,7 @@
                 <videoview v-if="item.type === 'video'" :config="item.config" />
                 <groupview v-if="item.type === 'group'" :config="item.config" />
                 <omnipotentview v-if="item.type === 'omnipotent'" :config="item.config" />
+                <customview v-if="item.type === 'custom'" :config="item.config" />
               </div>
             </vue-draggable-resizable>
           </div>
@@ -168,6 +170,8 @@ import groupview from './modules/view/groupview';
 import groupsetting from './modules/setting/groupsetting';
 import omnipotentview from './modules/view/omnipotentview';
 import omnipotentsetting from './modules/setting/omnipotentsetting';
+import customview from './modules/view/customview';
+import customsetting from './modules/setting/customsetting';
 import layout from './modules/layout';
 import favorite from './modules/favorite';
 
@@ -190,6 +194,8 @@ export default {
     groupsetting,
     omnipotentview,
     omnipotentsetting,
+    customview,
+    customsetting,
   },
   data() {
     return {

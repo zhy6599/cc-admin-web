@@ -38,15 +38,16 @@ export default {
   data() {
     return {
       cmpNameOptions: [
-        { label: '自定义折线', value: 'customline' },
-        { label: '自定义汽车', value: 'customcar' },
-        { label: '自定义飞机', value: 'customplane' },
-        { label: '自定义热力周', value: 'customheatweek' },
-        { label: '自定义热力年', value: 'customheatyear' },
-        { label: '自定义3D柱状图', value: 'custombar3d' },
-        { label: '自定义3D柱状图透明', value: 'custombar3dtran' },
-        { label: '自定义3D折线图', value: 'customline3d' },
-        { label: '自定义3D风向', value: 'customwind3d' },
+        { label: '折线', value: 'customline' },
+        { label: '汽车', value: 'customcar' },
+        { label: '飞机', value: 'customplane' },
+        { label: '散点图', value: 'customscatter' },
+        { label: '热力周', value: 'customheatweek' },
+        { label: '热力年', value: 'customheatyear' },
+        { label: '3D柱状图', value: 'custombar3d' },
+        { label: '3D柱状图透明', value: 'custombar3dtran' },
+        { label: '3D折线图', value: 'customline3d' },
+        { label: '3D风向', value: 'customwind3d' },
       ],
     };
   },

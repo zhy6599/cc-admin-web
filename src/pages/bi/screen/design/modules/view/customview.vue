@@ -11,6 +11,7 @@ import custombar3d from './custom/custombar3d';
 import custombar3dtran from './custom/custombar3dtran';
 import customline3d from './custom/customline3d';
 import customwind3d from './custom/customwind3d';
+import customscatter from './custom/customscatter';
 
 export default {
   components: {
@@ -23,6 +24,7 @@ export default {
     custombar3dtran,
     customline3d,
     customwind3d,
+    customscatter,
   },
   props: {
     config: {

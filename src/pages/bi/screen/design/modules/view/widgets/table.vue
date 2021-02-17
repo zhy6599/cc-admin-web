@@ -133,6 +133,9 @@ export default {
     config: {
       deep: true,
       handler() {
+        if (this.config.needResize) {
+          this.config.needResize = false;
+        }
         this.getData();
       },
     },

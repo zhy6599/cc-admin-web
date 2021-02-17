@@ -10,6 +10,7 @@
       :z="item.z"
       :parent="true"
       :resizable="false"
+      :draggable="false"
       :class="'no-border'"
     >
       <div :class="getItemClass(item)" :id="item.key">
@@ -18,6 +19,7 @@
         <chartview v-if="item.type === 'chart'" :config="item.config" />
         <videoview v-if="item.type === 'video'" :config="item.config" />
         <omnipotentview v-if="item.type === 'omnipotent'" :config="item.config" />
+        <customview v-if="item.type === 'custom'" :config="item.config" />
       </div>
     </vue-draggable-resizable>
   </div>
@@ -31,6 +33,7 @@ import textview from './modules/view/textview';
 import imageview from './modules/view/imageview';
 import videoview from './modules/view/videoview';
 import omnipotentview from './modules/view/omnipotentview';
+import customview from './modules/view/customview';
 
 export default {
   components: {
@@ -40,6 +43,7 @@ export default {
     imageview,
     videoview,
     omnipotentview,
+    customview,
   },
   data() {
     return {

@@ -303,8 +303,10 @@ export const ellipsis = (value, vlength = 25) => {
   return value;
 };
 
-export const chartConfig = (v) => {
+export const chartConfig = (v, darkModel) => {
   let t = {};
+  const color = darkModel ? '#fff' : '#000';
+  const colorReverse = darkModel ? '#000' : '#fff';
   switch (v) {
     case 'text':
       t = {
@@ -317,7 +319,7 @@ export const chartConfig = (v) => {
           alternate: false,
         },
         text: '请输入文字',
-        color: '#000',
+        color,
         fontSize: 12,
         fontWeight: 'normal',
         textAlign: 'left',
@@ -337,7 +339,7 @@ export const chartConfig = (v) => {
           data: [],
         },
         useBackground: false,
-        bgColor: '#fff',
+        bgColor: colorReverse,
         src: '',
         backPicSet: 'repeat',
         opacity: 100,
@@ -434,12 +436,12 @@ export const chartConfig = (v) => {
           top: 'top',
           orient: 'horizontal',
           textStyle: {
-            color: '#000',
+            color,
             fontWeight: 'normal',
             fontSize: 18,
           },
           subtextStyle: {
-            color: '#000',
+            color,
             fontWeight: 'normal',
             fontSize: 12,
           },
@@ -451,10 +453,10 @@ export const chartConfig = (v) => {
             zoom: 10,
             label: {
               show: true,
-              color: '#000',
+              color,
             },
             itemStyle: {
-              borderColor: '#fff',
+              borderColor: colorReverse,
               borderWidth: 1,
               borderType: 'solid',
               opacity: 100,
@@ -471,7 +473,7 @@ export const chartConfig = (v) => {
                 color: ['lightskyblue', 'yellow', 'orangered'],
               },
               textStyle: {
-                color: '#000',
+                color,
                 fontWeight: 'normal',
                 fontStyle: 'normal',
                 fontSize: 18,
@@ -522,7 +524,7 @@ export const chartConfig = (v) => {
               position: 'outside',
               formatter: '{b}: {c}',
               rotate: 0,
-              color: '#fff',
+              color: colorReverse,
               fontStyle: 'normal',
               fontWeight: 'normal',
               fontSize: 12,
@@ -542,11 +544,11 @@ export const chartConfig = (v) => {
             roseType: false,
             hoverAnimation: false,
             avoidLabelOverlap: false,
-            noDataColor: '#fff',
+            noDataColor: colorReverse,
             lable: {
               show: false,
               template: 'name',
-              color: '#000',
+              color,
               fontWeight: 'normal',
               fontSize: 18,
               position: 'center',
@@ -593,7 +595,7 @@ export const chartConfig = (v) => {
             itemStyle: {
               color: '#91c7af',
               borderWidth: 0,
-              borderColor: '#000',
+              borderColor: color,
               borderType: 'solid',
               opacity: 100,
             },
@@ -611,7 +613,7 @@ export const chartConfig = (v) => {
             show: true,
             nameRotate: 0,
             nameTextStyle: {
-              color: '#333',
+              color,
               fontSize: 12,
               fontWeight: 'normal',
               fontStyle: 'normal',
@@ -620,14 +622,14 @@ export const chartConfig = (v) => {
               show: true,
               lineStyle: {
                 width: 1,
-                color: '#333',
+                color,
                 type: 'solid',
               },
             },
             unit: '',
             axisLabel: {
               show: true,
-              color: '#000',
+              color,
               rotate: 0,
               fontSize: 12,
               fontWeight: 'normal',
@@ -637,7 +639,7 @@ export const chartConfig = (v) => {
               show: true,
               lineStyle: {
                 width: 1,
-                color: '#333',
+                color,
                 type: 'solid',
               },
             },
@@ -651,7 +653,7 @@ export const chartConfig = (v) => {
             show: false,
             nameRotate: 0,
             nameTextStyle: {
-              color: '#333',
+              color,
               fontSize: 12,
               fontWeight: 'normal',
               fontStyle: 'normal',
@@ -662,13 +664,13 @@ export const chartConfig = (v) => {
               show: true,
               lineStyle: {
                 width: 1,
-                color: '#333',
+                color,
                 type: 'solid',
               },
             },
             axisLabel: {
               show: true,
-              color: '#000',
+              color,
               rotate: 0,
               fontSize: 12,
               fontWeight: 'normal',
@@ -678,7 +680,7 @@ export const chartConfig = (v) => {
               show: true,
               lineStyle: {
                 width: 1,
-                color: '#333',
+                color,
                 type: 'solid',
               },
             },
@@ -698,7 +700,7 @@ export const chartConfig = (v) => {
           },
           name: '',
           nameTextStyle: {
-            color: '#333',
+            color,
             fontSize: 12,
             fontWeight: 'normal',
             fontStyle: 'normal',
@@ -706,7 +708,7 @@ export const chartConfig = (v) => {
           axisLabel: {
             show: true,
             rotate: 0,
-            color: '#000',
+            color,
             fontSize: 12,
             fontWeight: 'normal',
             fontStyle: 'normal',
@@ -715,7 +717,7 @@ export const chartConfig = (v) => {
             show: true,
             lineStyle: {
               width: 1,
-              color: '#333',
+              color,
               type: 'solid',
             },
           },
@@ -730,7 +732,7 @@ export const chartConfig = (v) => {
           top: 'top',
           orient: 'horizontal',
           textStyle: {
-            color: '#333',
+            color,
             fontSize: 12,
             fontWeight: 'normal',
             fontStyle: 'normal',

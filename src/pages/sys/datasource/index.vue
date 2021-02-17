@@ -1,6 +1,7 @@
 <template>
   <q-page class="cc-admin row">
-    <viewcatalog class="col-md-2 q-mt-sm q-mb-sm q-ml-sm" v-if="drawer"
+    <viewcatalog class="col-md-2 q-mt-sm q-mb-sm q-ml-sm"
+    v-if="this.$q.screen.gt.md"
     type="2" @select="selectCatalog" />
     <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
       <q-table
@@ -45,7 +46,7 @@
               </template>
             </q-input>
             <q-space /><q-btn-group outline>
-            <q-btn outline icon="add" color="primary" no-wrap label="新建数据源管理" @click="add" />
+            <q-btn outline icon="add" color="primary" no-wrap label="新建" @click="add" />
             <q-btn
               outline
               color="primary"
@@ -180,7 +181,6 @@
 </template>
 
 <script>
-import { debounce } from 'quasar';
 import ellipsisvalue from 'components/ellipsisvalue';
 import { IndexMixin } from 'boot/mixins';
 import { getDictLabel } from 'boot/dictionary';
@@ -239,16 +239,10 @@ export default {
         exportXlsUrl: '/sys/dataSource/exportXls',
         importExcelUrl: '/sys/dataSource/importExcel',
       },
-      drawer: true,
     };
   },
   methods: {
     requiredTest,
-    doResize() {
-      this.$nextTick(() => {
-        this.drawer = this.$q.screen.gt.md;
-      });
-    },
     getDictLabel,
     testConnection() {
       this.$axios.post('/sys/dataSource/testConnection', this.form).then((r) => {
@@ -271,17 +265,10 @@ export default {
     },
   },
   mounted() {
-    this.onResize = debounce(this.doResize, 500);
   },
   watch: {
-    screenWidth() {
-      this.onResize();
-    },
   },
   computed: {
-    screenWidth() {
-      return this.$q.screen.width;
-    },
   },
 };
 </script>

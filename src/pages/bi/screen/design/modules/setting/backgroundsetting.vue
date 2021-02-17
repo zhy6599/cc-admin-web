@@ -71,6 +71,9 @@
         <q-slider v-model="config.opacity" :min="0" :max="100" color="green" />
       </div>
       <q-toggle v-model="config.showGrid" label="显示网格" />
+      <q-toggle v-model="config.darkModel" label="深色主题" @input="changeDarkModel">
+        <q-tooltip>新增图表文字等颜色会适应深色主题</q-tooltip>
+      </q-toggle>
     </q-card>
   </div>
 </template>
@@ -96,6 +99,9 @@ export default {
     },
   },
   methods: {
+    changeDarkModel() {
+      this.config.color = this.config.darkModel ? '#000' : '#fff';
+    },
     removeUpload() {
       this.config.src = '';
       this.$refs.uploadPic.removeUploadedFiles();

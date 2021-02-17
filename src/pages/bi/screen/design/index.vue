@@ -226,6 +226,7 @@ export default {
         height: 600,
         color: '#fff',
         showGrid: true,
+        darkModel: false,
         src: '',
         backPicSet: 'repeat',
         opacity: 0,
@@ -282,6 +283,7 @@ export default {
     },
 
     selectItem(selItem) {
+      selItem.active = true;
       if (this.moving) {
         this.moving = false;
       } else if (this.onCtrl && this.selChartArray.length > 0) {
@@ -349,7 +351,7 @@ export default {
     autoFix() {
       if (this.layout.length > 0) {
         this.layout.forEach((item) => {
-          this.applyIf(item.config, chartConfig(item.type));
+          this.applyIf(item.config, chartConfig(item.type, this.backgroundConfig.darkModel));
         });
         this.$info('修复完成');
       }
@@ -395,7 +397,7 @@ export default {
       if (type === 'group') {
         Object.assign(item, itemConfig);
       } else {
-        item.config = chartConfig(type);
+        item.config = chartConfig(type, this.backgroundConfig.darkModel);
       }
       this.layout.push(item);
       this.selectItem(item);
@@ -516,7 +518,7 @@ export default {
       });
     },
     setKeyStatus(e, status) {
-      if (this.selChartArray.length > 0) {
+      if (this.selChartArray.filter((sel) => sel.active).length > 0) {
         if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
           this.onShfit = status;
         }

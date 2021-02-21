@@ -179,6 +179,10 @@
               <q-input outlined dense v-model="form.startScript" type="textarea" />
             </div>
             <div class="col-12">
+              <h5>停止脚本：</h5>
+              <q-input outlined dense v-model="form.stopScript" type="textarea" />
+            </div>
+            <div class="col-12">
               <h5>部署脚本：</h5>
               <q-input outlined dense v-model="form.deployScript" type="textarea" />
             </div>

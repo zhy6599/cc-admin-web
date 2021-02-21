@@ -105,7 +105,7 @@
                 :loading="importing"
                 color="primary"
                 :disable="selected.length === 0"
-                @click="serverStatus"
+                @click="serviceStatus"
               />
               <q-btn
                 outline
@@ -116,7 +116,7 @@
                 :loading="importing"
                 color="primary"
                 :disable="selected.length === 0"
-                @click="startServer"
+                @click="serviceStart"
               />
               <q-btn
                 outline
@@ -127,7 +127,7 @@
                 :loading="importing"
                 color="primary"
                 :disable="selected.length === 0"
-                @click="stopServer"
+                @click="serviceStop"
               />
               <q-btn
                 outline
@@ -138,7 +138,7 @@
                 :loading="importing"
                 color="primary"
                 :disable="selected.length === 0"
-                @click="restartServer"
+                @click="serviceRestart"
               />
               <q-btn
                 outline
@@ -197,7 +197,7 @@
             </div>
             <div class="col-12">
               <h5>
-                <q-icon name="star" color="red" />应用编号：
+                <q-icon name="star" color="red" />应用：
               </h5>
               <q-select
                 outlined
@@ -210,7 +210,7 @@
             </div>
             <div class="col-12">
               <h5>
-                <q-icon name="star" color="red" />服务器编号：
+                <q-icon name="star" color="red" />服务器：
               </h5>
               <q-select
                 outlined
@@ -266,10 +266,10 @@ export default {
           name: 'name', align: 'left', label: '名称', field: 'name',
         },
         {
-          name: 'appId', align: 'left', label: '应用编号', field: 'appId',
+          name: 'appId', align: 'left', label: '应用', field: 'appId',
         },
         {
-          name: 'serverId', align: 'left', label: '服务器编号', field: 'serverId',
+          name: 'serverId', align: 'left', label: '服务器', field: 'serverId',
         },
         {
           name: 'catalogId_dictText', align: 'left', label: '分类目录', field: 'catalogId_dictText',
@@ -292,7 +292,9 @@ export default {
         deleteBatch: '/mnt/deploy/deleteBatch',
         exportXlsUrl: '/mnt/deploy/exportXls',
         importExcelUrl: '/mnt/deploy/importExcel',
-        serverStatus: '/mnt/deploy/serverStatus',
+        serviceStatus: '/mnt/deploy/serviceStatus',
+        serviceStart: '/mnt/deploy/serviceStart',
+        serviceStop: '/mnt/deploy/serviceStop',
       },
     };
   },
@@ -331,19 +333,29 @@ export default {
     sysRestore() {
       this.$refs.sysRestore.dialog = true;
     },
-    startServer() {
-
-    },
-    stopServer() {
-
-    },
-    restartServer() {
-
-    },
-    serverStatus() {
+    serviceStart() {
       const ids = [];
       this.selected.forEach(({ id }) => { ids.push(id); });
-      return this.$axios.get(this.url.serverStatus, { params: { ids: ids.join(',') } }).then((r) => {
+      return this.$axios.get(this.url.serviceStart, { params: { ids: ids.join(',') } }).then((r) => {
+        this.$info(r.message, true);
+      }).finally(() => {
+      });
+    },
+    serviceStop() {
+      const ids = [];
+      this.selected.forEach(({ id }) => { ids.push(id); });
+      return this.$axios.get(this.url.serviceStop, { params: { ids: ids.join(',') } }).then((r) => {
+        this.$info(r.message, true);
+      }).finally(() => {
+      });
+    },
+    serviceRestart() {
+
+    },
+    serviceStatus() {
+      const ids = [];
+      this.selected.forEach(({ id }) => { ids.push(id); });
+      return this.$axios.get(this.url.serviceStatus, { params: { ids: ids.join(',') } }).then((r) => {
         this.$info(r.message, true);
       }).finally(() => {
       });

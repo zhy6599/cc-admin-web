@@ -298,6 +298,8 @@ export default {
     addBefore() {
       this.form.catalogId = this.catalog;
       this.form.loginType = 'password';
+      this.form.userName = 'root';
+      this.form.port = 22;
       return true;
     },
     selectCatalog(n) {

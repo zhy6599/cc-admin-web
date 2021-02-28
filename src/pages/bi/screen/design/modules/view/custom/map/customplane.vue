@@ -311,7 +311,7 @@ export default {
         });
       });
       const option = {
-        backgroundColor: '#404a59',
+        // backgroundColor: '#404a59',
         title: {
           text: '模拟迁徙',
           subtext: '数据纯属虚构',

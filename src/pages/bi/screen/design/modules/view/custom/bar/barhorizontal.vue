@@ -80,7 +80,7 @@ export default {
         datas.push(value.value);
       });
       return {
-        backgroundColor: '#071347',
+        // backgroundColor: '#071347',
         xAxis: {
           max: total,
           splitLine: {

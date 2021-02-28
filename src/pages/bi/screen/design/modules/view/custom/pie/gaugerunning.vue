@@ -5,6 +5,7 @@
 
 <script>
 import echarts from 'echarts';
+import { debounce } from 'quasar';
 
 export default {
   name: 'gaugerunning',
@@ -28,6 +29,8 @@ export default {
   data() {
     return {
       chart: null,
+      timer: null,
+      num: 0,
     };
   },
   created() {
@@ -35,20 +38,23 @@ export default {
   },
   mounted() {
     this.renderChart();
+    this.doing = debounce(this.doDoing, 50);
   },
   methods: {
     handleResize() {
       if (this.chart) {
+        clearTimeout(this.timer);
         this.chart.resize();
+        setTimeout(this.startTimer(), 0);
       }
     },
     renderChart() {
       if (!this.chart) {
         this.chart = echarts.init(this.$refs.chart, this.config.theme);
       }
-      let num = 0;
+      const thiz = this;
       const option = {
-        backgroundColor: '#111',
+        // backgroundColor: '#111',
         title: [{
           text: 'SPEED',
           x: 'center',
@@ -276,8 +282,8 @@ export default {
                   cx: api.getWidth() / 2,
                   cy: api.getHeight() / 2,
                   r: Math.min(api.getWidth(), (api.getHeight()) / 2) * 0.545,
-                  startAngle: ((0 + num) * Math.PI) / 180,
-                  endAngle: ((1 + num) * Math.PI) / 180,
+                  startAngle: thiz.startAngle,
+                  endAngle: thiz.endAngle,
                 },
                 style: {
                   stroke: '#fdf914',
@@ -291,19 +297,34 @@ export default {
           },
         ],
       };
-      function numb() {
-        num += 5;
-        this.chart.setOption(option, true);
-      }
-      setInterval(() => {
-        numb();
-      }, 100);
       this.chart.setOption(option);
-      setTimeout(() => {
-        this.chart.resize();
-      }, 100);
+      this.chart.resize();
+      setTimeout(this.startTimer(), 0);
+    },
+    startTimer() {
+      this.timer = setInterval(this.doDoing, 200);
+    },
+    doDoing() {
+      this.num += 5;
+      const option = this.chart.getOption();
+      if (this.num > 1000) {
+        this.num = 0;
+      }
+      this.chart.setOption(option, true);
     },
   },
+  beforeDestroy() {
+    clearTimeout(this.timer);
+  },
+  computed: {
+    startAngle() {
+      return ((0 + this.num) * Math.PI) / 180;
+    },
+    endAngle() {
+      return ((1 + this.num) * Math.PI) / 180;
+    },
+  },
+
   watch: {
     config: {
       deep: true,

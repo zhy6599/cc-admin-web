@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-md-3 col-sm-6 col-xs-12 q-px-sm q-mb-md">
-      <q-card class="sale-card">
+      <q-card class="home-sale-card">
         <q-card-section>
           <div class="row nowrap items-center">
             <q-avatar
@@ -37,7 +37,7 @@
     </div>
 
     <div class="col-md-3 col-sm-6 col-xs-12 q-px-sm q-mb-md">
-      <q-card class="sale-card">
+      <q-card class="home-sale-card">
         <q-card-section>
           <div class="row nowrap items-center">
             <q-avatar
@@ -64,7 +64,7 @@
       </q-card>
     </div>
     <div class="col-md-3 col-sm-6 col-xs-12 q-px-sm q-mb-md">
-      <q-card class="sale-card">
+      <q-card class="home-sale-card">
         <q-card-section>
           <div class="row nowrap items-center">
             <q-avatar
@@ -90,7 +90,7 @@
       </q-card>
     </div>
     <div class="col-md-3 col-sm-6 col-xs-12 q-px-sm q-mb-md">
-      <q-card class="sale-card">
+      <q-card class="home-sale-card">
         <q-card-section>
           <div class="row nowrap items-center">
             <q-avatar
@@ -147,7 +147,7 @@ export default {
 </script>
 
 <style lang="stylus">
-.sale-card
+.home-sale-card
   min-width: 200px
   height 200px
 </style>

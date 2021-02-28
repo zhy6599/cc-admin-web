@@ -58,7 +58,7 @@ export default {
       const thisYearData = [11, 38, 23, 39, 66, 66, 79];
       const timeLineData = [1];
       const legend = ['2017', '2018'];
-      const background = '#0e2147'; // 背景
+      // const background = '#0e2147'; // 背景
       const textColor = '#fff';
       const lineColor = 'rgba(255,255,255,0.2)';
       const colors = [{
@@ -77,7 +77,7 @@ export default {
       borderData = xData.map(() => scale);
       const option = {
         baseOption: {
-          backgroundColor: background,
+          // backgroundColor: background,
           timeline: {
             show: false,
             top: 0,

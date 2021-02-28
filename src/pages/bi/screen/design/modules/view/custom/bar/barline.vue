@@ -95,7 +95,7 @@ export default {
       }
 
       return {
-        backgroundColor: '#000',
+        // backgroundColor: '#000',
         title: {
           show: false,
         },

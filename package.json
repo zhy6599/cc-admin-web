@@ -16,6 +16,7 @@
     "core-js": "3.6.5",
     "echarts": "4.8.0",
     "echarts-gl": "1.1.2",
+    "echarts-liquidfill": "2.0.6",
     "echarts-wordcloud": "1.1.3",
     "lodash": "4.17.20",
     "quasar": "1.14.0",

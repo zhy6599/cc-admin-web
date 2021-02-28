@@ -411,7 +411,7 @@ export default {
 
       return {
 
-        backgroundColor: '#000',
+        // backgroundColor: '#000',
         xAxis: {
           show: false,
           type: 'value',

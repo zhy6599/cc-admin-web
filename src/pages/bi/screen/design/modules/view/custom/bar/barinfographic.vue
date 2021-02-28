@@ -55,7 +55,7 @@ export default {
     },
     makeOptions() {
       const option = {
-        backgroundColor: '#32374d',
+        // backgroundColor: '#32374d',
         title: [{
           text: 'infographic chart✍',
           x: '50%',

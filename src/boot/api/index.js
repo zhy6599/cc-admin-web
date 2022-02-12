@@ -8,18 +8,11 @@ const notify = (msg) => Notify.create({
 });
 
 export const goLogin = () => {
-  if (!window.location.pathname.startsWith('/login')) {
-    delete localStorage.Authorization;
-    setTimeout(() => {
-      window.location.replace(`/login/${encodeURIComponent(
-        window.location.pathname + window.location.search + window.location.hash,
-      )}`);
-    });
-  }
+  window.location.replace('#/login');
 };
 
 export const NeedLoginCode = [401, 402, 403];
-
+// 手机打包这里需要更换下 baseURL: process.env.SERVER_URL + u,
 export const createBase = (u = '') => {
   const a = axios.create({
     baseURL: u,
@@ -51,12 +44,12 @@ export const createBase = (u = '') => {
       if (response) {
         if (response.data) {
           if (!response.data.status) {
-            msg = '服务器正在重启或者已经挂了！';
+            msg = '服务器无响应，请联系管理员！';
           } else {
-            msg = `${response.data.status} - ${response.data.message}`;
+            msg = `${response.data.message}`;
           }
         } else {
-          msg = `${response.status} - `;
+          msg = '';
           switch (response.status) {
             case -1:
               msg += '连接失败';
@@ -68,10 +61,11 @@ export const createBase = (u = '') => {
               msg += '页面不存在';
               break;
             case 401:
-            case 402:
+              msg += '登录超时，请重新登录';
+              goLogin();
+              break;
             case 403:
               msg += '权限不足';
-              goLogin();
               break;
             default:
               msg += '未知错误';
@@ -96,7 +90,15 @@ export const downFile = (url, data) => a({
   responseType: 'blob',
 });
 
+export const exportFile = (url, data) => a({
+  url,
+  method: 'POST',
+  data,
+  responseType: 'blob',
+});
+
 Vue.prototype.$downFile = downFile;
+Vue.prototype.$exportFile = exportFile;
 
 export const uploadFile = (url, parameter) => a({
   url,

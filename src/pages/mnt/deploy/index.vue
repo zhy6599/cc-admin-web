@@ -20,7 +20,8 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        selection="multiple"
+        :grid="$q.screen.xs"
+        :selection="$q.screen.xs?'none':'multiple'"
         :selected.sync="selected"
       >
         <template v-slot:top>

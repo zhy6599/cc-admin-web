@@ -1057,6 +1057,20 @@
         </q-card-section>
       </q-card>
     </q-expansion-item>
+    <q-expansion-item dense dense-toggle expand-separator label="自定义设置">
+      <q-card>
+        <q-card-section>
+          <q-input
+            dense
+            filled
+            :debounce="600"
+            v-model="config.options"
+            input-class="text-left"
+            type="textarea"
+          />
+        </q-card-section>
+      </q-card>
+    </q-expansion-item>
   </q-list>
 </template>
 

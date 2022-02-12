@@ -81,6 +81,7 @@ export default {
           selectable: false,
           children: [
             { label: '3D饼图', value: 'pie3d' },
+            { label: '3D环图', value: 'pie3d2' },
             { label: '好看饼图', value: 'piecolor' },
             { label: '双环图', value: 'piedouble' },
             { label: '四环', value: 'piefour' },

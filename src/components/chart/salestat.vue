@@ -25,9 +25,9 @@
           <div class="text-h5">￥126,560</div>
         </q-card-section>
         <q-card-section>
-          周同比12%
-          <q-icon name="mdi-menu-up" color="red" />日同比11%
-          <q-icon name="mdi-menu-down" color="green" />
+          周同比 %12
+          <q-icon name="mdi-triangle" class="text-red q-mr-md" />日同比 11%
+          <q-icon name="mdi-triangle" class="text-green rotate-180" />
         </q-card-section>
         <q-separator />
         <q-card-actions>
@@ -48,8 +48,7 @@
               icon="mdi-point-of-sale"
             />订单量
             <q-space />
-            <q-chip size="sm" square outline color="blue" class="bg-blue-1"
-            label="月"></q-chip>
+            <q-chip size="sm" square outline color="blue" class="bg-blue-1" label="月"></q-chip>
           </div>
           <q-separator class="q-my-sm" />
           <div class="text-h5">8846</div>
@@ -81,7 +80,7 @@
           <div class="text-h5">6560</div>
         </q-card-section>
         <div class="q-mb-sm">
-          <minibar :screenWidth="screenWidth"/>
+          <minibar :screenWidth="screenWidth" />
         </div>
         <q-separator />
         <q-card-actions>
@@ -113,7 +112,11 @@
         </q-card-section>
         <q-separator />
         <q-card-actions>
-          <div class="text-subtitle">日订单量 1,234</div>
+          <div class="text-subtitle">
+            同周比12%
+            <q-icon name="mdi-triangle" class="text-green q-mr-md rotate-180" />日环比80%
+            <q-icon name="mdi-triangle" class="text-red" />
+          </div>
         </q-card-actions>
       </q-card>
     </div>
@@ -148,6 +151,6 @@ export default {
 
 <style lang="stylus">
 .home-sale-card
-  min-width: 200px
+  min-width 200px
   height 200px
 </style>

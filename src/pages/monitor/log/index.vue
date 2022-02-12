@@ -3,9 +3,6 @@
     <div class="col bg-white shadow-2 q-pa-md">
       <div class="row items-center justify-start q-mb-md">
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>类型：</q-item-label>
-          </q-item-section>
           <q-select
             outlined
             dense
@@ -15,12 +12,10 @@
             :options="logType"
             clearable
             class="col"
+            prefix="类型："
           />
         </q-item>
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12" v-if="$q.screen.gt.md">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>内容：</q-item-label>
-          </q-item-section>
           <q-input
             outlined
             dense
@@ -28,12 +23,10 @@
             type="text"
             clearable
             class="col"
+            prefix="内容："
           />
         </q-item>
         <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>操作：</q-item-label>
-          </q-item-section>
           <q-select
             outlined
             dense
@@ -43,13 +36,11 @@
             :options="operateType"
             clearable
             class="col"
+            prefix="操作："
           />
         </q-item>
         <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
         v-if="$q.screen.gt.md">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>路径：</q-item-label>
-          </q-item-section>
           <q-input
             outlined
             dense
@@ -57,13 +48,11 @@
             type="text"
             clearable
             class="col"
+            prefix="路径："
           />
         </q-item>
         <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
         v-if="$q.screen.gt.md">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>参数：</q-item-label>
-          </q-item-section>
           <q-input
             outlined
             dense
@@ -71,13 +60,11 @@
             type="text"
             clearable
             class="col"
+            prefix="参数："
           />
         </q-item>
         <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
         v-if="$q.screen.gt.md">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>耗时：</q-item-label>
-          </q-item-section>
           <q-input
             outlined
             dense
@@ -85,12 +72,10 @@
             type="text"
             clearable
             class="col"
+            prefix="耗时："
           />
         </q-item>
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12" v-if="$q.screen.gt.md">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>IP：</q-item-label>
-          </q-item-section>
           <q-input
             placeholder="请输入IP"
             outlined
@@ -99,6 +84,7 @@
             type="text"
             clearable
             class="col"
+            prefix="IP："
           />
         </q-item>
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
@@ -149,6 +135,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
+        :grid="$q.screen.xs"
       >
         <template #top-right="table">
           <q-btn-group outline>

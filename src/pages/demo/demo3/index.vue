@@ -1,7 +1,7 @@
 <template>
   <q-page  class="row">
     <view-nav class="q-mt-sm q-mb-sm q-ml-sm" title="我的代办" v-model="proTypes"
-      :selected.sync="proType" @select="query"/>
+      :selected.sync="proType" @select="query" v-if="this.$q.screen.gt.md"/>
     <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
       <q-table
         flat
@@ -16,7 +16,8 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        selection="multiple"
+        :grid="$q.screen.xs"
+        :selection="$q.screen.xs?'none':'multiple'"
         :selected.sync="selected"
       >
         <template #top-left>

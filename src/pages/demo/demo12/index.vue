@@ -1,28 +1,82 @@
 <template>
-  <desTabs :tabs="tabs" @selectPanel="setDesTab" />
+  <q-page-sticky
+          expand
+          position="top"
+          style="z-index: 2000"
+          class="q-py-xs bg-grey-2"
+        >
+          <q-toolbar style="min-height: 40px">
+            <q-tabs
+              dense
+              shrink
+              inline-label
+              indicator-color="transparent"
+              active-bg-color="primary"
+              active-color="white"
+              v-model="currentPath"
+            >
+              <div
+                v-for="(tab, index) in tabs"
+                :key="index"
+                class="q-mr-sm items-center"
+              >
+                <q-tab
+                  :ripple="false"
+                  :label="tab.name"
+                  :name="tab.path"
+                  @click="routeTo(tab.path)"
+                  :class="{
+                    'bg-white': !isActive(tab),
+                    'text-grey-7': !isActive(tab),
+                    'loading': tab.loading
+                  }"
+                  exact
+                  style="padding: 0 8px; min-height: 24px; border-radius: 4px"
+                >
+                  <q-icon
+                    v-if="tab.path !== '/home'"
+                    size="18px"
+                    name="close"
+                    @click.stop="removeTab(index)"
+                  ></q-icon>
+                </q-tab>
+              </div>
+            </q-tabs>
+          </q-toolbar>
+        </q-page-sticky>
 </template>
 <script>
-import desTabs from 'components/layout/tabpanel/index.vue';
 
 export default {
   name: 'App',
   components: {
-    desTabs,
   },
   data() {
     return {
-      selectItem: '',
+      tabs: this.$store.state.Rule.routeTabs,
+      currentPath: this.$route.path,
     };
   },
+  mounted() {
+  },
   methods: {
-    setDesTab(val) { // 设置显示面板
-      this.selectItem = val;
+    isActive(tab) {
+      return this.$route.path === tab.path;
+    },
+    routeTo(path) {
+      this.$router.push(path);
+    },
+    removeTab(index) {
+      this.tabs.splice(index, 1);
+      this.removeTabFlag = true;
+      let path = '/';
+      if (this.tabs.length > 0) {
+        path = this.tabs[this.tabs.length - 1].path;
+      }
+      this.$router.push(path);
     },
   },
   computed: {
-    tabs() {
-      return this.$store.state.Rule.routeTabs;
-    },
   },
 };
 </script>

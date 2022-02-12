@@ -1,14 +1,9 @@
 <template>
   <q-page class="cc-admin row">
-    <viewcatalog
-      v-if="this.$q.screen.gt.md"
-      class="col-md-2 q-mt-sm q-mb-sm q-ml-sm"
-      type="BiScreen"
-      @select="selectCatalog"
-    />
     <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
       <q-table
         flat
+        grid
         color="primary"
         class="cross_table"
         separator="cell"
@@ -18,7 +13,7 @@
         :pagination.sync="pagination"
         :visible-columns="group"
         @request="query"
-        :rows-per-page-options="[10,20,50,100]"
+        :rows-per-page-options="[12,24,48,60]"
         :loading="loading"
         selection="multiple"
         :selected.sync="selected"
@@ -43,7 +38,7 @@
             </q-input>
             <q-space />
             <q-btn-group outline>
-              <q-btn outline no-wrap icon="add" color="primary" label="新建电子报告" @click="add" />
+              <q-btn outline no-wrap icon="add" color="primary" label="新建" @click="add" />
               <q-btn
                 outline
                 color="primary"
@@ -53,87 +48,76 @@
                 @click="table.toggleFullscreen"
                 :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
               />
-              <q-btn-dropdown
-                outline
-                color="primary"
-                label="自选列"
-                no-wrap
-                v-if="$q.screen.gt.md"
-                icon="view_list"
-              >
-                <q-list>
-                  <q-item tag="label" v-for="item in columns" :key="item.name">
-                    <q-item-section avatar>
-                      <q-checkbox v-model="group" :val="item.name" />
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label>{{item.label}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-              <q-btn
-                :disable="selected.length === 0"
-                outline
-                color="primary"
-                label="批量删除"
-                no-wrap
-                v-if="$q.screen.gt.sm"
-                @click="showConfirm()"
-                icon="mdi-delete-variant"
-              />
             </q-btn-group>
           </div>
         </template>
-        <template #body-cell-opt="props">
-          <q-td :props="props" :auto-width="true">
-            <q-btn
-              flat
-              round
-              dense
-              type="a"
-              target="_blank"
-              :href="`/screen/design?id=${props.row.id}`"
-              color="primary"
-              icon="mdi-image-edit-outline"
-            >
-              <q-tooltip>代码设计</q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              round
-              dense
-              color="primary"
-              icon="mdi-laptop"
-              @click="viewScreen(props.row)"
-            >
-              <q-tooltip>原尺寸查看</q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              round
-              dense
-              color="primary"
-              icon="mdi-desktop-mac-dashboard"
-              @click="viewFullScreen(props.row)"
-            >
-              <q-tooltip>全屏查看</q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              round
-              dense
-              color="primary"
-              icon="mdi-content-copy"
-              @click="copy(props.row)"
-            >
-              <q-tooltip>复制</q-tooltip>
-            </q-btn>
-            <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
-              <q-tooltip>编辑</q-tooltip>
-            </q-btn>
-            <btn-del label="电子报告" @confirm="del(props.row)" />
-          </q-td>
+        <template v-slot:item="props">
+          <div class="q-pa-xs col-lg-2 col-md-4 col-sm-12">
+            <q-card>
+              <q-card-section class="text-center">
+                <q-img
+                  :src="imagePath(props.row.imageUrl)"
+                  spinner-color="white"
+                  class="screen-image"
+                >
+                  <div class="absolute-bottom text-subtitle1 text-center">
+                    {{ props.row.name }}
+                  </div>
+                </q-img>
+              </q-card-section>
+              <q-separator />
+              <q-card-section class="flex flex-center" >
+                <div>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    type="a"
+                    target="_blank"
+                    :href="`/#/screen/design?id=${props.row.id}`"
+                    color="primary"
+                    icon="mdi-image-edit-outline"
+                  >
+                    <q-tooltip>代码设计</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    color="primary"
+                    icon="mdi-laptop"
+                    @click="viewScreen(props.row)"
+                  >
+                    <q-tooltip>原尺寸查看</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    color="primary"
+                    icon="mdi-desktop-mac-dashboard"
+                    @click="viewFullScreen(props.row)"
+                  >
+                    <q-tooltip>全屏查看</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    color="primary"
+                    icon="mdi-content-copy"
+                    @click="copy(props.row)"
+                  >
+                    <q-tooltip>复制</q-tooltip>
+                  </q-btn>
+                  <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
+                    <q-tooltip>编辑</q-tooltip>
+                  </q-btn>
+                  <btn-del label="电子报告" @confirm="del(props.row)" />
+                  </div>
+              </q-card-section>
+            </q-card>
+          </div>
         </template>
       </q-table>
     </div>
@@ -157,6 +141,31 @@
               <h5>目录编号：</h5>
               <catalogselect :form.sync="form" type="BiScreen" />
             </div>
+            <div class="col-12">
+              <h5>封面图片：</h5>
+              <div class="row wrap justify-center items-center content-center">
+                <q-btn round @click="importImage">
+                  <q-avatar square size="200px">
+                    <q-img class="screen-image" :src="imagePath(form.imageUrl)" />
+                  </q-avatar>
+                  <q-uploader
+                    auto-upload
+                    ref="imageUploader"
+                    :max-files="1"
+                    class="hidden"
+                    fieldName="file"
+                    :headers="headers"
+                    accept="image/*"
+                    :url="uploadUrl"
+                    field-name="file"
+                    @uploaded="importedImage"
+                  />
+                  <q-tooltip>
+                    点击上传图片
+                  </q-tooltip>
+                </q-btn>
+              </div>
+            </div>
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
@@ -174,18 +183,24 @@ import { IndexMixin } from 'boot/mixins';
 import { getDictLabel } from 'boot/dictionary';
 import confirm from 'components/confirm';
 import catalogselect from 'components/catalogselect';
-import viewcatalog from 'components/viewcatalog';
 
 export default {
   name: 'BiScreen',
   mixins: [IndexMixin],
   components: {
     confirm,
-    viewcatalog,
     catalogselect,
   },
   data() {
     return {
+      headers: [{ name: 'Authorization', value: localStorage.Authorization }],
+      uploadUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/upload`,
+      imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
+      pagination: {
+        page: 1,
+        rowsPerPage: 12,
+        rowsNumber: 99,
+      },
       columns: [
         {
           name: 'index',
@@ -219,6 +234,37 @@ export default {
     };
   },
   methods: {
+    importImage() {
+      this.$refs.imageUploader.pickFiles();
+    },
+    importedImage({ xhr }) {
+      const response = JSON.parse(xhr.responseText);
+      if (response.success) {
+        this.form.imageUrl = response.message;
+        this.$q.notify('上传成功');
+      } else {
+        this.$q.notify({
+          color: 'red',
+          message: '上传失败',
+        });
+      }
+      this.$refs.imageUploader.removeUploadedFiles();
+    },
+    selectFiles() {
+      this.$refs.fileUploader.pickFiles();
+    },
+    imagePath(src) {
+      let path = '';
+      if (src) {
+        if (src.startsWith('http')) {
+          return src;
+        }
+        path = `${this.imgUrl}/${src}`;
+      } else {
+        path = '/img/bi/empty-chart.jpg';
+      }
+      return path;
+    },
     addBefore() {
       this.form.catalogId = this.catalog;
       return true;
@@ -235,13 +281,13 @@ export default {
     },
     viewScreen({ id }) {
       const { href } = this.$router.resolve({
-        path: `/view?id=${id}`,
+        path: `/#/view?id=${id}`,
       });
       window.open(href, '_blank');
     },
     viewFullScreen({ id }) {
       const { href } = this.$router.resolve({
-        path: `/viewfull?id=${id}`,
+        path: `/#/viewfull?id=${id}`,
       });
       window.open(href, '_blank');
     },
@@ -275,4 +321,8 @@ export default {
 };
 </script>
 
-<style lang="stylus"></style>
+<style lang="stylus">
+.screen-image
+  height 200px
+  width 200px
+</style>

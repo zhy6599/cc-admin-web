@@ -4,3 +4,23 @@
 /dist
 *.log
 *.lock
+
+/src-cordova/node_modules
+/src-cordova/www
+# iOS
+/src-cordova/platforms/ios/build
+/src-cordova/platforms/ios/www
+/src-cordova/platforms/ios/cordova/console.log
+
+# android
+/src-cordova/platforms/android/assets/www
+/src-cordova/platforms/android/bin
+/src-cordova/platforms/android/gen
+/src-cordova/platforms/android/local.properties
+/src-cordova/platforms/android/ant-build
+/src-cordova/platforms/android/ant-gen
+/src-cordova/platforms/android/CordovaLib/ant-build
+/src-cordova/platforms/android/CordovaLib/ant-gen
+/src-cordova/platforms/android/CordovaLib/bin
+/src-cordova/platforms/android/CordovaLib/gen
+/src-cordova/platforms/android/CordovaLib/local.properties

@@ -24,6 +24,7 @@ module.exports = function a(ctx) {
         'Notify',
         'Dialog',
         'AppFullscreen',
+        'Loading',
       ],
       config: {
         notify: {
@@ -37,11 +38,11 @@ module.exports = function a(ctx) {
     },
     animations: [],
     build: {
-      vueRouterMode: 'history',
+      // vueRouterMode: 'history',
       transpile: true, // 执行babel转码
       vueCompiler: false, // 仅 Vue运行时
       scopeHoisting: true, // 提升运行时性能
-      analyze: true, // 显示分析
+      analyze: false, // 显示分析
       modern: true, // ES6
       extractCSS: false, // 从Vue文件中提取CSS
       minify: true, // 缩小代码
@@ -59,7 +60,7 @@ module.exports = function a(ctx) {
       env: {
         PRODUCT_NAME: 'CC-ADMIN企业级快速开发平台',
         BASE_URL: '/cc-admin',
-        SERVER_URL: 'http://127.0.0.1:8899',
+        SERVER_URL: 'http://www.cc-admin.top:8899',
       },
     },
     devServer: {
@@ -68,7 +69,7 @@ module.exports = function a(ctx) {
       open: true,
       proxy: {
         '/cc-admin': {
-          target: 'http://127.0.0.1:8899',
+          target: 'http://www.cc-admin.top:8899',
           changeOrigin: true,
         },
       },

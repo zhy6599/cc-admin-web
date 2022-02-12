@@ -222,12 +222,47 @@ export default {
         });
       }
     },
+    applyIf(obj1, obj2) {
+      if (typeof obj2 === 'object') {
+        Object.keys(obj2).forEach((key) => {
+          if (obj1[key]
+            && ((typeof obj2[key] === 'object' && typeof obj1[key] === 'object')
+            || (Array.isArray(obj1) && Array.isArray(obj2)))) {
+            this.applyIf(obj1[key], obj2[key]);
+          } else {
+            obj1[key] = obj2[key];
+          }
+        });
+      } else if (Array.isArray(obj1) && Array.isArray(obj2)) {
+        for (let i = 0; i < obj2.length; i += 1) {
+          if (i < obj1.length) {
+            if ((typeof obj2[i] === 'object' && typeof obj1[i] === 'object')
+            || (Array.isArray(obj1) && Array.isArray(obj2))) {
+              this.applyIf(obj1[i], obj2[i]);
+            } else {
+              obj1[i] = obj2[i];
+            }
+          } else {
+            obj1.push(obj2[i]);
+          }
+        }
+      }
+    },
     renderChart() {
       if (!this.chart) {
         this.chart = echarts.init(this.$refs.chart, this.config.theme);
         this.registerMap();
       }
       const option = this.makeOptions(this.config, this.chartData);
+      // 把额外选项添加上去
+      try {
+        if (this.config.options) {
+          this.applyIf(option, JSON.parse(this.config.options));
+        }
+      } catch (e) {
+        this.$error(`自定义设置解析出错${e}`);
+      }
+
       this.chart.clear();
       this.chart.setOption(option);
       setTimeout(() => {

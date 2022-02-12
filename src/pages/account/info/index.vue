@@ -368,27 +368,19 @@
                         <span>
                           <q-img
                             src="/img/user/man.jpg"
-                            style="width: 28px; height: 28px"
+                            class="account-avatar"
                           >
                             <q-tooltip>张三</q-tooltip>
                           </q-img>
                           <q-img
                             src="/img/user/woman.jpg"
-                            style="
-                              width: 28px;
-                              height: 28px;
-                              margin-left: -12px;
-                            "
+                            class="account-avatar"
                           >
                             <q-tooltip>豆豆</q-tooltip>
                           </q-img>
                           <q-img
                             src="/img/user/man.jpg"
-                            style="
-                              width: 28px;
-                              height: 28px;
-                              margin-left: -12px;
-                            "
+                            class="account-avatar"
                           >
                             <q-tooltip>乐乐</q-tooltip>
                           </q-img>
@@ -622,4 +614,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="stylus">
+.account-avatar
+  width 28px
+  height 28px
+</style>

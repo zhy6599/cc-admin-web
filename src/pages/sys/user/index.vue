@@ -3,33 +3,13 @@
     <div class="col bg-white shadow-2 q-pa-md">
       <div class="row items-center justify-start q-mb-md">
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>账号：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
-            <q-input
-              outlined
-              dense
-              square
-              clearable
-              v-model="searchForm.username"
-              placeholder="账号"
-            />
+            <q-input outlined dense square clearable v-model="searchForm.username" prefix="账号：" />
           </q-item-section>
         </q-item>
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>姓名：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
-            <q-input
-              outlined
-              dense
-              square
-              clearable
-              v-model="searchForm.realname"
-              placeholder="姓名"
-            />
+            <q-input outlined dense square clearable v-model="searchForm.realname" prefix="姓名：" />
           </q-item-section>
         </q-item>
         <q-item
@@ -37,25 +17,16 @@
           v-if="$q.screen.gt.md"
           class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
         >
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>邮箱：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.email" placeholder="邮箱" />
+            <q-input outlined dense square clearable v-model="searchForm.email" prefix="邮箱：" />
           </q-item-section>
         </q-item>
         <q-item v-if="$q.screen.gt.md" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>电话：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.phone" placeholder="电话" />
+            <q-input outlined dense square clearable v-model="searchForm.phone" prefix="电话：" />
           </q-item-section>
         </q-item>
         <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>状态：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
             <q-select
               clearable
@@ -66,7 +37,7 @@
               map-options
               :options="userStatus"
               class="col"
-              placeholder="状态"
+              prefix="状态："
             />
           </q-item-section>
         </q-item>
@@ -75,11 +46,8 @@
           v-if="$q.screen.gt.md"
           class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
         >
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>工号：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.workNo" placeholder="工号" />
+            <q-input outlined dense square clearable v-model="searchForm.workNo" prefix="工号：" />
           </q-item-section>
         </q-item>
         <q-item
@@ -87,9 +55,6 @@
           v-if="$q.screen.gt.md"
           class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
         >
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>职务：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
             <q-select
               clearable
@@ -100,7 +65,7 @@
               map-options
               :options="sysPosition"
               class="col"
-              placeholder="职务"
+              prefix="职务："
             />
           </q-item-section>
         </q-item>
@@ -154,7 +119,8 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        selection="multiple"
+        :grid="$q.screen.xs"
+        :selection="$q.screen.xs?'none':'multiple'"
         :selected.sync="selected"
       >
         <template #top-right="table">

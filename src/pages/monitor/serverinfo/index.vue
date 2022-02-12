@@ -20,9 +20,11 @@ import { debounce } from 'quasar';
 import serverinfo from 'components/monitor/serverinfo';
 import memline from 'components/monitor/memline';
 import diskbar from 'components/monitor/diskbar';
+import { Websocket } from 'boot/mixins/websocket';
 
 export default {
   name: 'ServerInfo',
+  mixins: [Websocket],
   components: {
     serverinfo,
     memline,
@@ -32,7 +34,7 @@ export default {
     return {
       interval: 1000,
       ti: 0,
-      refreshSysInfo: true,
+      refreshInfo: true,
       loadDataInterval: 1,
       loading: false,
       maxPoint: 80,
@@ -105,7 +107,7 @@ export default {
       }
     },
     confirmLoop() {
-      if (this.refreshSysInfo) {
+      if (this.refreshInfo) {
         this.interval = this.loadDataInterval - (-1);
         this.loop();
       } else {
@@ -123,99 +125,14 @@ export default {
         }, 999);
       }
     },
-
-    initWebSocket() {
-      // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
-      const userName = this.$store.state.User.info.username;
-      const url = `${process.env.SERVER_URL}${process.env.BASE_URL}/websocket/${userName}`.replace('https://', 'wss://').replace('http://', 'ws://');
-      this.websock = new WebSocket(url);
-      this.websock.onopen = this.websocketOnopen;
-      this.websock.onerror = this.websocketOnerror;
-      this.websock.onmessage = this.websocketOnmessage;
-      this.websock.onclose = this.websocketOnclose;
-    },
-    websocketOnopen() {
-      this.$info('WebSocket连接成功');
-      // 心跳检测重置
-      this.heartCheck.reset().start();
-    },
-    websocketOnerror(e) {
-      this.$error('WebSocket连接发生错误', e);
-      this.reconnect();
-    },
-    websocketOnmessage(e) {
-      const data = JSON.parse(e.data); // 解析对象
-      if (data.cmd === 'topic') {
-        // 系统通知
-        this.loadData();
-      } else if (data.cmd === 'user') {
-        // 用户消息
-        this.loadData();
-      } else if (data.cmd === 'serverInfo') {
-        // 用户消息
-        this.loadServerInfo(data.msgTxt);
-      }
-      // 心跳检测重置
-      this.heartCheck.reset().start();
-    },
-    websocketOnclose() {
-      this.reconnect();
-    },
-    websocketSend(text) { // 数据发送
-      try {
-        this.websock.send(text);
-      } catch (err) {
-        this.$error(`send failed (${err.code})`);
-      }
-    },
-
-    openNotification(data) {
-      const text = data.msgTxt;
-      this.$info(text);
-    },
-
-    reconnect() {
-      const that = this;
-      if (that.lockReconnect) return;
-      that.lockReconnect = true;
-      // 没连接上会一直重连，设置延迟避免请求过多
-      setTimeout(() => {
-        this.$info('尝试重连...');
-        that.initWebSocket();
-        that.lockReconnect = false;
-      }, 5000);
-    },
-    heartCheckFun() {
-      const that = this;
-      // 心跳检测,每20s心跳一次
-      that.heartCheck = {
-        timeout: 20000,
-        timeoutObj: null,
-        serverTimeoutObj: null,
-        reset() {
-          clearTimeout(this.timeoutObj);
-          return this;
-        },
-        start() {
-          this.timeoutObj = setTimeout(() => {
-            that.websocketSend('heartCheck');
-          }, this.timeout);
-        },
-      };
-    },
   },
   created() {
     this.getData = debounce(this.getServerInfo, 1000);
   },
   mounted() {
     this.getData();
-    this.initWebSocket();
-    this.heartCheckFun();
   },
   beforeDestroy() {
-    // 离开页面生命周期函数
-    this.websocketOnclose();
-    this.refreshSysInfo = false;
     clearTimeout(this.ti);
   },
 };

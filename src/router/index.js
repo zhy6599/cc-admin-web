@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { staticRouters } from 'boot/routes';
 
 Vue.use(VueRouter);
 
-export default () => {
-  const Router = new VueRouter({
+const createRouter = () => {
+  const vueRouter = new VueRouter({
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE,
     scrollBehavior: () => ({ x: 0, y: 0 }),
@@ -26,8 +27,12 @@ export default () => {
     }],
   });
 
+  staticRouters.forEach((r) => {
+    vueRouter.addRoute(r);
+  });
+
   let title = '';
-  Router.beforeEach((to, from, next) => {
+  vueRouter.beforeEach((to, from, next) => {
     if (to.meta.title && to.meta.title !== title) {
       title = to.meta.title;
       document.title = (title ? `${title} — ` : '') + process.env.PRODUCT_NAME;
@@ -35,5 +40,14 @@ export default () => {
     next();
   });
 
-  return Router;
+  return vueRouter;
 };
+
+const router = createRouter();
+
+export function resetRouter() {
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher;
+}
+
+export default router;

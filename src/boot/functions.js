@@ -3,10 +3,10 @@ export const funcDataList = [
     type: '字符串函数',
     expand: true,
     functions: [{
-      name: 'length',
-      expression: 'length(text)',
+      name: 'LENGTH',
+      expression: 'LENGTH(text)',
       remark: '返回文本字符串中字符个数',
-      help: 'length(\'abc\'),返回 3',
+      help: 'LENGTH(\'abc\'),返回 3',
       returntype: '数值',
       params: [{
         datatypes: ['字符'],
@@ -14,10 +14,10 @@ export const funcDataList = [
         remark: '要计算长度的文本字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'substr',
-      expression: 'substr(text, start, count)',
+      name: 'SUBSTR',
+      expression: 'SUBSTR(text, start, count)',
       remark: '从文本字符串中指定的位置开始,返回指定长度的字符串',
-      help: 'substr(\'abcdefg\',1,3),返回  \'abc\'',
+      help: 'SUBSTR(\'abcdefg\',1,3),返回  \'abc\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -33,10 +33,10 @@ export const funcDataList = [
         remark: '所截取到的字符子串的个数',
       }],
     }, {
-      name: 'left',
-      expression: 'left(str, len)',
+      name: 'LEFT',
+      expression: 'LEFT(str, len)',
       remark: '返回字符串 str 中最左边的 len 个字符',
-      help: 'left(\'cc-admin\', 4),返回  \'cc-a\'',
+      help: 'LEFT(\'cc-admin\', 4),返回  \'cc-a\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -48,10 +48,10 @@ export const funcDataList = [
         remark: '返回的字符个数',
       }],
     }, {
-      name: 'right',
-      expression: 'right(str, len)',
+      name: 'RIGHT',
+      expression: 'RIGHT(str, len)',
       remark: '返回字符串 str 中最右边的 len 个字符',
-      help: 'right(\'cc-admin\', 3),返回  \'min\'',
+      help: 'RIGHT(\'cc-admin\', 3),返回  \'min\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -63,10 +63,10 @@ export const funcDataList = [
         remark: '返回的字符个数',
       }],
     }, {
-      name: 'trim',
-      expression: 'trim(text)',
+      name: 'TRIM',
+      expression: 'TRIM(text)',
       remark: '除了单词之间的空格外,清除文本所有的空格',
-      help: 'trim(\'  abc defg  \'),返回  \'abc defg\'',
+      help: 'TRIM(\'  abc defg  \'),返回  \'abc defg\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -74,10 +74,10 @@ export const funcDataList = [
         remark: '字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'ltrim',
-      expression: 'ltrim(text)',
+      name: 'LTRIM',
+      expression: 'LTRIM(text)',
       remark: '清除文本左侧所有的空格',
-      help: 'trim(\'  abc defg  \'),返回  \'abc defg  \'',
+      help: 'TRIM(\'  abc defg  \'),返回  \'abc defg  \'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -85,10 +85,10 @@ export const funcDataList = [
         remark: '字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'rtrim',
-      expression: 'rtrim(text)',
+      name: 'RTRIM',
+      expression: 'RTRIM(text)',
       remark: '清除文本右侧所有的空格',
-      help: 'trim(\'  abc defg  \'),返回  \'  abc defg\'',
+      help: 'TRIM(\'  abc defg  \'),返回  \'  abc defg\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -96,10 +96,10 @@ export const funcDataList = [
         remark: '字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'upper',
-      expression: 'upper(text)',
+      name: 'UPPER',
+      expression: 'UPPER(text)',
       remark: '将文本字符串转换为字母全大写形式',
-      help: 'upper(\'abc\'),返回  \'abc\'',
+      help: 'UPPER(\'abc\'),返回  \'abc\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -107,10 +107,10 @@ export const funcDataList = [
         remark: '字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'lower',
-      expression: 'lower(text)',
+      name: 'LOWER',
+      expression: 'LOWER(text)',
       remark: '将文本字符串转换为字母全小写形式',
-      help: 'lower(\'abc\'),返回  \'abc\'',
+      help: 'LOWER(\'abc\'),返回  \'abc\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -118,10 +118,10 @@ export const funcDataList = [
         remark: '字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'concat',
-      expression: 'concat(text1,text2)',
+      name: 'CONCAT',
+      expression: 'CONCAT(text1,text2)',
       remark: '将两个文本串合并为一个',
-      help: 'concat(\'abc\',\'def\'),返回  \'abcdef\'',
+      help: 'CONCAT(\'abc\',\'def\'),返回  \'abcdef\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -133,10 +133,10 @@ export const funcDataList = [
         remark: '字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'instr',
-      expression: 'instr(text1,text2)',
+      name: 'INSTR',
+      expression: 'INSTR(text1,text2)',
       remark: '在一个字符串中搜索指定的子串,返回第一次出现指定的子串的位置',
-      help: 'instr(\'abcdef\',\'cd\'),返回 3',
+      help: 'INSTR(\'abcdef\',\'cd\'),返回 3',
       returntype: '数值',
       params: [{
         datatypes: ['字符'],
@@ -148,10 +148,10 @@ export const funcDataList = [
         remark: '字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'replace',
-      expression: 'replace(text1,text2,text3)',
+      name: 'REPLACE',
+      expression: 'REPLACE(text1,text2,text3)',
       remark: '将字符串中的一个或多个字符替换为其他字符',
-      help: 'replace(\'abcde\',\'c\',\'b\'),返回  \'abbde\'',
+      help: 'REPLACE(\'abcde\',\'c\',\'b\'),返回  \'abbde\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -167,10 +167,10 @@ export const funcDataList = [
         remark: '替换字符串',
       }],
     }, {
-      name: 'rpad',
-      expression: 'rpad(text,length,format)',
+      name: 'RPAD',
+      expression: 'RPAD(text,length,format)',
       remark: '右补足函数,在参数右边填充指定字符',
-      help: 'rpad(\'abc\',5,\'0\'),返回 \'abc00\'',
+      help: 'RPAD(\'abc\',5,\'0\'),返回 \'abc00\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -186,10 +186,10 @@ export const funcDataList = [
         remark: '补齐所用字符串',
       }],
     }, {
-      name: 'lpad',
-      expression: 'lpad(text,length,format)',
+      name: 'LPAD',
+      expression: 'LPAD(text,length,format)',
       remark: '左补足函数,在参数左边填充指定字符',
-      help: 'lpad(\'abc\',5,\'0\'),返回 \'00abc\'',
+      help: 'LPAD(\'abc\',5,\'0\'),返回 \'00abc\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -205,10 +205,10 @@ export const funcDataList = [
         remark: '补齐所用字符串',
       }],
     }, {
-      name: 'translate',
-      expression: 'translate(source,original,replacement)',
+      name: 'TRANSLATE',
+      expression: 'TRANSLATE(source,original,replacement)',
       remark: '将字符串中的所选字符替换为替换字符',
-      help: 'translate(\'1tech23\', \'123\', \'456\'); 会返回 \'4tech56\'',
+      help: 'TRANSLATE(\'1tech23\', \'123\', \'456\'); 会返回 \'4tech56\'',
       returntype: '字符',
       params: [{
         datatypes: ['字符'],
@@ -230,10 +230,10 @@ export const funcDataList = [
     type: '数值函数',
     expand: true,
     functions: [{
-      name: 'abs',
-      expression: 'abs(number)',
+      name: 'ABS',
+      expression: 'ABS(number)',
       remark: '返回参数的绝对值',
-      help: 'abs(-5),返回 5',
+      help: 'ABS(-5),返回 5',
       returntype: '数值',
       params: [{
         datatypes: ['数值'],
@@ -241,10 +241,10 @@ export const funcDataList = [
         remark: '数值型参数或者数值型字段名',
       }],
     }, {
-      name: 'sign',
-      expression: 'sign(number)',
+      name: 'SIGN',
+      expression: 'SIGN(number)',
       remark: '如果参数大于0则返回1，小于0返回-1，等于0返回0',
-      help: 'sign(-5),返回 -1;sign(5),返回 1;sign(0),返回 0',
+      help: 'SIGN(-5),返回 -1;SIGN(5),返回 1;SIGN(0),返回 0',
       returntype: '数值',
       params: [{
         datatypes: ['数值'],
@@ -252,10 +252,10 @@ export const funcDataList = [
         remark: '数值型参数或者数值型字段名',
       }],
     }, {
-      name: 'ceil',
-      expression: 'ceil(number)',
+      name: 'CEIL',
+      expression: 'CEIL(number)',
       remark: '将参数向上舍入为最接近的整数',
-      help: 'ceil(5.4),返回 6',
+      help: 'CEIL(5.4),返回 6',
       returntype: '数值',
       params: [{
         datatypes: ['数值'],
@@ -263,10 +263,10 @@ export const funcDataList = [
         remark: '数值型参数或者数值型字段名',
       }],
     }, {
-      name: 'floor',
-      expression: 'floor(number)',
+      name: 'FLOOR',
+      expression: 'FLOOR(number)',
       remark: '将参数向下舍入为最接近的整数',
-      help: 'floor(5.4),返回 5',
+      help: 'FLOOR(5.4),返回 5',
       returntype: '数值',
       params: [{
         datatypes: ['数值'],
@@ -274,10 +274,10 @@ export const funcDataList = [
         remark: '数值型参数或者数值型字段名',
       }],
     }, {
-      name: 'round',
-      expression: 'round(number,num_digits)',
+      name: 'ROUND',
+      expression: 'ROUND(number,num_digits)',
       remark: '按照指定的精度进行四舍五入',
-      help: 'round(5.42,1),返回 5.4;round(5.66,1),返回 5.7',
+      help: 'ROUND(5.42,1),返回 5.4;ROUND(5.66,1),返回 5.7',
       returntype: '数值',
       params: [{
         datatypes: ['数值'],
@@ -289,10 +289,10 @@ export const funcDataList = [
         remark: '小数位数',
       }],
     }, {
-      name: 'trunc',
-      expression: 'trunc(number,num_digits)',
+      name: 'TRUNC',
+      expression: 'TRUNC(number,num_digits)',
       remark: '按照指定的精度截取（只舍不入）',
-      help: 'trunc(5.678,2),返回  5.67',
+      help: 'TRUNC(5.678,2),返回  5.67',
       returntype: '数值',
       params: [{
         datatypes: ['数值'],
@@ -304,10 +304,10 @@ export const funcDataList = [
         remark: '小数位数',
       }],
     }, {
-      name: 'mod',
-      expression: 'mod(number1,number2)',
+      name: 'MOD',
+      expression: 'MOD(number1,number2)',
       remark: '取模',
-      help: 'mod(15,2),返回  1',
+      help: 'MOD(15,2),返回  1',
       returntype: '数值',
       params: [{
         datatypes: ['数值'],
@@ -324,10 +324,10 @@ export const funcDataList = [
     type: '日期函数',
     expand: true,
     functions: [{
-      name: 'last_day',
-      expression: 'last_day(date)',
+      name: 'LAST_DAY',
+      expression: 'LAST_DAY(date)',
       remark: '返回指定日期的当月最后一天的日期型数据',
-      help: 'last_day(date),date为2012-04-04,则返回2012-04-30对应的日期型对象',
+      help: 'LAST_DAY(date),date为2012-04-04,则返回2012-04-30对应的日期型对象',
       returntype: '日期',
       params: [{
         datatypes: ['日期'],
@@ -335,10 +335,10 @@ export const funcDataList = [
         remark: '日期型参数或者字段',
       }],
     }, {
-      name: 'add_days',
-      expression: 'add_days(date,days)',
+      name: 'ADD_DAYS',
+      expression: 'ADD_DAYS(date,days)',
       remark: '增加或减去日',
-      help: 'add_days(date,2),date为2012-04-04,则返回2012-04-06对应的日期对象',
+      help: 'ADD_DAYS(date,2),date为2012-04-04,则返回2012-04-06对应的日期对象',
       returntype: '日期',
       params: [{
         datatypes: ['日期'],
@@ -350,10 +350,10 @@ export const funcDataList = [
         remark: '增加的日',
       }],
     }, {
-      name: 'add_months',
-      expression: 'add_months(date,months)',
+      name: 'ADD_MONTHS',
+      expression: 'ADD_MONTHS(date,months)',
       remark: '增加或减去月份',
-      help: 'add_months(date,2),date为2012-04-04,则返回2012-06-04对应的日期对象',
+      help: 'ADD_MONTHS(date,2),date为2012-04-04,则返回2012-06-04对应的日期对象',
       returntype: '日期',
       params: [{
         datatypes: ['日期'],
@@ -365,10 +365,10 @@ export const funcDataList = [
         remark: '增加的月份',
       }],
     }, {
-      name: 'add_years',
-      expression: 'add_years(date,years)',
+      name: 'ADD_YEARS',
+      expression: 'ADD_YEARS(date,years)',
       remark: '增加或减去年份',
-      help: 'add_years(date,2),date为2012-04-04,则返回2014-04-04对应的日期对象',
+      help: 'ADD_YEARS(date,2),date为2012-04-04,则返回2014-04-04对应的日期对象',
       returntype: '日期',
       params: [{
         datatypes: ['日期'],
@@ -380,17 +380,17 @@ export const funcDataList = [
         remark: '增加的年',
       }],
     }, {
-      name: 'now',
-      expression: 'now()',
+      name: 'NOW',
+      expression: 'NOW()',
       remark: '得到当前系统的日期',
-      help: 'now(),例如今天是2012年4月4日,则返回2012-04-04对应的日期对象',
+      help: 'NOW(),例如今天是2012年4月4日,则返回2012-04-04对应的日期对象',
       returntype: '日期',
       params: [],
     }, {
-      name: 'to_days',
-      expression: 'to_days(date)',
+      name: 'TO_DAYS',
+      expression: 'TO_DAYS(date)',
       remark: '将日期转化为从0开始的绝对天数',
-      help: 'to_days(date),date为2013-09-04,返回数值735115',
+      help: 'TO_DAYS(date),date为2013-09-04,返回数值735115',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -398,10 +398,10 @@ export const funcDataList = [
         remark: '日期型参数或者字段',
       }],
     }, {
-      name: 'hour',
-      expression: 'hour(datetime)',
+      name: 'HOUR',
+      expression: 'HOUR(datetime)',
       remark: '获取指定日期时间的小时数',
-      help: 'hour(datetime),datetime为2013-09-04 13:33:27,返回数值13',
+      help: 'HOUR(datetime),datetime为2013-09-04 13:33:27,返回数值13',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -409,10 +409,10 @@ export const funcDataList = [
         remark: '日期时间型参数或者字段',
       }],
     }, {
-      name: 'minute',
-      expression: 'minute(datetime)',
+      name: 'MINUTE',
+      expression: 'MINUTE(datetime)',
       remark: '获取指定日期时间的分钟数',
-      help: 'minute(datetime),datetime为2013-09-04 13:33:27,返回数值33',
+      help: 'MINUTE(datetime),datetime为2013-09-04 13:33:27,返回数值33',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -420,10 +420,10 @@ export const funcDataList = [
         remark: '日期时间型参数或者字段',
       }],
     }, {
-      name: 'second',
-      expression: 'second(datetime)',
+      name: 'SECOND',
+      expression: 'SECOND(datetime)',
       remark: '获取指定日期时间的秒数',
-      help: 'second(datetime),datetime为2013-09-04 13:33:27,返回数值27',
+      help: 'SECOND(datetime),datetime为2013-09-04 13:33:27,返回数值27',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -431,10 +431,10 @@ export const funcDataList = [
         remark: '日期时间型参数或者字段',
       }],
     }, {
-      name: 'day',
-      expression: 'day(date)',
+      name: 'DAY',
+      expression: 'DAY(date)',
       remark: '获取指定日期的日',
-      help: 'day(date),date为2013-09-04,返回数值4',
+      help: 'DAY(date),date为2013-09-04,返回数值4',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -442,10 +442,10 @@ export const funcDataList = [
         remark: '日期型参数或者字段',
       }],
     }, {
-      name: 'month',
-      expression: 'month(date)',
+      name: 'MONTH',
+      expression: 'MONTH(date)',
       remark: '获取指定日期的月',
-      help: 'month(date),date为2013-09-04,返回数值9',
+      help: 'MONTH(date),date为2013-09-04,返回数值9',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -453,10 +453,10 @@ export const funcDataList = [
         remark: '日期型参数或者字段',
       }],
     }, {
-      name: 'year',
-      expression: 'year(date)',
+      name: 'YEAR',
+      expression: 'YEAR(date)',
       remark: '获取指定日期的年',
-      help: 'year(date),date为2013-09-04,返回数值2013',
+      help: 'YEAR(date),date为2013-09-04,返回数值2013',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -464,10 +464,10 @@ export const funcDataList = [
         remark: '日期型参数或者字段',
       }],
     }, {
-      name: 'date',
-      expression: 'date(datetime)',
+      name: 'DATE',
+      expression: 'DATE(datetime)',
       remark: '获取指定日期时间的日期',
-      help: 'date(datetime),date为2013-09-04 13:33:27,返回日期2013-09-04',
+      help: 'DATE(datetime),date为2013-09-04 13:33:27,返回日期2013-09-04',
       returntype: '日期',
       params: [{
         datatypes: ['日期'],
@@ -475,10 +475,10 @@ export const funcDataList = [
         remark: '日期型参数或者字段',
       }],
     }, {
-      name: 'time',
-      expression: 'time(datetime)',
+      name: 'TIME',
+      expression: 'TIME(datetime)',
       remark: '获取指定日期时间的日期',
-      help: 'time(datetime),date为2013-09-04 13:33:27,返回时间13:33:27',
+      help: 'TIME(datetime),date为2013-09-04 13:33:27',
       returntype: '日期',
       params: [{
         datatypes: ['日期'],
@@ -486,10 +486,10 @@ export const funcDataList = [
         remark: '日期型参数或者字段',
       }],
     }, {
-      name: 'timediff',
-      expression: 'timediff(start_time,end_time)',
+      name: 'TIMEDIFF',
+      expression: 'TIMEDIFF(start_time,end_time)',
       remark: '获取时间秒差数',
-      help: 'timediff(start_time,end_time),start_time为2017-01-01 13:33:27,2017-01-01 end_time为13:33:47,返回数值20',
+      help: 'TIMEDIFF(start_time,end_time),start_time为2017-01-01 13:33:27,2017-01-01 end_time为13:33:47,返回数值20',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -501,10 +501,10 @@ export const funcDataList = [
         remark: '日期时间型参数或者字段',
       }],
     }, {
-      name: 'week',
-      expression: 'week(date)',
+      name: 'WEEK',
+      expression: 'WEEK(date)',
       remark: '获取指定日期为当年的第几周',
-      help: 'week(date),date为2011-01-01,返回数值1',
+      help: 'WEEK(date),date为2011-01-01,返回数值1',
       returntype: '数值',
       params: [{
         datatypes: ['日期'],
@@ -512,10 +512,10 @@ export const funcDataList = [
         remark: '日期型参数或者字段',
       }],
     }, {
-      name: 'dayname',
-      expression: 'dayname(date)',
+      name: 'DAYNAME',
+      expression: 'DAYNAME(date)',
       remark: '返回日期的星期名称',
-      help: 'dayname(date),date为2013-11-07,返回数值thursday',
+      help: 'DAYNAME(date),date为2013-11-07,返回数值thursday',
       returntype: '字符',
       params: [{
         datatypes: ['日期'],
@@ -528,10 +528,10 @@ export const funcDataList = [
     type: '转换函数',
     expand: true,
     functions: [{
-      name: 'date_to_char',
-      expression: 'date_to_char(date,format)',
+      name: 'DATE_TO_CHAR',
+      expression: 'DATE_TO_CHAR(date,format)',
       remark: '将日期转换为格式化的字符串',
-      help: 'date_to_char(date,\'%y-%m-%d\'),date为2012-04-04,返回字符串\'2012-04-04\'',
+      help: 'DATE_TO_CHAR(date,\'%y-%m-%d\'),date为2012-04-04,返回字符串\'2012-04-04\'',
       returntype: '字符',
       params: [{
         datatypes: ['日期'],
@@ -543,10 +543,10 @@ export const funcDataList = [
         remark: '转换格式，如:\'%y%m%d\',\'%y-%m-%d\',\'%y/%m/%d\'',
       }],
     }, {
-      name: 'to_char',
-      expression: 'to_char(number)',
+      name: 'TO_CHAR',
+      expression: 'TO_CHAR(number)',
       remark: '将数值转化为相应字符串',
-      help: 'to_char(number),number为299,返回字符串\'299\'',
+      help: 'TO_CHAR(number),number为299,返回字符串\'299\'',
       returntype: '字符',
       params: [{
         datatypes: ['数值'],
@@ -554,10 +554,10 @@ export const funcDataList = [
         remark: '数值型参数或者字段',
       }],
     }, {
-      name: 'to_date',
-      expression: 'to_date(text,format)',
+      name: 'TO_DATE',
+      expression: 'TO_DATE(text,format)',
       remark: '将日期字符串转化为一个日期',
-      help: 'to_date(\'2012-04-04\',\'%y-%m-%d\'),返回对应日期型对象',
+      help: 'TO_DATE(\'2012-04-04\',\'%y-%m-%d\'),返回对应日期型对象',
       returntype: '日期',
       params: [{
         datatypes: ['字符'],
@@ -569,10 +569,21 @@ export const funcDataList = [
         remark: '字串格式，如:\'%y%m%d\',\'%y-%m-%d\',\'%y/%m/%d\'',
       }],
     }, {
-      name: 'long_to_date',
-      expression: 'long_to_date(millisecond)',
+      name: 'DATE_TO_LONG',
+      expression: 'DATE_TO_LONG(date)',
+      remark: '将日期转化为日期毫秒',
+      help: 'DATE_TO_LONG(2017-06-20 22:29:52),返回对应日期型对象 1497968992',
+      returntype: '数值',
+      params: [{
+        datatypes: ['日期'],
+        name: 'date',
+        remark: '日期或者字段',
+      }],
+    }, {
+      name: 'LONG_TO_DATE',
+      expression: 'LONG_TO_DATE(millisecond)',
       remark: '将日期毫秒转化为一个日期',
-      help: 'long_to_date(1497968992),返回对应日期型对象 2017-06-20 22:29:52',
+      help: 'LONG_TO_DATE(1497968992),返回对应日期型对象 2017-06-20 22:29:52',
       returntype: '日期',
       params: [{
         datatypes: ['数值'],
@@ -580,10 +591,10 @@ export const funcDataList = [
         remark: '日期毫秒或者字段',
       }],
     }, {
-      name: 'to_number',
-      expression: 'to_number(text)',
+      name: 'TO_NUMBER',
+      expression: 'TO_NUMBER(text)',
       remark: '将给出的字符转换为数字',
-      help: 'to_number(\'0404\'),返回数值404',
+      help: 'TO_NUMBER(\'0404\'),返回数值404',
       returntype: '数值',
       params: [{
         datatypes: ['字符'],
@@ -591,10 +602,10 @@ export const funcDataList = [
         remark: '字符串或者字符类型的字段名',
       }],
     }, {
-      name: 'to_timestamp',
-      expression: 'to_timestamp(text,format)',
+      name: 'TO_TIMESTAMP',
+      expression: 'TO_TIMESTAMP(text,format)',
       remark: '将给出的字符转换为时间戳',
-      help: 'to_timestamp(\'2002-10-20-12.00.00.000000\',\'%y-%m-%d %h:%i:%s\'),返回时间2002-10-20-12.00.00.000000',
+      help: 'TO_TIMESTAMP(\'2002-10-20-12.00.00.000000\',\'%y-%m-%d %h:%i:%s\'),返回时间2002-10-20-12.00.00.000000',
       returnType: '日期',
       params: [{
         dataTypes: ['字符'],
@@ -611,10 +622,10 @@ export const funcDataList = [
     type: '逻辑函数',
     expand: true,
     functions: [{
-      name: 'isnull',
-      expression: 'isnull(check_expression, replacement_value)',
+      name: 'ISNULL',
+      expression: 'ISNULL(check_expression, replacement_value)',
       remark: '使用指定的替换值替换 null',
-      help: 'isnull(price, 1.00),price为null时返回1.00, 否则返回price',
+      help: 'ISNULL(price, 1.00),price为null时返回1.00, 否则返回price',
       params: [{
         datatypes: ['字符', '数值', '日期'],
         name: 'check_expression',

@@ -7,6 +7,17 @@
           欢迎进入 cc-admin 企业级快速开发平台
         </q-toolbar-title>
         <q-space />
+        <q-btn v-if="$q.screen.gt.md"
+          flat
+          size="md"
+          label="CC-ADMIN安卓App下载"
+          type="a"
+          icon="mdi-cloud-download"
+          href="http://www.cc-admin.top/ccadmin.apk"
+          target="__blank"
+        >
+          <q-tooltip>本应用使用cordova打包好的apk</q-tooltip>
+        </q-btn>
         <q-btn
           flat
           size="md"
@@ -69,12 +80,12 @@
       <mainTabs v-if="$q.screen.gt.md"
       :tabs="$store.state.Rule.routeTabs" @selectPanel="setDesTab" />
     </q-header>
-    <q-drawer elevated v-model="drawer" :overlay="overlay" :width="220" content-class="column">
+    <q-drawer elevated v-model="drawer" :overlay="overlay" :width="240" content-class="column">
       <q-btn flat class="ly-icon-btn bg-primary text-white">
         <q-icon name="mdi-bike-fast" class="q-mr-md" />cc-admin
         <q-tooltip anchor="center right" self="center left">欢迎使用</q-tooltip>
       </q-btn>
-      <q-scroll-area class="col main-menu">
+      <div class="col main-menu">
         <q-list v-for="u in $store.state.Rule.routes" :key="u.id">
           <q-expansion-item
             expand-separator
@@ -106,7 +117,7 @@
             group="mainitem"
           />
         </q-list>
-      </q-scroll-area>
+      </div>
     </q-drawer>
 
     <q-page-container>

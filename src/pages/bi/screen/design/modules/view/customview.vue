@@ -6,6 +6,7 @@ import sankeycom from './custom/sankey/sankeycom';
 
 import pierunning from './custom/pie/pierunning';
 import pie3d from './custom/pie/pie3d';
+import pie3d2 from './custom/pie/pie3d2';
 import piedouble from './custom/pie/piedouble';
 import piestar from './custom/pie/piestar';
 import piecolor from './custom/pie/piecolor';
@@ -100,6 +101,7 @@ export default {
     piegroup,
     piefive,
     pie3d,
+    pie3d2,
     piedouble,
     piestar,
     piecolor,

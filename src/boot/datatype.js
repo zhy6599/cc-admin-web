@@ -242,7 +242,7 @@ export const modelTools = [
   { name: 'merge', icon: 'mdi-forwardburger', label: '数据合并' },
   { name: 'layer', icon: 'mdi-view-split-horizontal', label: '数据分层' },
   { name: 'slice', icon: 'mdi-calendar-weekend', label: '日期分层' },
-  { name: 'unique', icon: 'mdi-gamepad-circle-right', label: '取唯一值' },
+  { name: 'only', icon: 'mdi-gamepad-circle-right', label: '取唯一值' },
   { name: 'repeat', icon: 'mdi-hexagon-slice-5', label: '重复检测' },
   { name: 'convert', icon: 'mdi-select-multiple', label: '行列转换' },
   { name: 'sort', icon: 'mdi-sort-alphabetical-ascending', label: '数据排序' },

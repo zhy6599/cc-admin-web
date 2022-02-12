@@ -2,8 +2,7 @@
   <q-page class="cc-admin q-pa-sm">
     <div class="col bg-white shadow-2 q-pa-md">
       <div class="row items-center justify-start q-mb-md">
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">日志类型：</span>
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
           <q-select
             outlined
             dense
@@ -13,10 +12,10 @@
             :options="logType"
             clearable
             class="col"
+            prefix="类型："
           />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">日志内容：</span>
+        </q-item>
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12" v-if="$q.screen.gt.md">
           <q-input
             outlined
             dense
@@ -24,10 +23,10 @@
             type="text"
             clearable
             class="col"
+            prefix="内容："
           />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">操作类型：</span>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
           <q-select
             outlined
             dense
@@ -37,22 +36,11 @@
             :options="operateType"
             clearable
             class="col"
+            prefix="操作："
           />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">操作用户账号：</span>
-          <q-input outlined dense v-model="searchForm.userid" type="text" clearable class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">操作用户名称：</span>
-          <q-input outlined dense v-model="searchForm.username" type="text" clearable class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">请求java方法：</span>
-          <q-input outlined dense v-model="searchForm.method" type="text" clearable class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">请求路径：</span>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        v-if="$q.screen.gt.md">
           <q-input
             outlined
             dense
@@ -60,10 +48,11 @@
             type="text"
             clearable
             class="col"
+            prefix="路径："
           />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">请求参数：</span>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        v-if="$q.screen.gt.md">
           <q-input
             outlined
             dense
@@ -71,35 +60,67 @@
             type="text"
             clearable
             class="col"
+            prefix="参数："
           />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">请求类型：</span>
+        </q-item>
+        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
+        v-if="$q.screen.gt.md">
           <q-input
             outlined
             dense
-            v-model="searchForm.requestType"
+            v-model="searchForm.costTime_begin"
             type="text"
             clearable
             class="col"
+            prefix="耗时："
           />
-        </div>
-        <div class="row items-center q-mb-md col-3">
-          <span class="q-ml-md">耗时：</span>
-          <q-input outlined dense v-model="searchForm.costTime" type="text" clearable class="col" />
-        </div>
-        <div class="row items-center q-mb-md col-3 q-ml-md">
-          <q-btn
-            color="primary"
-            label="搜索"
-            icon="search"
-            class="on-left"
-            @click="query()"
-            :loading="loading"
-            unelevated
+        </q-item>
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12" v-if="$q.screen.gt.md">
+          <q-input
+            placeholder="请输入IP"
+            outlined
+            dense
+            v-model="searchForm.ip"
+            type="text"
+            clearable
+            class="col"
+            prefix="IP："
           />
-          <q-btn label="重置" icon="search_off" color="primary" outline @click="reset" />
-        </div>
+        </q-item>
+        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
+          <q-item-label class="col-12 text-right row no-wrap justify-center">
+            <q-btn
+              unelevated no-wrap
+              label="查询"
+              color="primary"
+              class="q-mr-sm no-border-radius"
+              :loading="loading"
+              @click="query()"
+            >
+              <template v-slot:loading>
+                <q-spinner-ios class="on-center" />
+              </template>
+            </q-btn>
+            <q-btn
+              outline
+              unelevated
+              label="重置"
+              class="q-mr-sm no-border-radius"
+              color="secondary"
+              @click="searchReset"
+            />
+            <q-btn-dropdown
+              v-model="showQuery"
+              persistent
+              dense
+              flat
+              color="primary"
+              :label="tableLabel"
+              @before-show="show"
+              @before-hide="hide"
+            ></q-btn-dropdown>
+          </q-item-label>
+        </q-item>
       </div>
       <q-table
         flat
@@ -114,6 +135,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
+        :grid="$q.screen.xs"
       >
         <template #top-right="table">
           <q-btn-group outline>
@@ -165,18 +187,17 @@
 </template>
 
 <script>
-import ellipsisvalue from 'components/ellipsisvalue';
+import { debounce } from 'quasar';
 import { IndexMixin } from 'boot/mixins';
 import { getDictLabel } from 'boot/dictionary';
 
 export default {
   name: 'SysLog',
-  components: {
-    ellipsisvalue,
-  },
   mixins: [IndexMixin],
   data() {
     return {
+      showQuery: true,
+      tableLabel: '展开',
       columns: [
         {
           name: 'index',
@@ -203,6 +224,12 @@ export default {
           name: 'ip', align: 'left', label: 'IP', field: 'ip',
         },
         {
+          name: 'ipAddress', align: 'left', label: 'IP地址', field: 'ipAddress',
+        },
+        {
+          name: 'createTime', align: 'left', label: '操作时间', field: 'createTime',
+        },
+        {
           name: 'method', align: 'left', label: '请求java方法', field: 'method',
         },
         {
@@ -210,9 +237,6 @@ export default {
         },
         {
           name: 'requestParam', align: 'left', label: '请求参数', field: 'requestParam',
-        },
-        {
-          name: 'requestType', align: 'left', label: '请求类型', field: 'requestType',
         },
         {
           name: 'costTime', align: 'left', label: '耗时', field: 'costTime',
@@ -223,10 +247,37 @@ export default {
       url: {
         list: '/sys/log/list',
       },
+      drawer: true,
     };
   },
   methods: {
+    doResize() {
+      this.$nextTick(() => {
+        this.drawer = this.$q.screen.gt.sm;
+      });
+    },
+    show() {
+      this.showQuery = true;
+      this.tableLabel = '收起';
+    },
+    hide() {
+      this.showQuery = false;
+      this.tableLabel = '展开';
+    },
     getDictLabel,
+  },
+  mounted() {
+    this.onResize = debounce(this.doResize, 500);
+  },
+  watch: {
+    screenWidth() {
+      this.onResize();
+    },
+  },
+  computed: {
+    screenWidth() {
+      return this.$q.screen.width;
+    },
   },
 };
 </script>

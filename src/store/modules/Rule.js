@@ -3,7 +3,7 @@ export default {
   state: {
     routes: [],
     auth: [],
-    routeTabs: [],
+    routeTabs: [{ name: '首页', path: '/home' }],
   },
   getters: {
     confirmAuth(s) {
@@ -24,6 +24,11 @@ export default {
     },
     removeRouteTabs(s, p) {
       s.routeTabs.splice(s.routeTabs.findIndex((r) => r.path === p), 1);
+    },
+    clear(s) {
+      s.routes = [];
+      s.auth = [];
+      s.routeTabs = [{ name: '首页', path: '/home' }];
     },
   },
   actions: {},

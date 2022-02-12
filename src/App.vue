@@ -17,59 +17,20 @@ const imTr=(r) => r.map((v) => ({
 export default {
   name: 'App',
   methods: {
-    initRouteTabs(menu,path) {
-      menu.forEach(element => {
-        if(element.path===path) {
-          this.$store.commit('Rule/addRouteTabs',{ name: element.meta.title,path });
-        }
-        if(element.children&&element.children.length>0) {
-          this.initRouteTabs(element.children,path);
-        }
-
-      });
-    },
     getRule() {
       this.$axios.get('/sys/permission/getUserPermissionByToken?token='+this.$store.state.User.authorization).then(({ result: { menu,auth,isDefault } }) => {
-        menu=routes;
-        isDefault=`${window.location.pathname+window.location.search}`;
-        if(isDefault!=='/home') {
-          if(`${window.location.pathname+window.location.search}`==='/') {
-            isDefault=menu[0].path
-          } else {
-            this.$store.commit('Rule/addRouteTabs',{ name: '首页',path: '/home' });
-          }
+        if(menu.length===0) {
+          alert('您没有任何可供访问的菜单，请联系管理员');
         }
         this.$store.commit('Rule/updateRoutes',menu);
         this.$store.commit('Rule/updateAuth',auth);
-        this.initRouteTabs(menu,isDefault);
         menu=imTr(menu);
-        this.$router.addRoutes([{
+        this.$router.addRoute({
           path: '/',
           component: () => import('layouts'),
-          redirect: `${isDefault||menu[0].path}`,
+          redirect: '/home',
           children: menu,
-        },{
-          path: "/screen/design",
-          component: () => import('pages/bi/screen/design'),
-          meta: {
-            title: '电子报告-设计器',
-          }
-        },{
-          path: "/viewfull",
-          component: () => import('pages/bi/screen/design/viewfull'),
-          meta: {
-            title: '电子报告-查看',
-          }
-        },{
-          path: "/view",
-          component: () => import('pages/bi/screen/design/view'),
-          meta: {
-            title: '电子报告-查看',
-          }
-        },{
-          path: '*',
-          redirect: `${menu[0].path}`,
-        }]);
+        });
       }).catch((e) => {
         goLogin();
       });
@@ -81,6 +42,14 @@ export default {
     } else {
       goLogin();
     }
+  },
+  watch: {
+    $route(to) {
+      //登录页面不应该添加到路由导航里面
+      if(!(to.path.indexOf('/login')===0)&&!this.$store.state.Rule.routeTabs.some((r) => r.path===to.path)) {
+        this.$store.commit('Rule/addRouteTabs',{ name: to.meta.title,path: to.path });
+      }
+    },
   },
 };
 </script>

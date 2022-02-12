@@ -1,147 +1,265 @@
 <template>
-  <div class="q-pa-sm bg-green cross-chart-table">
-    <q-markup-table
-      :style="config.table.tableStyle">
-      <thead v-if="true">
-        <tr>
-          <th :style="config.table.tableHead">Dessert (100g serving)</th>
-          <th :style="config.table.tableHead">Calories</th>
-          <th :style="config.table.tableHead">Fat (g)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td :style="config.table.tableBody">Frozen Yogurt</td>
-          <td :style="config.table.tableBody">159</td>
-          <td :style="config.table.tableBody">6</td>
-        </tr>
-        <tr>
-          <td :style="config.table.tableBody">Frozen Yogurt</td>
-          <td :style="config.table.tableBody">159</td>
-          <td :style="config.table.tableBody">6</td>
-        </tr>
-      </tbody>
-    </q-markup-table>
-  </div>
+  <q-page class="cc-admin row">
+    <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
+      <q-table
+        flat
+        grid
+        color="primary"
+        class="cross_table"
+        separator="cell"
+        :columns="columns"
+        :data="list"
+        row-key="id"
+        :pagination.sync="pagination"
+        :visible-columns="group"
+        @request="query"
+        :rows-per-page-options="[12,24,48,60]"
+        :loading="loading"
+        selection="multiple"
+        :selected.sync="selected"
+      >
+        <template v-slot:top="table">
+          <div class="row no-wrap full-width">
+            <q-input
+              clearable
+              outlined
+              dense
+              placeholder="请输入关键字搜索"
+              class="on-left"
+              @input="query"
+              debounce="500"
+              v-model="key"
+            >
+              <template #append>
+                <q-btn flat round icon="search" color="primary" @click="query" :loading="loading">
+                  <q-tooltip>搜索</q-tooltip>
+                </q-btn>
+              </template>
+            </q-input>
+            <q-space />
+            <q-btn-group outline>
+              <q-btn outline no-wrap icon="add" color="primary" label="新建" @click="add" />
+              <q-btn
+                outline
+                color="primary"
+                label="切换全屏"
+                no-wrap
+                v-if="$q.screen.gt.md"
+                @click="table.toggleFullscreen"
+                :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              />
+            </q-btn-group>
+          </div>
+        </template>
+        <template v-slot:item="props">
+          <div class="q-pa-xs col-2">
+            <q-card>
+              <q-card-section class="text-center">
+                <q-img
+                  src="https://placeimg.com/500/300/nature?t="
+                  spinner-color="white"
+                  style="height: 200px; max-width: 200px"
+                >
+                  <div class="absolute-bottom text-subtitle1 text-center">
+                    {{ props.row.name }}
+                  </div>
+                </q-img>
+              </q-card-section>
+              <q-separator />
+              <q-card-section class="flex flex-center" >
+                <div>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    type="a"
+                    target="_blank"
+                    :href="`/screen/design?id=${props.row.id}`"
+                    color="primary"
+                    icon="mdi-image-edit-outline"
+                  >
+                    <q-tooltip>代码设计</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    color="primary"
+                    icon="mdi-laptop"
+                    @click="viewScreen(props.row)"
+                  >
+                    <q-tooltip>原尺寸查看</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    color="primary"
+                    icon="mdi-desktop-mac-dashboard"
+                    @click="viewFullScreen(props.row)"
+                  >
+                    <q-tooltip>全屏查看</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    color="primary"
+                    icon="mdi-content-copy"
+                    @click="copy(props.row)"
+                  >
+                    <q-tooltip>复制</q-tooltip>
+                  </q-btn>
+                  <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
+                    <q-tooltip>编辑</q-tooltip>
+                  </q-btn>
+                  <btn-del label="电子报告" @confirm="del(props.row)" />
+                  </div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </template>
+      </q-table>
+    </div>
+    <q-dialog maximized flat persistent ref="dialog" position="right">
+      <q-form @submit="submit" class="dialog_card column">
+        <h5 class="view_title justify-between q-px-md">
+          {{editType}}电子报告
+          <q-btn dense outline round icon="clear" size="sm" v-close-popup />
+        </h5>
+        <q-scroll-area class="col">
+          <div class="row q-col-gutter-x-md dialog_form q-pa-md">
+            <div class="col-12">
+              <h5>名称：</h5>
+              <q-input outlined dense v-model="form.name" type="text" />
+            </div>
+            <div class="col-12">
+              <h5>描述：</h5>
+              <q-input outlined dense v-model="form.description" type="text" />
+            </div>
+            <div class="col-12">
+              <h5>目录编号：</h5>
+              <catalogselect :form.sync="form" type="BiScreen" />
+            </div>
+          </div>
+        </q-scroll-area>
+        <div class="row justify-end q-pa-md">
+          <q-btn outline color="primary" label="取消" v-close-popup />
+          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+        </div>
+      </q-form>
+    </q-dialog>
+    <confirm ref="confirmDialog" :msg="confirmMsg" @confirm="deleteBatch()" />
+  </q-page>
 </template>
 
 <script>
+import { IndexMixin } from 'boot/mixins';
+import { getDictLabel } from 'boot/dictionary';
+import confirm from 'components/confirm';
+import catalogselect from 'components/catalogselect';
 
 export default {
-  name: 'Demo16',
+  name: 'BiScreen',
+  mixins: [IndexMixin],
   components: {
+    confirm,
+    catalogselect,
   },
   data() {
     return {
+      pagination: {
+        page: 1,
+        rowsPerPage: 12,
+        rowsNumber: 99,
+      },
       columns: [
         {
-          name: 'name',
-          required: true,
-          label: 'Dessert (100g serving)',
-          align: 'left',
-          field: (row) => row.name,
-          format: (val) => `${val}`,
-          sortable: true,
+          name: 'index',
+          align: 'center',
+          label: '序号',
+          field: 'index',
         },
         {
-          name: 'calories', align: 'center', label: 'Calories', field: 'calories', sortable: true,
+          name: 'name', align: 'left', label: '名称', field: 'name',
         },
         {
-          name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true,
-        },
-        { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
-        { name: 'protein', label: 'Protein (g)', field: 'protein' },
-        { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-        {
-          name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+          name: 'description', align: 'left', label: '描述', field: 'description',
         },
         {
-          name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+          name: 'catalogId_dictText', align: 'left', label: '目录编号', field: 'catalogId_dictText',
+        },
+        {
+          name: 'opt', align: 'center', label: '操作', field: 'id',
         },
       ],
-      data: [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          sodium: 87,
-          calcium: '14%',
-          iron: '1%',
-        },
-        {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          sodium: 129,
-          calcium: '8%',
-          iron: '1%',
-        },
-      ],
-      config: {
-        table: {
-          horizontal: false,
-          loop: false,
-          direction: 'up',
-          scrolldelay: 6,
-          alternate: true,
-
-          tableStyle: {
-            borderWidth: 1,
-            borderStyle: 'solid',
-            color: '#000',
-          },
-          tableHead: {
-            show: true,
-            color: '#000',
-            borderWidth: '1px',
-            borderStyle: '',
-            borderColor: '#feffff',
-            backgroundColor: '#eee',
-            fontSize: '12px',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            opacity: 1,
-          },
-          tableBody: {
-            color: '#000',
-            borderWidth: '1px',
-            borderStyle: '',
-            borderColor: '#feffff',
-            backgroundColor: '#f8f8f8',
-            fontSize: '12px',
-            fontWeight: 'bold',
-            textAlign: 'center',
-          },
-        },
+      url: {
+        list: '/bi/screen/list',
+        add: '/bi/screen/add',
+        copy: '/bi/screen/copy',
+        edit: '/bi/screen/edit',
+        delete: '/bi/screen/delete',
+        deleteBatch: '/bi/screen/deleteBatch',
+        exportXlsUrl: '/bi/screen/exportXls',
+        importExcelUrl: '/bi/screen/importExcel',
       },
     };
   },
   methods: {
-  },
-  computed: {
+    addBefore() {
+      this.form.catalogId = this.catalog;
+      return true;
+    },
+    design(t) {
+      this.$refs.edit.show(t.id);
+    },
+    selectCatalog(n) {
+      this.catalog = n;
+      this.query();
+    },
+    getDictLabel,
+    initDict() {
+    },
+    viewScreen({ id }) {
+      const { href } = this.$router.resolve({
+        path: `/view?id=${id}`,
+      });
+      window.open(href, '_blank');
+    },
+    viewFullScreen({ id }) {
+      const { href } = this.$router.resolve({
+        path: `/viewfull?id=${id}`,
+      });
+      window.open(href, '_blank');
+    },
+    copy(p) {
+      this.$q.dialog({
+        title: '复制电子报告',
+        message: '请输入电子报告名字',
+        prompt: {
+          model: '',
+          outlined: true,
+          isValid: (val) => val.length > 2,
+          type: 'text',
+        },
+        cancel: true,
+        persistent: true,
+      }).onOk((data) => {
+        this.$axios.post(`${this.url.copy}?id=${p.id}&name=${data}`, {}).then((r) => {
+          this.$info(r.message);
+          this.query();
+        });
+      });
+    },
   },
   mounted() {
+    this.initDict();
+  },
+  watch: {
+  },
+  computed: {
   },
 };
 </script>
 
-<style lang="stylus">
-.bg-transparent-table
-  background-color transparent
-.cross-chart-table
-  .q-table
-    thead
-      th,td
-        position sticky
-        opacity 1
-        z-index: 1
-      tr
-        th
-          position sticky
-          top 0
-          z-index 1
-</style>
+<style lang="stylus"></style>

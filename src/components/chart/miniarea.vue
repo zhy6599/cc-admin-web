@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import { date } from 'quasar';
 import echarts from 'echarts';
 
 export default {
@@ -42,38 +41,79 @@ export default {
       this.doResize();
     },
     makeOptions() {
-      const beginDay = new Date().getTime();
-      for (let i = 0; i < 10; i += 1) {
-        this.xData.push(date.formatDate(new Date(beginDay + 1000 * 60 * 60 * 24 * i), 'YYYY-MM-DD'));
-        this.yData.push(Math.round(Math.random() * 100 + 30));
-      }
-      const option = {
+      return {
+        color: ['#00DDFF', '#37A2FF', '#FF0087', '#80FFA5', '#FFBF00'],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            label: {
+              backgroundColor: '#6a7985',
+            },
+          },
+        },
         grid: {
           top: 0,
           bottom: 0,
-          left: 0,
-          right: 0,
+          left: 10,
+          right: 10,
         },
-        xAxis: {
-          show: false,
-          type: 'category',
-          data: this.xData,
-        },
-        color: ['#1890ff', '#ff7f50', '#87cefa', '#da70d6', '#32cd32', '#6495ed', '#ff69b4', '#ba55d3'],
-        tooltip: {
-          formatter: '{b}<BR>{c}',
-        },
-        yAxis: {
-          show: false,
-          type: 'value',
-        },
-        series: [{
-          data: this.yData,
-          type: 'line',
-          areaStyle: {},
-        }],
+        xAxis: [
+          {
+            show: false,
+            splitLine: {
+              show: false,
+            },
+            type: 'category',
+            boundaryGap: false,
+            data: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+          },
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            show: false,
+            axisLine: { // y轴
+              show: false,
+            },
+            axisTick: { // y轴刻度线
+              show: false,
+            },
+            splitLine: { // 网格线
+              show: false,
+            },
+          },
+        ],
+        series: [
+          {
+            name: '销售额',
+            type: 'line',
+            stack: 'Total',
+            smooth: true,
+            lineStyle: {
+              width: 0,
+            },
+            showSymbol: false,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgb(55, 162, 255)',
+                },
+                {
+                  offset: 1,
+                  color: 'rgb(116, 21, 219)',
+                },
+              ]),
+            },
+            emphasis: {
+              focus: 'series',
+            },
+            data: [140, 232, 101, 264, 90, 340, 250],
+          },
+        ],
       };
-      return option;
     },
   },
   mounted() {

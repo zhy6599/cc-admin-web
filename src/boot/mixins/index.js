@@ -218,6 +218,25 @@ export const IndexMixin = {
       this.showQuery = false;
       this.tableLabel = '展开';
     },
+    copy(p) {
+      this.$q.dialog({
+        title: '复制',
+        message: '请输新的名称',
+        prompt: {
+          model: '',
+          outlined: true,
+          isValid: (val) => val.length > 2,
+          type: 'text',
+        },
+        cancel: true,
+        persistent: true,
+      }).onOk((data) => {
+        this.$axios.post(`${this.url.copy}?id=${p.id}&name=${data}`, {}).then((r) => {
+          this.$info(r.message);
+          this.query();
+        });
+      });
+    },
   },
   mounted() {
     this.searchForm = {};

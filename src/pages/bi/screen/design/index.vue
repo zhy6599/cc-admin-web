@@ -286,7 +286,9 @@ export default {
       selItem.active = true;
       if (this.moving) {
         this.moving = false;
-      } else if (this.onCtrl && this.selChartArray.length > 0) {
+      }
+
+      if (this.onCtrl && this.selChartArray.length > 0) {
         if (this.selChartArray.indexOf(selItem) < 0) {
           this.selChartArray.push(selItem);
           this.selChart = selItem;
@@ -640,8 +642,8 @@ export default {
     document.onkeyup = (e) => {
       this.setKeyStatus(e, false);
     };
-    this.moveItem = debounce(this.doMoveItem, 10);
-    this.sizeResize = debounce(this.doSizeResize, 10);
+    this.moveItem = debounce(this.doMoveItem, 1);
+    this.sizeResize = debounce(this.doSizeResize, 1);
     this.onDrag = debounce(this.doOnDrag, 1);
   },
   computed: {

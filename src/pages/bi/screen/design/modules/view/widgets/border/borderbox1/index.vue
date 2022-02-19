@@ -87,8 +87,8 @@ export default {
       mergedColor: [],
     };
   },
-  mounted() {
-  },
+  mounted(){
+  }
 };
 </script>
 

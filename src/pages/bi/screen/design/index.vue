@@ -118,7 +118,7 @@
           <div
             ref="main"
             :style="backgroundStyle"
-            style="margin:0 auto;transform-origin: 20% center;"
+            style="margin:0 auto;transform-origin:20% center;"
             @mousedown="startDraw"
             @mousemove="drawing"
             @mouseup="endDraw"
@@ -169,7 +169,7 @@
           {{scale}}%
           <q-separator vertical inset class="q-mx-xs" />
           <q-icon size="sm" name="mdi-minus" @click="minusScale" />
-          <q-slider v-model="scale" :min="20" :max="300" style="width:200px;" />
+          <q-slider v-model="scale" :min="10" :max="300" style="width:200px;" />
           <q-icon size="sm" name="mdi-plus" @click="plusScale" />
         </div>
         <q-dialog maximized flat persistent ref="favoriteDialog" position="right">
@@ -311,8 +311,8 @@ export default {
     },
     minusScale() {
       this.scale -= 10;
-      if (this.scale < 20) {
-        this.scale = 20;
+      if (this.scale < 10) {
+        this.scale = 10;
       }
     },
     plusScale() {
@@ -360,10 +360,7 @@ export default {
         this.$refs.main.style.cursor = 'default';
         this.chartList.forEach((v) => {
           if (v.type === this.selectTool) {
-            this.addItem(this.selectTool,
-              {
-                x: this.divX, y: this.divY, w: this.divWidth, h: this.divHeight,
-              });
+            this.addItem(this.selectTool, { x: this.divX, y: this.divY, w: this.divWidth, h: this.divHeight });
           } else {
             v.selected = false;
           }
@@ -411,6 +408,7 @@ export default {
       }
       this.selChart = null;
       this.selChartArray = [];
+
     },
 
     selectItem(selItem) {
@@ -754,9 +752,9 @@ export default {
     },
     selectClass(type) {
       if (this.dragging && type === this.selectTool) {
-        return 'cc-bi-select-tool';
+        return 'cc-bi-select-tool'
       }
-      return '';
+      return ''
     },
   },
   created() {

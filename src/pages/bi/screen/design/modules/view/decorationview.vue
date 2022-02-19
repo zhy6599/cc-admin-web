@@ -57,7 +57,7 @@ export default {
     };
   },
   methods: {
-    onResize() {
+    onResize(size){
       this.config.needResize = true;
     },
   },

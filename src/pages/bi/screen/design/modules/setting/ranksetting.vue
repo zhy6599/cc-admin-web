@@ -75,12 +75,12 @@ export default {
   data() {
     return {
       rankSettingTab: 'data',
-      tabs: [{ label: '数据', name: 'data' }, { label: '排名', name: 'rank' }],
-      headers: [{ name: 'Authorization', value: localStorage.Authorization }],
+      tabs: [{ label: '数据',name: 'data' },{ label: '排名',name: 'rank' }],
+      headers: [{ name: 'Authorization',value: localStorage.Authorization }],
       carouselOptions: [
-        { label: '单条', value: 'single' },
-        { label: '整页', value: 'page' },
-      ],
+        { label: '单条',value: 'single' },
+        { label: '整页',value: 'page' },
+      ]
     };
   },
   props: {

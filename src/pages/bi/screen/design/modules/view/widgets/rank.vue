@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { dom, extend, debounce } from 'quasar';
+import { dom,extend,debounce } from 'quasar';
 
 export default {
   name: 'ScrollRank',
@@ -119,50 +119,50 @@ export default {
       deep: true,
     },
     'config.loop': {
-      handler(n, o) {
-        if (n !== o) {
+      handler(n,o) {
+        if(n!==o) {
           this.confirmLoop();
         }
       },
     },
     'config.interval': {
-      handler(n, o) {
-        if (n !== o) {
+      handler(n,o) {
+        if(n!==o) {
           this.confirmLoop();
         }
       },
     },
     'config.unit': {
-      handler(n, o) {
-        if (n !== o) {
+      handler(n,o) {
+        if(n!==o) {
           this.getData();
         }
       },
     },
     'config.waitTime': {
-      handler(n, o) {
-        if (n !== o) {
+      handler(n,o) {
+        if(n!==o) {
           this.getData();
         }
       },
     },
     'config.carousel': {
-      handler(n, o) {
-        if (n !== o) {
+      handler(n,o) {
+        if(n!==o) {
           this.getData();
         }
       },
     },
     'config.rowNum': {
-      handler(n, o) {
-        if (n !== o) {
+      handler(n,o) {
+        if(n!==o) {
           this.getData();
         }
       },
     },
     'config.animation': {
-      handler(n, o) {
-        if (n !== o) {
+      handler(n,o) {
+        if(n!==o) {
           this.getData();
         }
       },
@@ -170,7 +170,7 @@ export default {
   },
   methods: {
     getOrders() {
-      const orders = [];
+      const orders=[];
       this.config.orders.forEach((o) => {
         orders.push({
           column: o.name,
@@ -181,27 +181,27 @@ export default {
     },
     loop() {
       clearTimeout(this.ti);
-      this.interval -= 1;
-      if (this.interval < 1) {
+      this.interval-=1;
+      if(this.interval<1) {
         this.getData();
       } else {
-        this.ti = setTimeout(() => {
+        this.ti=setTimeout(() => {
           this.loop();
-        }, 999);
+        },999);
       }
     },
     confirmLoop() {
-      if (this.loopHandler) {
-        this.interval = this.config.interval - (-1);
+      if(this.loopHandler) {
+        this.interval=this.config.interval-(-1);
         this.loop();
       } else {
         clearTimeout(this.ti);
       }
     },
     doLoadData() {
-      this.loading = true;
-      if (this.config.viewId && (this.config.cols.length > 0 || this.config.rows.length > 0)) {
-        this.$axios.post(`/bi/view/getTableData/${this.config.viewId}`, {
+      this.loading=true;
+      if(this.config.viewId&&(this.config.cols.length>0||this.config.rows.length>0)) {
+        this.$axios.post(`/bi/view/getTableData/${this.config.viewId}`,{
           aggregators: this.config.rows.map((v) => ({
             column: v.name.split('@')[0],
             alias: v.field.alias,
@@ -216,23 +216,23 @@ export default {
           pageNo: 1,
           pageSize: this.config.length,
         }).then(({ result }) => {
-          const box = this.$refs[this.ref];
-          this.width = dom.width(box);
-          this.height = dom.height(box);
-          const data = [];
-          if (result.body) {
-            for (let i = 0; i < result.body.length; i += 1) {
-              if (result.head && result.body[i]) {
-                data.push({ name: result.body[i][0], value: result.body[i][1] });
+          const box=this.$refs[this.ref];
+          this.width=dom.width(box);
+          this.height=dom.height(box);
+          const data=[];
+          if(result.body) {
+            for(let i=0;i<result.body.length;i+=1) {
+              if(result.head&&result.body[i]) {
+                data.push({ name: result.body[i][0],value: result.body[i][1] });
               }
             }
           }
-          this.config.data = data;
+          this.config.data=data;
           this.afterAutoResizeMixinInit();
         }).finally(() => {
-          this.loading = false;
+          this.loading=false;
         });
-      } else {
+      }else{
         this.afterAutoResizeMixinInit();
       }
     },
@@ -240,110 +240,110 @@ export default {
       this.calcData();
     },
     onResize() {
-      if (!this.mergedConfig) return;
+      if(!this.mergedConfig) return;
       this.calcHeights(true);
     },
     calcData() {
       this.mergeConfig();
       this.calcRowsData();
       this.calcHeights();
-      if (this.config.animation) {
+      if(this.config.animation){
         this.animation(true);
       }
     },
     mergeConfig() {
-      const cloneMergedConfig = extend(true, {}, this.defaultConfig);
-      this.mergedConfig = extend(true, cloneMergedConfig, this.config || []);
+      const cloneMergedConfig=extend(true,{},this.defaultConfig);
+      this.mergedConfig=extend(true,cloneMergedConfig,this.config||[]);
     },
     calcRowsData() {
-      let { data } = this.mergedConfig;
-      const { rowNum, sort } = this.mergedConfig;
+      let { data }=this.mergedConfig;
+      const { rowNum,sort }=this.mergedConfig;
 
-      if (sort) {
-        data.sort(({ value: a }, { value: b }) => {
-          if (a > b) return -1;
-          if (a < b) return 1;
-          if (a === b) return 0;
+      if(sort) {
+        data.sort(({ value: a },{ value: b }) => {
+          if(a>b) return -1;
+          if(a<b) return 1;
+          if(a===b) return 0;
           return 0;
         });
       }
-      const v = data.map(({ value }) => value);
-      const min = Math.min(...v) || 0;
+      const v=data.map(({ value }) => value);
+      const min=Math.min(...v)||0;
       // abs of min
-      const minAbs = Math.abs(min);
-      const max = Math.max(...v) || 0;
-      const total = max + minAbs;
-      data = data.map((row, i) => ({
+      const minAbs=Math.abs(min);
+      const max=Math.max(...v)||0;
+      const total=max+minAbs;
+      data=data.map((row,i) => ({
         ...row,
-        rank: i + 1,
-        percent: ((row.value + minAbs) / total) * 100,
+        rank: i+1,
+        percent: ((row.value+minAbs)/total)*100,
       }));
-      const rowLength = data.length;
-      if (rowLength > rowNum && rowLength < 2 * rowNum) {
-        data = [...data, ...data];
+      const rowLength=data.length;
+      if(rowLength>rowNum&&rowLength<2*rowNum) {
+        data=[...data,...data];
       }
-      data = data.map((d, i) => ({ ...d, scroll: i }));
-      this.rowsData = data;
-      this.rows = data;
+      data=data.map((d,i) => ({ ...d,scroll: i }));
+      this.rowsData=data;
+      this.rows=data;
     },
-    calcHeights(onresize = false) {
-      const { height, mergedConfig } = this;
-      const { rowNum, data } = mergedConfig;
-      const avgHeight = height / rowNum;
-      this.avgHeight = avgHeight;
-      if (!onresize) this.heights = new Array(data.length).fill(avgHeight);
+    calcHeights(onresize=false) {
+      const { height,mergedConfig }=this;
+      const { rowNum,data }=mergedConfig;
+      const avgHeight=height/rowNum;
+      this.avgHeight=avgHeight;
+      if(!onresize) this.heights=new Array(data.length).fill(avgHeight);
     },
-    async animation(start = false) {
+    async animation(start=false) {
       let {
         animationIndex,
-      } = this;
+      }=this;
       const {
-        avgHeight, mergedConfig, rowsData, animation, updater,
-      } = this;
+        avgHeight,mergedConfig,rowsData,animation,updater,
+      }=this;
 
-      const { waitTime, carousel, rowNum } = mergedConfig;
+      const { waitTime,carousel,rowNum }=mergedConfig;
 
-      const rowLength = rowsData.length;
+      const rowLength=rowsData.length;
 
-      if (rowNum >= rowLength) return;
-      if (start) {
-        await new Promise((resolve) => setTimeout(resolve, waitTime));
-        if (updater !== this.updater) return;
+      if(rowNum>=rowLength) return;
+      if(start) {
+        await new Promise((resolve) => setTimeout(resolve,waitTime));
+        if(updater!==this.updater) return;
       }
 
-      const animationNum = carousel === 'single' ? 1 : rowNum;
+      const animationNum=carousel==='single'? 1:rowNum;
 
-      const rows = rowsData.slice(animationIndex);
-      rows.push(...rowsData.slice(0, animationIndex));
+      const rows=rowsData.slice(animationIndex);
+      rows.push(...rowsData.slice(0,animationIndex));
 
-      this.rows = rows.slice(0, rowNum + 1);
-      this.heights = new Array(rowLength).fill(avgHeight);
+      this.rows=rows.slice(0,rowNum+1);
+      this.heights=new Array(rowLength).fill(avgHeight);
 
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      if (updater !== this.updater) return;
+      await new Promise((resolve) => setTimeout(resolve,300));
+      if(updater!==this.updater) return;
 
-      this.heights.splice(0, animationNum, ...new Array(animationNum).fill(0));
+      this.heights.splice(0,animationNum,...new Array(animationNum).fill(0));
 
-      animationIndex += animationNum;
+      animationIndex+=animationNum;
 
-      const back = animationIndex - rowLength;
-      if (back >= 0) animationIndex = back;
+      const back=animationIndex-rowLength;
+      if(back>=0) animationIndex=back;
 
-      this.animationIndex = animationIndex;
-      this.animationHandler = setTimeout(animation, waitTime - 300);
+      this.animationIndex=animationIndex;
+      this.animationHandler=setTimeout(animation,waitTime-300);
     },
     stopAnimation() {
-      const { animationHandler, updater } = this;
+      const { animationHandler,updater }=this;
 
-      this.updater = (updater + 1) % 999999;
+      this.updater=(updater+1)%999999;
 
-      if (!animationHandler) return;
+      if(!animationHandler) return;
 
       clearTimeout(animationHandler);
     },
   },
   created() {
-    this.getData = debounce(this.doLoadData, 10);
+    this.getData=debounce(this.doLoadData,10);
   },
   destroyed() {
     this.stopAnimation();

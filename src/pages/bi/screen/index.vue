@@ -281,13 +281,13 @@ export default {
     },
     viewScreen({ id }) {
       const { href } = this.$router.resolve({
-        path: `/#/view?id=${id}`,
+        path: `/view?id=${id}`,
       });
       window.open(href, '_blank');
     },
     viewFullScreen({ id }) {
       const { href } = this.$router.resolve({
-        path: `/#/viewfull?id=${id}`,
+        path: `/viewfull?id=${id}`,
       });
       window.open(href, '_blank');
     },

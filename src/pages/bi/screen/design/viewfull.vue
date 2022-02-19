@@ -16,6 +16,7 @@
       <div :class="getItemClass(item)" :id="item.key">
         <textview v-if="item.type === 'text'" :config="item.config" />
         <imageview v-if="item.type === 'image'" :config="item.config" />
+        <decorationview v-if="item.type === 'decoration'" :config="item.config" />
         <borderview v-if="item.type === 'border'" :config="item.config" />
         <rankview v-if="item.type === 'rank'" :config="item.config" />
         <chartview v-if="item.type === 'chart'" :config="item.config" />
@@ -33,6 +34,7 @@ import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 import chartview from './modules/view/chartview';
 import textview from './modules/view/textview';
 import borderview from './modules/view/borderview';
+import decorationview from './modules/view/decorationview';
 import rankview from './modules/view/rankview';
 import imageview from './modules/view/imageview';
 import videoview from './modules/view/videoview';
@@ -47,6 +49,7 @@ export default {
     borderview,
     rankview,
     imageview,
+    decorationview,
     videoview,
     omnipotentview,
     customview,

@@ -89,7 +89,7 @@ export default {
           name: 'type', align: 'left', label: '类型', field: 'type',
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
       headers: [{ name: 'Authorization', value: localStorage.Authorization }],

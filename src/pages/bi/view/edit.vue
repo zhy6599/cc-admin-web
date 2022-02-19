@@ -23,12 +23,25 @@
           <q-scroll-area class="col">
             <q-linear-progress stripe indeterminate v-if="treeLoading" class="absolute-top" />
             <q-tree
-              :nodes="database"
+              :nodes="entityList"
               node-key="key"
               :filter="treeFilter"
               @lazy-load="expand"
               class="q-mt-md"
-            />
+            >
+              <template v-slot:default-header="prop">
+                <div class="row items-center">
+                  <q-icon
+                    :name="prop.node.icon || 'share'"
+                    color="orange"
+                    class="q-mr-sm"
+                  />
+                  <div class="text-weight-bold text-primary">{{ prop.node.label }}
+                    <q-tooltip v-if="prop.node.name">{{ prop.node.name }}</q-tooltip>
+                  </div>
+                </div>
+              </template>
+            </q-tree>
           </q-scroll-area>
         </div>
         <div class="v_l_grid_2 q-my-md relative-position">
@@ -296,7 +309,7 @@ export default {
       treeFilter: '',
       view: {},
       sources: [],
-      database: [],
+      entityList: [],
       tableLoading: false,
       tableFilter: '',
       tableLength: 1000,
@@ -321,7 +334,7 @@ export default {
   },
   computed: {
     hints() {
-      return this.database.flatMap((v) => {
+      return this.entityList.flatMap((v) => {
         let t = [{ text: v.label }];
         if (v.children) {
           t = t.concat(v.children.map((x) => ({ text: x.label })));
@@ -382,30 +395,31 @@ export default {
     },
     getTable() {
       this.treeLoading = true;
-      return this.$axios.get(`/sys/dataSource/databases?id=${this.view.sourceId}`)
-        .then(({ result }) => Promise.all(result
-          .map((v) => this.$axios.get(`/sys/dataSource/tables?id=${this.view.sourceId}&dbName=${v}`)
-            .then((r) => r.result.map(({ name, type }) => ({
-              icon: type === 'TABLE' ? 'mdi-table' : 'mdi-table-edit',
-              iconColor: 'primary',
-              label: name,
-              key: name,
-              lazy: true,
-              dbName: v,
-            }))))).then((t) => {
-          this.database = t.flat();
+      return this.$axios.get(`/sys/dataSource/tables?id=${this.view.sourceId}`)
+        .then(({ result }) => {
+          this.entityList = result.map(({ id, name }) => ({
+            name,
+            icon: 'mdi-table',
+            iconColor: 'primary',
+            label: id,
+            key: id,
+            lazy: true,
+          }));
         }).finally(() => {
           this.treeLoading = false;
-        }));
+        });
     },
     getColumn(node) {
-      return this.$axios.get(`/bi/view/columns?id=${this.view.sourceId}&dbName=${node.dbName}&tableName=${node.label}`)
-        .then(({ result }) => result.columns
-          .map(({ name, type }) => ({
+      return this.$axios.get(`/bi/view/columns?id=${this.view.sourceId}&tableName=${node.label}`)
+        .then(({ result }) => result.dbColumnList
+          .map(({
+            code, dbColumnType, isKey, name,
+          }) => ({
             iconColor: 'primary',
-            icon: result.primaryKeys.includes(name) ? 'mdi-key-variant' : columnToIcon(type),
-            label: name,
-            key: name + node.dbName,
+            icon: isKey === 'Y' ? 'mdi-key-variant' : columnToIcon(dbColumnType),
+            label: code,
+            key: code,
+            name,
           })));
     },
     expand({ node, done }) {
@@ -536,8 +550,8 @@ export default {
         this.editor.on('change', debounce((editor, change) => {
           this.view.viewSql = editor.getDoc().getValue().trim();
           if (change.origin === '+input'
-          && change.text[0] !== ';'
-          && change.text[0].trim() !== '') {
+            && change.text[0] !== ';'
+            && change.text[0].trim() !== '') {
             this.editor.showHint({
               completeSingle: false,
               tables: change.text[0] === '$'

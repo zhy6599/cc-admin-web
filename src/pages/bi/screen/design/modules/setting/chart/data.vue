@@ -120,6 +120,10 @@
         <b class="text-tertiary">字段</b>排序
       </div>
     </draggable>
+    <div class="text-body2 q-pt-sm">筛选</div>
+    <div>
+        <q-input type="textarea" outlined  v-model="config.cnd"/>
+    </div>
     <div class="text-body2 q-pt-sm">配置</div>
     <q-input
       dense

@@ -1,6 +1,7 @@
 <template>
   <div>
     <q-toggle label="水平显示" v-model="config.table.horizontal" />
+    <q-toggle label="滚动表格" v-model="config.table.glide" />
     <q-toggle label="开启跑马灯" v-model="config.table.loop" />
     <q-toggle label="轮流反向" v-model="config.table.alternate" />
     <q-input
@@ -144,6 +145,15 @@
               </q-icon>
             </template>
           </q-input>
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.table.tableHead.thHeight"
+            prefix="行高："
+            class="q-my-sm"
+            input-class="text-left"
+          />
           <q-field dense borderless prefix="透明度：">
             <template v-slot:control>
               <q-slider v-model="config.table.tableHead.opacity" :min="0" :max="100" />
@@ -273,6 +283,15 @@
               </q-icon>
             </template>
           </q-input>
+          <q-input
+            dense
+            filled
+            type="number"
+            v-model="config.table.tableBody.tdHeight"
+            prefix="行高："
+            class="q-my-sm"
+            input-class="text-left"
+          />
           <q-field dense borderless prefix="透明度：">
             <template v-slot:control>
               <q-slider v-model="config.table.tableBody.opacity" :min="0" :max="100" />

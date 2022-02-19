@@ -9,17 +9,11 @@
     <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
       <div class="row items-center justify-start q-mb-md">
         <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>名称：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
-            <q-input outlined dense v-model="searchForm.name" type="text" class="col" />
+            <q-input outlined dense v-model="searchForm.name" type="text" class="col" prefix="名称："/>
           </q-item-section>
         </q-item>
         <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col-3 text-right gt-sm">
-            <q-item-label>类型：</q-item-label>
-          </q-item-section>
           <q-item-section class="col">
             <q-select
               outlined
@@ -29,6 +23,7 @@
               map-options
               :options="chartTypes"
               class="col"
+              prefix="类型："
             />
           </q-item-section>
         </q-item>
@@ -82,8 +77,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
-        :selection="$q.screen.xs?'none':'multiple'"
+        selection="multiple"
         :selected.sync="selected"
       >
         <template v-slot:top="table">
@@ -255,7 +249,7 @@ export default {
           name: 'catalogId_dictText', align: 'left', label: '分类目录', field: 'catalogId_dictText',
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
       headers: [{ name: 'Authorization', value: localStorage.Authorization }],

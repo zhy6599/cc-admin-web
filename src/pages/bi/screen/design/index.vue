@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header elevated class="bg-primary text-white">
-      <div class="row items-center">
+      <div class="row items-center cc-bi-design-header">
         <div class="col-2">
           <q-toolbar>
             <q-toolbar-title>
@@ -14,19 +14,23 @@
         </div>
         <div class="col">
           <div class="row no-warp justify-center items-center content-center">
-            <ul class="ul-box-tool" v-for="v in chartList" :key="v.type">
-              <li class="text-center" @click="selectChartIcon(v.type)">
-                <q-icon :name="v.icon" size="sm">
-                  <q-tooltip>{{v.name}}</q-tooltip>
-                </q-icon>
-                <p>{{v.name}}</p>
-              </li>
-            </ul>
+            <div class="row">
+              <div
+                class="cc-bi-tool-box"
+                :class="selectClass(v.type)"
+                v-for="v in chartList"
+                :key="v.type"
+                @click="selectChartIcon(v.type)"
+              >
+                <q-icon size="sm" :name="v.icon" />
+                <div>{{v.name}}</div>
+              </div>
+            </div>
             <q-space />
-            <q-btn flat icon="mdi-auto-fix" :disable="layout.length === 0" @click="autoFix()" >
+            <q-btn flat icon="mdi-auto-fix" :disable="layout.length === 0" @click="autoFix()">
               <q-tooltip>解决因为系统升级导致原有图形不能使用的问题</q-tooltip>
             </q-btn>
-            <q-btn flat icon="mdi-undo" :disable="historyIndex === 0" @click="undo()" >
+            <q-btn flat icon="mdi-undo" :disable="historyIndex === 0" @click="undo()">
               <q-tooltip>撤回</q-tooltip>
             </q-btn>
             <q-btn
@@ -34,27 +38,28 @@
               icon="mdi-redo"
               @click="redo()"
               class="q-mr-lg"
-              :disable="historyIndex === history.length - 1|| history.length === 0" >
+              :disable="historyIndex === history.length - 1|| history.length === 0"
+            >
               <q-tooltip>重做</q-tooltip>
             </q-btn>
-            <q-btn flat icon="mdi-content-cut" @click="cutItem()" >
+            <q-btn flat icon="mdi-content-cut" @click="cutItem()">
               <q-tooltip>剪切</q-tooltip>
             </q-btn>
-            <q-btn flat icon="mdi-content-copy" @click="copyItem()" >
+            <q-btn flat icon="mdi-content-copy" @click="copyItem()">
               <q-tooltip>复制</q-tooltip>
             </q-btn>
-            <q-btn flat icon="mdi-content-paste" @click="pasteItem()" >
+            <q-btn flat icon="mdi-content-paste" @click="pasteItem()">
               <q-tooltip>粘贴</q-tooltip>
             </q-btn>
           </div>
         </div>
-        <div class="row no-wrap justify-end col-4 text-right q-pr-md q-gutter-sm">
-            <q-btn flat icon="mdi-folder-plus-outline" @click="addFav()" >
-              <q-tooltip>添加到收藏夹</q-tooltip>
-            </q-btn>
-            <q-btn flat icon="mdi-folder-star-outline" @click="fav()" >
-              <q-tooltip>收藏文件夹</q-tooltip>
-            </q-btn>
+        <div class="row no-wrap justify-end col-3 text-right q-pr-md q-gutter-sm">
+          <q-btn flat icon="mdi-folder-plus-outline" @click="addFav()">
+            <q-tooltip>添加到收藏夹</q-tooltip>
+          </q-btn>
+          <q-btn flat icon="mdi-folder-star-outline" @click="fav()">
+            <q-tooltip>收藏文件夹</q-tooltip>
+          </q-btn>
           <q-btn flat icon="mdi-format-float-left" @click="left=!left">
             <q-tooltip>隐藏左侧菜单</q-tooltip>
           </q-btn>
@@ -76,8 +81,14 @@
 
     <q-drawer show-if-above v-model="left" side="left" bordered :width="230">
       <div class="row no-wrap fit overflow-hidden">
-        <layout :items.sync="layout" :selChartArray="selChartArray"
-        :selChart="selChart" @selectItem="selectItem" @addItem="addItem" @cutItem="cutItem" />
+        <layout
+          :items.sync="layout"
+          :selChartArray="selChartArray"
+          :selChart="selChart"
+          @selectItem="selectItem"
+          @addItem="addItem"
+          @cutItem="cutItem"
+        />
       </div>
     </q-drawer>
     <q-drawer show-if-above v-model="right" side="right" bordered :width="590">
@@ -88,6 +99,9 @@
         <summarysetting v-if="selType === 'summary'" :config.sync="config" />
         <textsetting v-if="selType === 'text'" :config.sync="config" />
         <imagesetting v-if="selType === 'image'" :config.sync="config" />
+        <bordersetting v-if="selType === 'border'" :config.sync="config" />
+        <decorationsetting v-if="selType === 'decoration'" :config.sync="config" />
+        <ranksetting v-if="selType === 'rank'" :config.sync="config" />
         <videosetting v-if="selType === 'video'" :config.sync="config" />
         <omnipotentsetting v-if="selType === 'omnipotent'" :config.sync="config" />
         <customsetting v-if="selType === 'custom'" :config.sync="config" />
@@ -96,9 +110,20 @@
     </q-drawer>
 
     <q-page-container>
-      <q-page class="cc-admin q-pa-sm scroll">
-        <div class="col column justify-center items-center">
-          <div :style="backgroundStyle">
+      <q-page class="cc-admin column q-pa-sm">
+        <div
+          class="scroll"
+          :style="{width:`${fullWidth}px`,height:`${fullHeight}px`,position:'absolute'}"
+        >
+          <div
+            ref="main"
+            :style="backgroundStyle"
+            style="margin:0 auto;transform-origin: 20% center;"
+            @mousedown="startDraw"
+            @mousemove="drawing"
+            @mouseup="endDraw"
+          >
+            <div ref="draw" class="draw-div" v-show="showDrawing"></div>
             <vue-draggable-resizable
               v-for="item in layout"
               :key="item.i"
@@ -110,6 +135,8 @@
               :parent="true"
               :class="selChartArray.indexOf(item)>-1?'grid-item-select':'no-border'"
               :grid="[1,1]"
+              :draggable="!dragging"
+              :resizable="!dragging"
               @resizestop="resizedEvent"
               @activated="selectItem(item)"
               @deactivated="item.active=false"
@@ -123,6 +150,9 @@
               >
                 <textview v-if="item.type === 'text'" :config="item.config" />
                 <imageview v-if="item.type === 'image'" :config="item.config" />
+                <borderview v-if="item.type === 'border'" :config="item.config" />
+                <decorationview v-if="item.type === 'decoration'" :config="item.config" />
+                <rankview v-if="item.type === 'rank'" :config="item.config" />
                 <chartview v-if="item.type === 'chart'" :config="item.config" />
                 <videoview v-if="item.type === 'video'" :config="item.config" />
                 <groupview v-if="item.type === 'group'" :config="item.config" />
@@ -131,6 +161,16 @@
               </div>
             </vue-draggable-resizable>
           </div>
+        </div>
+        <div class="col">
+          <q-resize-observer @resize="onResize" />
+        </div>
+        <div class="row no-wrap justify-end items-center content-start bg-grey-3">
+          {{scale}}%
+          <q-separator vertical inset class="q-mx-xs" />
+          <q-icon size="sm" name="mdi-minus" @click="minusScale" />
+          <q-slider v-model="scale" :min="20" :max="300" style="width:200px;" />
+          <q-icon size="sm" name="mdi-plus" @click="plusScale" />
         </div>
         <q-dialog maximized flat persistent ref="favoriteDialog" position="right">
           <q-form class="dialog_card column">
@@ -164,6 +204,12 @@ import textview from './modules/view/textview';
 import textsetting from './modules/setting/textsetting';
 import imageview from './modules/view/imageview';
 import imagesetting from './modules/setting/imagesetting';
+import borderview from './modules/view/borderview';
+import bordersetting from './modules/setting/bordersetting';
+import decorationview from './modules/view/decorationview';
+import decorationsetting from './modules/setting/decorationsetting';
+import rankview from './modules/view/rankview';
+import ranksetting from './modules/setting/ranksetting';
 import videoview from './modules/view/videoview';
 import videosetting from './modules/setting/videosetting';
 import groupview from './modules/view/groupview';
@@ -188,6 +234,12 @@ export default {
     textsetting,
     imageview,
     imagesetting,
+    borderview,
+    bordersetting,
+    decorationview,
+    decorationsetting,
+    rankview,
+    ranksetting,
     videoview,
     videosetting,
     groupview,
@@ -200,10 +252,13 @@ export default {
   data() {
     return {
       name: 'cc-admin',
+      fullWidth: 1000,
+      fullHeight: 650,
       onShfit: false,
       onCtrl: false,
       shiftMove: 1,
       move: 10,
+      scale: 100,
       imgUrl: `${process.env.SERVER_URL}${process.env.BASE_URL}/sys/common/static`,
       backgroundImage: '',
       themeMap,
@@ -235,12 +290,87 @@ export default {
       chartList,
       layout: [],
       eventLog: [],
+      dragging: false,
+      showDrawing: false,
+      startX: 0,
+      startY: 0,
+      divX: 0,
+      divY: 0,
+      divWidth: 0,
+      divHeight: 0,
+      selectTool: '',
       url: {
         editConfig: '/bi/screen/editConfig',
       },
     };
   },
   methods: {
+    onResize(size) {
+      this.fullWidth = size.width;
+      this.fullHeight = size.height;
+    },
+    minusScale() {
+      this.scale -= 10;
+      if (this.scale < 20) {
+        this.scale = 20;
+      }
+    },
+    plusScale() {
+      this.scale += 10;
+      if (this.scale > 300) {
+        this.scale = 300;
+      }
+    },
+    markDraw() {
+      this.dragging = true;
+      this.$refs.main.style.cursor = 'crosshair';
+    },
+    startDraw(e) {
+      if (this.dragging) {
+        e.preventDefault();
+        const mainLeft = this.$refs.main.getBoundingClientRect().x;
+        const mainTop = this.$refs.main.getBoundingClientRect().y;
+        this.startX = e.clientX;
+        this.startY = e.clientY;
+        this.divX = e.clientX - mainLeft;
+        this.divY = e.clientY - mainTop;
+        this.$refs.draw.style.left = `${this.divX}px`;
+        this.$refs.draw.style.top = `${this.divY}px`;
+        this.showDrawing = true;
+      }
+    },
+    drawing(e) {
+      if (this.showDrawing) {
+        e.preventDefault();
+        this.divWidth = e.clientX - this.startX > 0 ? e.clientX - this.startX : 0;
+        this.divHeight = e.clientY - this.startY > 0 ? e.clientY - this.startY : 0;
+        this.$refs.draw.style.width = `${this.divWidth}px`;
+        this.$refs.draw.style.height = `${this.divHeight}px`;
+      }
+    },
+    endDraw(e) {
+      if (this.showDrawing) {
+        e.preventDefault();
+        this.dragging = false;
+        this.showDrawing = false;
+        this.$refs.draw.style.width = '0px';
+        this.$refs.draw.style.height = '0px';
+        this.$refs.draw.style.left = '0px';
+        this.$refs.draw.style.top = '0px';
+        this.$refs.main.style.cursor = 'default';
+        this.chartList.forEach((v) => {
+          if (v.type === this.selectTool) {
+            this.addItem(this.selectTool,
+              {
+                x: this.divX, y: this.divY, w: this.divWidth, h: this.divHeight,
+              });
+          } else {
+            v.selected = false;
+          }
+        });
+        this.selectTool = null;
+      }
+    },
     getScreen() {
       return this.$axios.get(`/bi/screen/queryById?id=${this.$route.query.id}`)
         .then(({ result }) => {
@@ -273,13 +403,14 @@ export default {
         });
     },
     selectChartIcon(type) {
-      this.chartList.forEach((v) => {
-        if (v.type === type) {
-          this.addItem(type);
-        } else {
-          v.selected = false;
-        }
-      });
+      if (type === 'cursor') {
+        this.selType = 'cursor';
+      } else {
+        this.markDraw();
+        this.selectTool = type;
+      }
+      this.selChart = null;
+      this.selChartArray = [];
     },
 
     selectItem(selItem) {
@@ -381,27 +512,23 @@ export default {
     },
     addItem(type, itemConfig) {
       const item = {
-        x: 0,
-        y: 0,
-        w: 300,
-        h: 100,
+        x: itemConfig.x || 0,
+        y: itemConfig.y || 0,
+        w: itemConfig.w || 300,
+        h: itemConfig.h || 100,
         type,
         name: type,
         z: 1000,
         active: true,
         i: this.index += 1,
       };
-      if (type === 'cursor') {
-        this.selType = 'cursor';
-        this.selChart = null;
-        return;
-      }
       if (type === 'group') {
         Object.assign(item, itemConfig);
       } else {
         item.config = chartConfig(type, this.backgroundConfig.darkModel);
       }
       this.layout.push(item);
+
       this.selectItem(item);
       this.addHistory();
     },
@@ -625,6 +752,12 @@ export default {
         }
       }
     },
+    selectClass(type) {
+      if (this.dragging && type === this.selectTool) {
+        return 'cc-bi-select-tool';
+      }
+      return '';
+    },
   },
   created() {
     // 这里监听所有请求参数
@@ -653,8 +786,10 @@ export default {
         bkStyle = {
           width: `${this.backgroundConfig.width}px`,
           height: `${this.backgroundConfig.height}px`,
+          position: 'relative',
           background: `url('${this.imgUrl}/${this.backgroundConfig.src}')`,
           backgroundRepeat: this.backgroundConfig.backPicSet,
+          transform: `scale(${this.scale / 100},${this.scale / 100})`,
         };
         if (this.backgroundConfig.backPicSet === 'stretch') {
           bkStyle.backgroundSize = '100% 100%';
@@ -665,6 +800,8 @@ export default {
         bkStyle = {
           width: `${this.backgroundConfig.width}px`,
           height: `${this.backgroundConfig.height}px`,
+          transform: `scale(${this.scale / 100},${this.scale / 100})`,
+          position: 'relative',
           background: this.backgroundConfig.color,
           backgroundSize: '10px 10px',
           backgroundImage: this.backgroundConfig.showGrid
@@ -681,14 +818,39 @@ export default {
 </script>
 
 <style lang="stylus">
-@import '~src/css/quasar.variables.styl';
-@import '~src/css/app.styl';
+@import '~src/css/quasar.variables.styl'
+@import '~src/css/app.styl'
 
+.cc-bi-design-header
+  height 60px
+.cc-bi-tool-box
+  flex-direction column
+  align-items center
+  text-align center
+  cursor pointer
+  padding 0px 10px 0px 10px
+  div
+    font-size 5px
+.cc-bi-select-tool
+  background-color #0e47a1
+.draw-div
+  position absolute
+  z-index 100000
+  height 0px
+  width 0px
+  left 0px
+  top 0px
+  color #000
+  border-style dashed
+  border-width 2px
+  border-color #00bfff
+  touch-action none
 .draggable-item-class
   overflow hidden
   height 100%
 .ul-box-tool
   list-style none
+  width 40px
   height 30px
   cursor pointer
 .w_l_list
@@ -702,5 +864,4 @@ export default {
     background $primary-light
   .w_l_val:hover
     background $positive-light
-
 </style>

@@ -14,8 +14,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
-        :selection="$q.screen.xs?'none':'multiple'"
+        selection="multiple"
         :selected.sync="selected"
       >
         <template v-slot:top="table">
@@ -139,7 +138,7 @@ export default {
           name: 'name', align: 'left', label: '名称', field: 'name',
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
       url: {

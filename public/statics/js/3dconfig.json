@@ -1,0 +1,11 @@
+[{
+  "name":"Duck",
+  "model": {
+    "scale": 0.05,
+    "altitude": -150
+  },
+  "font": {
+    "scale": 0.05,
+    "altitude": 480
+  }
+}]

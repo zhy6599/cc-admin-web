@@ -263,6 +263,24 @@ export const chartList = [
   },
   {
     selected: false,
+    name: '边框',
+    icon: 'mdi-postage-stamp',
+    type: 'border',
+  },
+  {
+    selected: false,
+    name: '装饰',
+    icon: 'mdi-cannabis',
+    type: 'decoration',
+  },
+  {
+    selected: false,
+    name: '排名',
+    icon: 'mdi-sort-variant',
+    type: 'rank',
+  },
+  {
+    selected: false,
     name: '图表',
     icon: 'mdi-chart-bar',
     type: 'chart',
@@ -355,6 +373,26 @@ export const chartConfig = (v, darkModel) => {
         overflowHiden: true,
       };
       break;
+    case 'border':
+      t = {
+        borderId: '1',
+        color1: '#4fd2dd',
+        color2: '#235fa7',
+        reverse: false,
+        needResize: false,
+        backgroundColor: 'transparent',
+      };
+      break;
+    case 'decoration':
+      t = {
+        decorationId: '1',
+        color1: '#4fd2dd',
+        color2: '#235fa7',
+        reverse: false,
+        needResize: false,
+        backgroundColor: 'transparent',
+      };
+      break;
     case 'omnipotent':
       t = {
         content: '',
@@ -377,6 +415,69 @@ export const chartConfig = (v, darkModel) => {
         chartArray: [],
       };
       break;
+    case 'rank':
+      t = {
+        animation: true,
+        showIndex: true,
+        data: [
+          {
+            name: '周口',
+            value: 55,
+          },
+          {
+            name: '南阳',
+            value: 120,
+          },
+          {
+            name: '西峡',
+            value: 78,
+          },
+          {
+            name: '驻马店',
+            value: 66,
+          },
+          {
+            name: '新乡',
+            value: 80,
+          },
+          {
+            name: '信阳',
+            value: 45,
+          },
+          {
+            name: '漯河',
+            value: 29,
+          }],
+        unit: '',
+        rowNum: 5,
+        waitTime: 2000,
+        carousel: 'single',
+        sort: true,
+        rows: [],
+        cols: [],
+        orders: [],
+        name: '',
+        needResize: false,
+        fillOpacity: 0,
+        cornerRadius: 0,
+        stacked: false,
+        showLoop: true,
+        description: '',
+        viewId: null,
+        length: 100,
+        slice: true,
+        interval: 60,
+        loop: true,
+        dragState: {
+          type: '',
+          data: [],
+        },
+        draging: {
+          type: '',
+          data: [],
+        },
+      };
+      break;
     case 'chart':
       t = {
         rows: [],
@@ -392,7 +493,9 @@ export const chartConfig = (v, darkModel) => {
         },
         table: {
           horizontal: false,
+          showIndex: true,
           loop: false,
+          glide: false,
           direction: 'up',
           scrolldelay: 6,
           alternate: true,
@@ -404,18 +507,19 @@ export const chartConfig = (v, darkModel) => {
           },
           tableHead: {
             show: true,
-            color: '#000',
+            color: '#FFF',
             fontSize: 12,
             fontWeight: 'bold',
             borderWidth: 1,
             borderStyle: '',
             borderColor: '#feffff',
-            backgroundColor: '#eee',
+            backgroundColor: '#00baff',
             textAlign: 'center',
             opacity: 100,
+            thHeight: 40,
           },
           tableBody: {
-            color: '#000',
+            color: '#FFF',
             fontSize: 12,
             fontWeight: 'bold',
             borderWidth: 1,
@@ -424,6 +528,7 @@ export const chartConfig = (v, darkModel) => {
             textAlign: 'center',
             backgroundColor: '#f8f8f8',
             opacity: 100,
+            tdHeight: 40,
           },
         },
         title: {

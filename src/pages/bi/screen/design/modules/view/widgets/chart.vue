@@ -168,7 +168,7 @@ export default {
           allParam: this.allParam,
           cache: false,
           expired: 0,
-          filters: this.config.filters,
+          cnd: this.config.cnd,
           groups: this.config.cols,
           nativeQuery: false,
           orders: this.getOrders(),
@@ -249,7 +249,7 @@ export default {
       }
     },
     renderChart() {
-      if (!this.chart) {
+      if (!this.chart && this.$refs.chart) {
         this.chart = echarts.init(this.$refs.chart, this.config.theme);
         this.registerMap();
       }

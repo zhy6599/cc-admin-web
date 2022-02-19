@@ -20,8 +20,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
-        :selection="$q.screen.xs?'none':'multiple'"
+        selection="multiple"
         :selected.sync="selected"
       >
         <template v-slot:top="table">
@@ -202,7 +201,7 @@ export default {
           name: 'config', align: 'left', label: '配置信息', field: 'config', format: (val) => this.ellipsis(val),
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
       url: {

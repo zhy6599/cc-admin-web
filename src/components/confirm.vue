@@ -2,7 +2,7 @@
   <q-dialog v-model="showDialog" persistent>
     <q-card>
       <q-card-section class="row items-center q-ml-lg q-mt-lg" style="min-width: 400px;">
-        <q-avatar icon="mdi-delete-variant" color="primary" text-color="white" />
+        <q-avatar :icon="icon" color="primary" text-color="white" />
         <span class="q-ml-md">{{msg}}</span>
       </q-card-section>
 
@@ -19,6 +19,10 @@ export default {
   name: 'confirm',
   props: {
     msg: String,
+    icon: {
+      type: String,
+      default: 'mdi-delete-variant',
+    },
   },
   data() {
     return {

@@ -3,19 +3,13 @@
     <div class="col">
       <textarea class="md-text" rows="30" v-model="content"/>
     </div>
-    <div class="col">
-      <markdown-it-vue class="md-body" :content="content"/>
-    </div>
   </div>
 </template>
 
 <script>
-import MarkdownItVue from 'markdown-it-vue';
-import 'markdown-it-vue/dist/markdown-it-vue.css';
 
 export default {
   components: {
-    MarkdownItVue,
   },
   data() {
     return {

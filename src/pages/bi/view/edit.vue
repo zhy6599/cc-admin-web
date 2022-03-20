@@ -274,8 +274,8 @@
         </q-card>
       </q-dialog>
       <div class="row justify-end q-pa-md">
-        <q-btn outline color="primary" label="取消" v-close-popup />
-        <q-btn unelevated color="primary" class="on-right" label="提交" @click="save" />
+        <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+        <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" @click="save" />
       </div>
     </q-form>
   </q-dialog>

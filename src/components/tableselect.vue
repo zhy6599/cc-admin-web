@@ -20,8 +20,7 @@
             @request="query"
             :rows-per-page-options="[10,20,50,100]"
             :loading="loading"
-            :grid="$q.screen.xs"
-            :selection="$q.screen.xs?'none':'multiple'"
+            selection="multiple"
             :selected.sync="selected"
           >
             <template #top-left>

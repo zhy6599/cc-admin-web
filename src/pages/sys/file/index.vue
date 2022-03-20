@@ -14,8 +14,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
-        :selection="$q.screen.xs?'none':'multiple'"
+        selection="multiple"
         :selected.sync="selected"
       >
         <template v-slot:top="table">
@@ -160,8 +159,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -221,8 +220,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -271,7 +270,7 @@ export default {
           name: 'sortOrder', align: 'left', label: '排序', field: 'sortOrder',
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
       showQuery: true,

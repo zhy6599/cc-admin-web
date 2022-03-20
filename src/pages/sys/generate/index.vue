@@ -195,7 +195,7 @@ import config from './config';
 import preview from './preview';
 
 export default {
-  name: 'DataSourceList',
+  name: 'Generate',
   components: {
     btnDel,
     tableselect,
@@ -205,6 +205,7 @@ export default {
   },
   data() {
     return {
+      key: '',
       loading: false,
       checking: false,
       confirm: false,

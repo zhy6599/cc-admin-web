@@ -14,8 +14,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
-        :selection="$q.screen.xs?'none':'multiple'"
+        selection="multiple"
         :selected.sync="selected"
       >
         <template v-slot:top="table">
@@ -154,14 +153,14 @@
             <div class="col-12">
               <h5>详细内容：</h5>
               <div>
-                <wang-editor v-model="form.content" @change="change" />
+                <q-input outlined autogrow type="textarea" v-model="form.content" />
               </div>
             </div>
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -175,14 +174,12 @@ import { ellipsis } from 'boot/datatype';
 import { requiredTest } from 'boot/inputTest';
 import { getDictLabel } from 'boot/dictionary';
 import confirm from 'components/confirm';
-import WangEditor from 'components/wangeditor';
 
 export default {
   name: 'SysNews',
   mixins: [IndexMixin],
   components: {
     confirm,
-    WangEditor,
   },
   data() {
     return {
@@ -200,7 +197,7 @@ export default {
           name: 'txtContent', align: 'left', label: '详细内容', field: 'content',
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
       showQuery: true,

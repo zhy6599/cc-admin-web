@@ -74,6 +74,7 @@ export default {
         this.initLabel(catalog);
       });
       this.$set(this.form, 'catalogId', n);
+      this.$refs.qSelectCatalog.hidePopup();
     },
   },
   mounted() {

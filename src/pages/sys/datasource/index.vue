@@ -20,8 +20,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
-        :selection="$q.screen.xs?'none':'multiple'"
+        selection="multiple"
         :selected.sync="selected"
       >
         <template v-slot:top="table">
@@ -95,6 +94,9 @@
         </template>
         <template #body-cell-opt="props">
           <q-td :props="props" :auto-width="true">
+            <q-btn flat round dense color="primary" icon="mdi-key" @click="change(props.row)">
+              <q-tooltip>重置密码</q-tooltip>
+            </q-btn>
             <q-btn flat round dense color="primary" icon="edit" @click="edit(props.row)">
               <q-tooltip>编辑</q-tooltip>
             </q-btn>
@@ -113,6 +115,47 @@
         </template>
       </q-table>
     </div>
+    <q-dialog ref="changePassWord" maximized flat persistent position="right">
+      <q-form @submit="changePassWord" class="dialog_card">
+        <div class="view_title justify-between q-px-md">
+          修改密码
+          <q-btn dense outline round size="sm" icon="clear" v-close-popup />
+        </div>
+        <div class="row q-col-gutter-x-md dialog_form q-pa-md">
+          <div class="col-6">
+            <h5>
+              <q-icon name="star" color="red" />密码：
+            </h5>
+            <q-input
+              outlined
+              dense
+              type="password"
+              v-model="password"
+              :rules="[v => !!v || '不可以为空']"
+            />
+          </div>
+          <div class="col-6">
+            <h5>
+              <q-icon name="star" color="red" />确认密码：
+            </h5>
+            <q-input
+              outlined
+              dense
+              type="password"
+              v-model="confirmpassword"
+              :rules="[v => !!v || '不可以为空']"
+              :error="!isValid"
+            >
+              <template v-slot:error>两次输入密码不一致！</template>
+            </q-input>
+          </div>
+        </div>
+        <div class="row justify-end q-pa-md">
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
+        </div>
+      </q-form>
+    </q-dialog>
     <q-dialog maximized flat persistent ref="dialog" position="right">
       <q-form @submit="submit" class="dialog_card column">
         <h5 class="view_title justify-between q-px-md">
@@ -121,19 +164,6 @@
         </h5>
         <q-scroll-area class="col">
           <div class="row q-col-gutter-x-md dialog_form q-pa-md">
-            <div class="col-6">
-              <h5>
-                <q-icon name="star" color="red" />数据源ID：
-              </h5>
-              <q-input
-                outlined
-                dense
-                v-model="form.id"
-                type="text"
-                :rules="[requiredTest]"
-                readonly="editType==='编辑'"
-              />
-            </div>
             <div class="col-6">
               <h5>
                 <q-icon name="star" color="red" />数据源名称：
@@ -159,6 +189,7 @@
                 map-options
                 v-model="form.dbType"
                 :options="databaseType"
+                @input="changeDbType"
               />
             </div>
             <div class="col-6">
@@ -175,7 +206,7 @@
             </div>
             <div class="col-6">
               <h5>
-                <q-icon name="star" color="red" />数据库名称：
+                <q-icon name="star" color="red" />SCHEMA：
               </h5>
               <q-input outlined dense v-model="form.dbName" type="text" :rules="[requiredTest]" />
             </div>
@@ -191,18 +222,19 @@
                 :rules="[requiredTest]"
               />
             </div>
-            <div class="col-6">
+            <div class="col-6" v-if="!form.id">
               <h5>密码：</h5>
               <div class="row no-wrap">
                 <q-input class="col" outlined dense v-model="form.dbPassword" type="password" />
-                <q-btn color="primary" label="测试" @click="testConnection" />
               </div>
             </div>
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn color="primary" label="测试" @click="testConnection" />
+          <q-space />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -238,9 +270,6 @@ export default {
           field: 'index',
         },
         {
-          name: 'id', align: 'left', label: '数据源ID', field: 'id',
-        },
-        {
           name: 'name', align: 'left', label: '数据源名称', field: 'name',
         },
         {
@@ -253,25 +282,44 @@ export default {
           name: 'dbUrl', align: 'left', label: '数据源地址', field: 'dbUrl',
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
-      databaseType: [{ value: '1', label: 'MySQL' }, { value: '2', label: 'Oracle' }, { value: '3', label: 'SQLServer' }],
+      databaseType: [{ value: 'MySQL', label: 'MySQL' }, { value: 'Oracle', label: 'Oracle' }, { value: 'SqlServer', label: 'SqlServer' }],
       url: {
         list: '/sys/dataSource/list',
         add: '/sys/dataSource/add',
         edit: '/sys/dataSource/edit',
+        changePassword: '/sys/dataSource/changePassword',
         copy: '/sys/dataSource/copy',
         delete: '/sys/dataSource/delete',
         deleteBatch: '/sys/dataSource/deleteBatch',
         exportXlsUrl: '/sys/dataSource/exportXls',
         importExcelUrl: '/sys/dataSource/importExcel',
       },
+      selectDataSource: {},
+      password: '',
+      confirmpassword: '',
     };
   },
   methods: {
     requiredTest,
     getDictLabel,
+    change(row) {
+      this.password = '';
+      this.confirmpassword = '';
+      this.selectDataSource = row;
+      this.$refs.changePassWord.show();
+    },
+    changePassWord() {
+      this.$axios.put(this.url.changePassword, {
+        dbPassword: this.password,
+        id: this.selectDataSource.id,
+      }).then((r) => {
+        this.$info(r.message);
+        this.$refs.changePassWord.hide();
+      });
+    },
     testConnection() {
       this.$axios.post('/sys/dataSource/testConnection', this.form).then((r) => {
         if (r.success) {
@@ -291,12 +339,29 @@ export default {
       this.catalog = n;
       this.query();
     },
+    changeDbType(val) {
+      if (val === 'Mysql') {
+        this.form.dbDriver = 'com.mysql.jdbc.Driver';
+        this.form.dbUrl = 'jdbc:mysql://127.0.0.1:3306/cc-admin?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=UTC';
+      }
+      if (val === 'Oracle') {
+        this.form.dbDriver = 'oracle.jdbc.driver.OracleDriver';
+        this.form.dbUrl = 'jdbc:oracle:thin:@127.0.0.1:1521:cc-admin';
+      }
+      if (val === 'SqlServer') {
+        this.form.dbDriver = 'com.microsoft.sqlserver.jdbc.SQLServerDriver';
+        this.form.dbUrl = 'jdbc:sqlserver://127.0.0.1:1433;DatabaseName=cc-admin';
+      }
+    },
   },
   mounted() {
   },
   watch: {
   },
   computed: {
+    isValid() {
+      return this.confirmpassword === this.password;
+    },
   },
 };
 </script>

@@ -1,17 +1,15 @@
 <template>
   <div class="row">
     <div class="col">
-      <wang-editor v-model="detail" :isClear="isClear" @change="change"></wang-editor>
+      <q-input type="textarea" v-model="detail" :isClear="isClear" @change="change"></q-input>
     </div>
   </div>
 </template>
 
 <script>
-import WangEditor from 'components/wangeditor';
 
 export default {
   components: {
-    WangEditor,
   },
   data() {
     return {

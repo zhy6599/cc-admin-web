@@ -1,7 +1,12 @@
 <template>
   <q-page class="cc-admin row">
-    <tree class="col q-mt-sm q-mb-sm q-ml-sm" type="SysDepart" @select="selectCatalog" />
-    <div class="col-7 column cc-admin shadow-2 q-ma-sm" v-if="this.$q.screen.gt.md" >
+    <tree
+      class="q-mt-sm q-mb-sm q-ml-sm"
+      style="width:500px;"
+      type="SysDepart"
+      @select="selectCatalog"
+    />
+    <div class="col column cc-admin shadow-2 q-ma-sm" v-if="this.$q.screen.gt.md">
       <div class="q-gutter-y-md col">
         <q-card class="full-height">
           <q-tabs
@@ -32,12 +37,12 @@
                       <div class="col col-md-4 col-sm-6 col-xs-12">描述：{{form.description}}</div>
                       <div class="col col-sm-6 col-xs-12">上级部门：{{form.parentName}}</div>
                       <div class="col col-sm-6 col-xs-12">部门编码：{{form.orgCode}}</div>
-                      <div class="col col-sm-6 col-xs-12">
-                        部门类型：{{ getDictLabel(orgType,form.orgType) }}
-                      </div>
-                      <div class="col col-sm-6 col-xs-12">
-                        部门状态：{{ getDictLabel(departStatus,form.status) }}
-                      </div>
+                      <div
+                        class="col col-sm-6 col-xs-12"
+                      >部门类型：{{ getDictLabel(orgType,form.orgType) }}</div>
+                      <div
+                        class="col col-sm-6 col-xs-12"
+                      >部门状态：{{ getDictLabel(departStatus,form.status) }}</div>
                     </q-item-label>
                   </q-card-section>
                   <q-card-section>
@@ -68,25 +73,15 @@
                   >
                     <template #default-header="prop">
                       <div class="row items-center">
-                        <div class="">{{prop.node.slotTitle}}</div>
+                        <div class>{{prop.node.slotTitle}}</div>
                       </div>
                     </template>
                   </q-tree>
                 </q-scroll-area>
                 <div class="row justify-end q-pa-md">
-                  <q-btn
-                    outline
-                    color="primary"
-                    label="取消"
-                    v-close-popup
-                  />
-                  <q-btn
-                    unelevated
-                    color="primary"
-                    class="on-right"
-                    label="提交"
-                    @click="lockSubmit"
-                  />
+                  <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+                  <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交"
+                  @click="lockSubmit"/>
                 </div>
               </div>
             </q-tab-panel>

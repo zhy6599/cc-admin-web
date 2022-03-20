@@ -419,6 +419,11 @@ export const chartConfig = (v, darkModel) => {
       t = {
         animation: true,
         showIndex: true,
+        rankColor: '1370fb',
+        nameColor: '#FFF',
+        valueColor: '#FFF',
+        fontColor: '#FFF',
+        chartColor: '#1370fb',
         data: [
           {
             name: '周口',

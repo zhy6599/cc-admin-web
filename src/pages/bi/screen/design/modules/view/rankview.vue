@@ -6,7 +6,7 @@ import ScrollRank from './widgets/rank';
 
 export default {
   components: {
-    ScrollRank
+    ScrollRank,
   },
   name: 'rankview',
   data() {

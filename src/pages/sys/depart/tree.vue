@@ -3,16 +3,39 @@
     <q-splitter v-model="splitterModel" unit="px" horizontal>
       <template v-slot:before>
         <div class="row no-wrap items-center">
-          <div class="col text-subtitle1" v-if="$q.screen.gt.md">部门管理</div>
+          <div class="text-subtitle1" v-if="$q.screen.gt.md">部门管理</div>
           <q-space />
           <div class="col row q-gutter-sm justify-end">
-            <q-btn size="md" dense color="primary" label="添加部门" @click="addCatalog()" />
-            <q-btn size="md" dense color="secondary" label="添加下级" @click="addCatalog('son')" />
-            <q-btn size="md" dense color="accent" label="修改" @click="updateCatalog()" />
-            <q-btn size="md"
+            <q-btn
               dense
-              label="删除"
+              class="q-mx-xs"
+              color="primary"
+              icon="add"
+              label="添加部门"
+              @click="addCatalog()"
+            />
+            <q-btn
+              dense
+              class="q-mx-xs"
+              color="primary"
+              icon="add"
+              label="添加下级"
+              @click="addCatalog('son')"
+            />
+            <q-btn
+              dense
+              class="q-mx-xs"
+              color="primary"
+              icon="edit"
+              label="修改"
+              @click="updateCatalog()"
+            />
+            <q-btn
+              dense
+              class="q-mx-xs"
               color="negative"
+              icon="delete"
+              label="删除"
               :disable="selected ===''"
               @click="showConfirm()"
             />
@@ -73,19 +96,11 @@
             </div>
             <div class="col-6">
               <h5>部门类型：</h5>
-              <q-btn-toggle
-                class="q_b_toggle"
-                v-model="form.orgType"
-                :options="orgType"
-              />
+              <q-btn-toggle class="q_b_toggle" v-model="form.orgType" :options="orgType" />
             </div>
             <div class="col-6">
               <h5>状态：</h5>
-              <q-btn-toggle
-                class="q_b_toggle"
-                v-model="form.status"
-                :options="departStatus"
-              />
+              <q-btn-toggle class="q_b_toggle" v-model="form.status" :options="departStatus" />
             </div>
             <div class="col-6">
               <h5>手机号：</h5>
@@ -106,8 +121,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>

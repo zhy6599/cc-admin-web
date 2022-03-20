@@ -144,7 +144,7 @@
             <div class="col-12">
               <h5>封面图片：</h5>
               <div class="row wrap justify-center items-center content-center">
-                <q-btn round @click="importImage">
+                <q-btn dense @click="importImage">
                   <q-avatar square size="200px">
                     <q-img class="screen-image" :src="imagePath(form.imageUrl)" />
                   </q-avatar>
@@ -169,8 +169,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -325,4 +325,6 @@ export default {
 .screen-image
   height 200px
   width 200px
+  .q-img__image
+    background-size 100% 100% !important
 </style>

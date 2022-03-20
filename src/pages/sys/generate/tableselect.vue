@@ -1,12 +1,12 @@
 <template>
   <q-dialog v-model="showDialog" maximized flat persistent position="right">
-    <q-card class="dialog_card column">
-      <div class="view_title justify-between q-px-md">
+    <q-form class="dialog_card column">
+      <h5 class="view_title justify-between q-px-md">
         从数据库导入表
-        <q-btn dense outline round size="sm" icon="clear" v-close-popup />
-      </div>
-      <q-card-section>
-        <div class="row justify-between" style="padding-bottom: 16px;">
+        <q-btn dense outline round icon="clear" size="sm" v-close-popup />
+      </h5>
+      <q-scroll-area class="col">
+        <div class="row q-pa-md">
           <q-input
             dense
             clearable
@@ -22,9 +22,9 @@
             </template>
           </q-input>
         </div>
-        <div style="border: 1px solid #cacaca;">
-          <div class="row justify-around" style="width:100%">
-            <div class="col">
+        <div>
+          <div class="row dialog_form q-pa-sm">
+            <div class="col" style="border: 1px solid #cacaca;">
               <div style="height: 600px;">
                 <q-table
                   class
@@ -60,8 +60,11 @@
             </div>
           </div>
         </div>
-      </q-card-section>
-    </q-card>
+      </q-scroll-area>
+        <div class="row justify-end q-pa-md">
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+        </div>
+    </q-form>
   </q-dialog>
 </template>
 

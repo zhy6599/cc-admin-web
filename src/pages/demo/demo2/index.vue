@@ -135,7 +135,6 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
       >
         <template #top-right="table">
           <q-btn-group outline>

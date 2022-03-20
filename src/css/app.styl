@@ -25,6 +25,57 @@ h1,h2,h3,h4,h5,h6
 a
   color $primary
 
+.q-field--auto-height.q-field--labeled
+  .q-field__control-container
+    padding-top: 8px
+.q-item__section--side
+  padding-right: 0
+
+.q-field--dense
+  .q-field__control
+    height: 36px
+
+  .q-field__marginal
+    height: 36px
+
+.q-field--auto-height.q-field--dense
+  .q-field__control, .q-field__native
+    min-height: 36px
+.q-table th
+  font-size: 14px
+.q-tab__label
+  font-size: 14px
+.q-btn__wrapper
+  padding: 0px 14px 0px 14px
+  min-height: 32px
+  .q-btn__content
+      .on-left
+        margin-right 2px; 
+.q-table
+  thead
+    th,td
+      position sticky
+      top 0
+      font-size 14px
+      transition none
+      opacity 1
+      z-index 1
+      color $t-dark
+    tr
+      background #fafafa
+      th
+        padding: 0px 8px !important
+        position sticky
+        top 0
+        z-index 1
+    trnth-child(even)
+      background #eee
+  tbody
+    trnth-child(even)
+      background #f8f8f8
+    td
+      font-size 14px
+      padding 0px 16px !important
 .view_title
   display flex
   align-items center
@@ -83,55 +134,6 @@ a
 .cross_table
   border-radius 0 !important
   border 1px $light solid
-  max-width 100%
-  &.margin
-    margin 0 20px
-  .q-table
-    thead
-      th,td
-        position sticky
-        top 0
-        font-size 16px
-        transition none
-        opacity 1
-        z-index 1
-        color $t-dark
-      tr
-        background #eee
-        th
-          position sticky
-          top 0
-          z-index 1
-      trnth-child(even)
-        background #eee
-    tbody
-      trnth-child(even)
-        background #f8f8f8
-      td
-        font-size 14px
-  &.q-table--cell-separator
-    td,th
-      border-left-width 0
-      border-right-width 1px
-      &last-child
-        border-right-width 0
-  &.left_sticky
-    tdfirst-child
-      position sticky
-      left 0
-      z-index 2
-    thead thfirst-child
-      top 0
-      left 0
-      z-index 3
-.text-t-dark
-  color $t-dark
-.bg-t-dark
-  background $t-dark
-.text-t-grey
-  color $t-grey
-.bg-t-grey
-  background $t-grey
 
 .cc-header
   align-items center
@@ -147,43 +149,6 @@ a
   border-color #00bfff
   touch-action none
 }
-
-.cc-admin
-  .q-field--auto-height.q-field--labeled
-    .q-field__control-container
-      padding-top 8px
-  .q-item__section--side
-    padding-right 0
-
-  .q-field--dense
-    .q-field__control
-      height 36px
-
-    .q-field__marginal
-      height 36px
-
-  .q-field--auto-height.q-field--dense
-    .q-field__control, .q-field__native
-      min-height 36px
-  .q-table th
-    font-size 16px
-  .q-tab__label
-    font-size 16px
-
-.cc-admin-min
-  .q-item__section--side
-    padding-right 0
-
-  .q-field--dense
-    .q-field__control
-      height auto
-
-    .q-field__marginal
-      height auto
-
-  .q-field--auto-height.q-field--dense .q-field__control, .q-field--auto-height.q-field--dense .q-field__native
-    padding 2px
-    min-height 28px
 
 .cc-active-class
   border 1px dashed #1890ff

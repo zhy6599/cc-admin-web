@@ -182,7 +182,7 @@
               <favorite @addFavorite="addFavorite" />
             </q-scroll-area>
             <div class="row justify-end q-pa-md">
-              <q-btn outline color="primary" label="关闭" v-close-popup />
+              <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
             </div>
           </q-form>
         </q-dialog>
@@ -360,7 +360,9 @@ export default {
         this.$refs.main.style.cursor = 'default';
         this.chartList.forEach((v) => {
           if (v.type === this.selectTool) {
-            this.addItem(this.selectTool, { x: this.divX, y: this.divY, w: this.divWidth, h: this.divHeight });
+            this.addItem(this.selectTool, {
+              x: this.divX, y: this.divY, w: this.divWidth, h: this.divHeight,
+            });
           } else {
             v.selected = false;
           }
@@ -408,7 +410,6 @@ export default {
       }
       this.selChart = null;
       this.selChartArray = [];
-
     },
 
     selectItem(selItem) {
@@ -752,9 +753,9 @@ export default {
     },
     selectClass(type) {
       if (this.dragging && type === this.selectTool) {
-        return 'cc-bi-select-tool'
+        return 'cc-bi-select-tool';
       }
-      return ''
+      return '';
     },
   },
   created() {

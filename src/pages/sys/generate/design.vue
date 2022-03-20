@@ -293,16 +293,6 @@
                         <q-td key="cmpLength" :props="props">
                           <q-input outlined v-model="props.row.cmpLength" type="number" dense />
                         </q-td>
-                        <q-td key="isSimple" :props="props">
-                          <q-toggle
-                            v-model="props.row.isSimple"
-                            checked-icon="check"
-                            color="green"
-                            unchecked-icon="clear"
-                            true-value="1"
-                            false-value="0"
-                          />
-                        </q-td>
                         <q-td key="isQuery" :props="props">
                           <q-toggle
                             v-model="props.row.isQuery"
@@ -643,12 +633,6 @@ export default {
           align: 'center',
           label: '控件长度',
           field: 'cmpLength',
-        },
-        {
-          name: 'isSimple',
-          align: 'center',
-          label: '简短查询',
-          field: 'isSimple',
         },
         {
           name: 'isQuery',
@@ -1053,7 +1037,7 @@ export default {
   },
   computed: {
     pageGroup() {
-      const pageColumn = ['id', 'name', 'disForm', 'disList', 'orderBy', 'isReadonly', 'cmpType', 'cmpLength', 'isSimple', 'isQuery', 'queryType', 'queryDefault'];
+      const pageColumn = ['id', 'name', 'disForm', 'disList', 'orderBy', 'isReadonly', 'cmpType', 'cmpLength', 'isQuery', 'queryType', 'queryDefault'];
       if (this.form.tableType === '2') {
         pageColumn.push('mainTable');
         pageColumn.push('mainColumn');

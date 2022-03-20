@@ -1,9 +1,11 @@
 <template>
   <q-page class="cc-admin q-pa-sm">
     <div class="col bg-white shadow-2 q-pa-md">
-      <div class="row items-center justify-start q-mb-md">
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-select
+      <div class="row">
+        <q-item class="col-3 items-center">
+          <q-item-label>类型：</q-item-label>
+          <q-item-section>
+            <q-select
             outlined
             dense
             emit-value
@@ -12,114 +14,98 @@
             :options="logType"
             clearable
             class="col"
-            prefix="类型："
           />
+          </q-item-section>
         </q-item>
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12" v-if="$q.screen.gt.md">
-          <q-input
-            outlined
-            dense
-            v-model="searchForm.logContent"
-            type="text"
-            clearable
-            class="col"
-            prefix="内容："
-          />
+        <q-item class="col-3 items-center">
+          <q-item-label>内容：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.logContent"></q-input>
+          </q-item-section>
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-select
-            outlined
-            dense
-            emit-value
-            v-model="searchForm.operateType"
-            map-options
-            :options="operateType"
-            clearable
-            class="col"
-            prefix="操作："
-          />
-        </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
-        v-if="$q.screen.gt.md">
-          <q-input
-            outlined
-            dense
-            v-model="searchForm.requestUrl"
-            type="text"
-            clearable
-            class="col"
-            prefix="路径："
-          />
-        </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
-        v-if="$q.screen.gt.md">
-          <q-input
-            outlined
-            dense
-            v-model="searchForm.requestParam"
-            type="text"
-            clearable
-            class="col"
-            prefix="参数："
-          />
-        </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
-        v-if="$q.screen.gt.md">
-          <q-input
-            outlined
-            dense
-            v-model="searchForm.costTime_begin"
-            type="text"
-            clearable
-            class="col"
-            prefix="耗时："
-          />
-        </q-item>
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12" v-if="$q.screen.gt.md">
-          <q-input
-            placeholder="请输入IP"
-            outlined
-            dense
-            v-model="searchForm.ip"
-            type="text"
-            clearable
-            class="col"
-            prefix="IP："
-          />
-        </q-item>
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
-          <q-item-label class="col-12 text-right row no-wrap justify-center">
-            <q-btn
-              unelevated no-wrap
-              label="查询"
-              color="primary"
-              class="q-mr-sm no-border-radius"
-              :loading="loading"
-              @click="query()"
-            >
-              <template v-slot:loading>
-                <q-spinner-ios class="on-center" />
-              </template>
-            </q-btn>
-            <q-btn
-              outline
-              unelevated
-              label="重置"
-              class="q-mr-sm no-border-radius"
-              color="secondary"
-              @click="searchReset"
-            />
-            <q-btn-dropdown
-              v-model="showQuery"
-              persistent
+        <q-item class="col-3 items-center" v-show="showQuery" v-if="$q.screen.gt.md">
+          <q-item-label>操作：</q-item-label>
+          <q-item-section>
+            <q-select
+              outlined
               dense
-              flat
-              color="primary"
-              :label="tableLabel"
-              @before-show="show"
-              @before-hide="hide"
-            ></q-btn-dropdown>
-          </q-item-label>
+              emit-value
+              v-model="searchForm.operateType"
+              map-options
+              :options="operateType"
+              clearable
+              class="col"
+            />
+          </q-item-section>
+        </q-item>
+
+        <q-item class="col-3 items-center">
+          <q-item-label>路径：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.requestUrl"></q-input>
+          </q-item-section>
+        </q-item>
+        <q-item class="col-3 items-center" v-show="showQuery" v-if="$q.screen.gt.md">
+          <q-item-label>参数：</q-item-label>
+          <q-item-section>
+            <q-input
+              outlined
+              dense
+              v-model="searchForm.requestParam"
+              type="text"
+              clearable
+              class="col"
+            />
+          </q-item-section>
+        </q-item>
+
+        <q-item class="col-3 items-center" v-show="showQuery" v-if="$q.screen.gt.md">
+          <q-item-label>耗时：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.costTime_begin"></q-input>
+          </q-item-section>
+        </q-item>
+
+        <q-item class="col-3 items-center" v-show="showQuery" v-if="$q.screen.gt.md">
+          <q-item-label>IP：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.ip"></q-input>
+          </q-item-section>
+        </q-item>
+        <q-item class="col-3 items-center">
+          <q-item-section>
+            <div>
+              <q-btn
+                unelevated
+                class="q-mr-sm no-border-radius"
+                color="primary"
+                icon="search"
+                label="查询"
+                :loading="loading"
+                @click="query()"
+              />
+              <q-btn
+                no-wrap
+                outline
+                unelevated
+                class="q-mr-sm no-border-radius"
+                color="secondary"
+                icon="refresh"
+                label="重置"
+                @click="searchReset"
+              />
+              <q-btn-dropdown
+                v-model="showQuery"
+                persistent
+                dense
+                flat
+                color="primary"
+                :label="tableLabel"
+                @before-show="show"
+                @before-hide="hide"
+              ></q-btn-dropdown>
+            </div>
+          </q-item-section>
         </q-item>
       </div>
       <q-table
@@ -135,7 +121,6 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
       >
         <template #top-right="table">
           <q-btn-group outline>

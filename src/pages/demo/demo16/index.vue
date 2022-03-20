@@ -15,7 +15,7 @@
         @request="query"
         :rows-per-page-options="[12,24,48,60]"
         :loading="loading"
-        selection="multiple"
+        :selection="$q.screen.xs?'none':'multiple'"
         :selected.sync="selected"
       >
         <template v-slot:top="table">
@@ -74,7 +74,7 @@
                     dense
                     type="a"
                     target="_blank"
-                    :href="`/screen/design?id=${props.row.id}`"
+                    :href="`#/screen/design?id=${props.row.id}`"
                     color="primary"
                     icon="mdi-image-edit-outline"
                   >
@@ -144,8 +144,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -190,7 +190,7 @@ export default {
           name: 'catalogId_dictText', align: 'left', label: '目录编号', field: 'catalogId_dictText',
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
       url: {
@@ -222,13 +222,13 @@ export default {
     },
     viewScreen({ id }) {
       const { href } = this.$router.resolve({
-        path: `/view?id=${id}`,
+        path: `#/view?id=${id}`,
       });
       window.open(href, '_blank');
     },
     viewFullScreen({ id }) {
       const { href } = this.$router.resolve({
-        path: `/viewfull?id=${id}`,
+        path: `#/viewfull?id=${id}`,
       });
       window.open(href, '_blank');
     },

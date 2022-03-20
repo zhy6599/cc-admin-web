@@ -19,6 +19,86 @@
             <q-input
               dense
               filled
+              prefix="排名颜色："
+              class="q-my-sm"
+              input-class="text-left"
+              v-model="config.rankColor"
+            >
+              <template v-slot:append>
+                <q-icon
+                  name="colorize"
+                  class="cursor-pointer"
+                  :style="{color:config.rankColor}"
+                >
+                  <q-popup-proxy transition-show="scale" transition-hide="scale">
+                    <q-color v-model="config.rankColor" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-input
+              dense
+              filled
+              prefix="图形颜色："
+              class="q-my-sm"
+              input-class="text-left"
+              v-model="config.chartColor"
+            >
+              <template v-slot:append>
+                <q-icon
+                  name="colorize"
+                  class="cursor-pointer"
+                  :style="{color:config.chartColor}"
+                >
+                  <q-popup-proxy transition-show="scale" transition-hide="scale">
+                    <q-color v-model="config.chartColor" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-input
+              dense
+              filled
+              prefix="名称颜色："
+              class="q-my-sm"
+              input-class="text-left"
+              v-model="config.nameColor"
+            >
+              <template v-slot:append>
+                <q-icon
+                  name="colorize"
+                  class="cursor-pointer"
+                  :style="{color:config.nameColor}"
+                >
+                  <q-popup-proxy transition-show="scale" transition-hide="scale">
+                    <q-color v-model="config.nameColor" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-input
+              dense
+              filled
+              prefix="值颜色："
+              class="q-my-sm"
+              input-class="text-left"
+              v-model="config.valueColor"
+            >
+              <template v-slot:append>
+                <q-icon
+                  name="colorize"
+                  class="cursor-pointer"
+                  :style="{color:config.valueColor}"
+                >
+                  <q-popup-proxy transition-show="scale" transition-hide="scale">
+                    <q-color v-model="config.valueColor" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-input
+              dense
+              filled
               type="number"
               v-model="config.rowNum"
               prefix="显示数据："
@@ -75,12 +155,12 @@ export default {
   data() {
     return {
       rankSettingTab: 'data',
-      tabs: [{ label: '数据',name: 'data' },{ label: '排名',name: 'rank' }],
-      headers: [{ name: 'Authorization',value: localStorage.Authorization }],
+      tabs: [{ label: '数据', name: 'data' }, { label: '排名', name: 'rank' }],
+      headers: [{ name: 'Authorization', value: localStorage.Authorization }],
       carouselOptions: [
-        { label: '单条',value: 'single' },
-        { label: '整页',value: 'page' },
-      ]
+        { label: '单条', value: 'single' },
+        { label: '整页', value: 'page' },
+      ],
     };
   },
   props: {

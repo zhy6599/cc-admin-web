@@ -6,7 +6,7 @@
         <q-separator />
         <q-item clickable v-ripple @click="openLink('https://www.56yhz.com')" >
           <q-item-section avatar>
-            <q-icon name="img:https://www.56yhz.com/static/img/logo/logo.png" />
+            <q-icon name="img:icons/logo/wms.png" />
           </q-item-section>
           <q-item-section>
             GreaterWMS

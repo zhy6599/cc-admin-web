@@ -20,8 +20,7 @@
         @request="query"
         :rows-per-page-options="[10,20,50,100]"
         :loading="loading"
-        :grid="$q.screen.xs"
-        :selection="$q.screen.xs?'none':'multiple'"
+        selection="multiple"
         :selected.sync="selected"
       >
         <template v-slot:top="table">
@@ -155,10 +154,7 @@
               <h5>详细描述：</h5>
               <div class="row">
                 <div class="col">
-                  <textarea class="md-text" rows="20" v-model="form.content"/>
-                </div>
-                <div class="col">
-                  <markdown-it-vue class="md-body" :content="form.content"/>
+                  <q-input outlined autogrow type="textarea" v-model="form.content"/>
                 </div>
               </div>
             </div>
@@ -203,8 +199,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -283,7 +279,7 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="关闭" v-close-popup />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
         </div>
       </q-form>
     </q-dialog>
@@ -299,8 +295,6 @@ import { requiredTest, phoneTest } from 'boot/inputTest';
 import confirm from 'components/confirm';
 import catalogselect from 'components/catalogselect';
 import viewcatalog from 'components/viewcatalog';
-import MarkdownItVue from 'markdown-it-vue';
-import 'markdown-it-vue/dist/markdown-it-vue.css';
 import CcShadow from 'components/ccshadow';
 
 export default {
@@ -310,7 +304,6 @@ export default {
     confirm,
     viewcatalog,
     catalogselect,
-    MarkdownItVue,
     CcShadow,
   },
   data() {
@@ -471,9 +464,6 @@ export default {
   border: 1px solid #027be3
 .container {
   display: inline-flex;
-  width: 100%;
-}
-.md-text {
   width: 100%;
 }
 .md-body {

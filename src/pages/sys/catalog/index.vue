@@ -4,26 +4,32 @@
       <div class="row no-wrap">
         <b class="text-h6" v-if="$q.screen.gt.md">分类目录管理</b>
         <q-space />
-
-        <q-btn-group outline>
-          <q-btn outline icon="add" color="primary" no-wrap label="新建" @click="addCatalog()" />
-          <q-btn
-            outline no-wrap
-            icon="edit"
-            :disable="selectedCatalog ===''"
-            color="primary"
-            label="修改"
-            @click="updateCatalog()"
-          />
-          <q-btn
-            :disable="selectedCatalog ===''"
-            outline no-wrap
-            color="primary"
-            label="删除"
-            @click="showConfirm()"
-            icon="mdi-delete-empty"
-          />
-        </q-btn-group>
+        <q-btn
+          dense
+          class="q-mx-xs"
+          color="primary"
+          icon="add"
+          label="添加"
+          @click="addCatalog()"
+        />
+        <q-btn
+          dense
+          class="q-mx-xs"
+          color="primary"
+          icon="edit"
+          label="修改"
+          :disable="selectedCatalog ===''"
+          @click="updateCatalog()"
+        />
+        <q-btn
+          dense
+          class="q-mx-xs"
+          color="negative"
+          icon="delete"
+          label="删除"
+          :disable="selectedCatalog ===''"
+          @click="showConfirm()"
+        />
       </div>
       <q-scroll-area style="height: calc(100vh - 200px);">
         <q-tree
@@ -51,7 +57,8 @@
               </h5>
               <q-input
                 outlined
-                dense autofocus
+                dense
+                autofocus
                 v-model="catalog.name"
                 type="text"
                 clearable
@@ -61,8 +68,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>

@@ -44,69 +44,69 @@ export default {
   },
   methods: {
     tableStyle() {
-      const resultStyle={};
-      if(this.config.table.loop) {
-        resultStyle.animationDuration=`${this.config.table.scrolldelay}s`;
-        resultStyle.animationTimingFunction='linear';
-        resultStyle.animationIterationCount='infinite';
-        resultStyle.animationDirection='alternate';
-        resultStyle.animationDelay='2s';
-        if(this.config.table.alternate) {
-          resultStyle.animationDirection='alternate';
+      const resultStyle = {};
+      if (this.config.table.loop) {
+        resultStyle.animationDuration = `${this.config.table.scrolldelay}s`;
+        resultStyle.animationTimingFunction = 'linear';
+        resultStyle.animationIterationCount = 'infinite';
+        resultStyle.animationDirection = 'alternate';
+        resultStyle.animationDelay = '2s';
+        if (this.config.table.alternate) {
+          resultStyle.animationDirection = 'alternate';
         } else {
-          resultStyle.animationDirection='normal';
+          resultStyle.animationDirection = 'normal';
         }
-        if(this.config.table.direction==='left') {
-          resultStyle.animationName='tableLoopLeft';
-        } else if(this.config.table.direction==='right') {
-          resultStyle.animationName='tableLoopRight';
-        } else if(this.config.table.direction==='up') {
-          resultStyle.animationName='tableLoopUp';
-        } else if(this.config.table.direction==='down') {
-          resultStyle.animationName='tableLoopDown';
+        if (this.config.table.direction === 'left') {
+          resultStyle.animationName = 'tableLoopLeft';
+        } else if (this.config.table.direction === 'right') {
+          resultStyle.animationName = 'tableLoopRight';
+        } else if (this.config.table.direction === 'up') {
+          resultStyle.animationName = 'tableLoopUp';
+        } else if (this.config.table.direction === 'down') {
+          resultStyle.animationName = 'tableLoopDown';
         }
       }
       return resultStyle;
     },
     async glideData() {
-      if(this.config.table.glide) {
-        const list=this.data.body;
-        //先判断数据条数是否大于1条
-        if(!list||list.length<2) {
+      if (this.config.table.glide) {
+        const list = this.data.body;
+        // 先判断数据条数是否大于1条
+        if (!list || list.length < 2) {
           return;
         }
-        const row=list.shift();
-        const tmp=this.oddRowBGC;
-        this.oddRowBGC=this.evenRowBGC;
-        this.evenRowBGC=tmp;
-        await new Promise(resolve => setTimeout(resolve,300));
+        const row = list.shift();
+        const tmp = this.oddRowBGC;
+        this.oddRowBGC = this.evenRowBGC;
+        this.evenRowBGC = tmp;
+        await new Promise((resolve) => setTimeout(resolve, 300));
         list.push(row);
         // 切换奇数偶数颜色，把第一条放到最后一条上
-        await new Promise(resolve => setTimeout(resolve,2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         this.glideData();
       }
     },
     loop() {
       clearTimeout(this.ti);
-      this.interval-=1;
-      if(this.interval<1) {
+      this.interval -= 1;
+      if (this.interval < 1) {
         this.getData();
       } else {
-        this.ti=setTimeout(() => {
+        this.ti = setTimeout(() => {
           this.loop();
-        },2000);
+        }, 2000);
       }
     },
     confirmLoop() {
-      if(this.loopHandler) {
-        this.interval=this.config.interval-(-1);
+      if (this.loopHandler) {
+        this.interval = this.config.interval - (-1);
         this.loop();
       } else {
         clearTimeout(this.ti);
       }
     },
     getOrders() {
-      const orders=[];
+      const orders = [];
       this.config.orders.forEach((o) => {
         orders.push({
           column: o.name,
@@ -116,9 +116,9 @@ export default {
       return orders;
     },
     doLoadData() {
-      this.loading=true;
-      if(this.config.viewId&&(this.config.cols.length>0||this.config.rows.length>0)) {
-        this.$axios.post(`/bi/view/getTableData/${this.config.viewId}`,{
+      this.loading = true;
+      if (this.config.viewId && (this.config.cols.length > 0 || this.config.rows.length > 0)) {
+        this.$axios.post(`/bi/view/getTableData/${this.config.viewId}`, {
           aggregators: this.config.rows.map((v) => ({
             column: v.name.split('@')[0],
             alias: v.field.alias,
@@ -135,58 +135,58 @@ export default {
           pageNo: 1,
           pageSize: this.config.length,
         }).then(({ result }) => {
-          const head=[];
-          const body=[];
-          if(this.config.table.showIndex) {
+          const head = [];
+          const body = [];
+          if (this.config.table.showIndex) {
             head.push('序号');
             head.push(...result.head);
-            for(let i=0;i<result.body.length;i++) {
-              const row=[];
-              row.push(i+1,...result.body[i]);
+            for (let i = 0; i < result.body.length; i += 1) {
+              const row = [];
+              row.push(i + 1, ...result.body[i]);
               body.push(row);
             }
-            this.data={ head,body };
+            this.data = { head, body };
           } else {
-            this.data=result;
+            this.data = result;
           }
         }).finally(() => {
-          this.loading=false;
+          this.loading = false;
           this.glideData();
         });
       }
     },
     thStyle() {
-      const tableHead={
+      const tableHead = {
         ...this.config.table.tableHead,
         fontSize: `${this.config.table.tableHead.fontSize}px`,
-        opacity: this.config.table.tableHead.opacity/100,
+        opacity: this.config.table.tableHead.opacity / 100,
         backgroundColor: this.headerBGC,
         height: `${this.config.table.tableHead.thHeight}px !important`,
       };
       return tableHead;
     },
-    trStyle(d,idx) {
-      const tableBody={
+    trStyle(d, idx) {
+      const tableBody = {
         ...this.config.table.tableBody,
         fontSize: `${this.config.table.tableBody.fontSize}px`,
         fontColor: '#FFF',
         borderWidth: `${this.config.table.tableBody.borderWidth}px`,
-        opacity: this.config.table.tableBody.opacity/100,
-        backgroundColor: `${idx%2===0? this.evenRowBGC:this.oddRowBGC}`
+        opacity: this.config.table.tableBody.opacity / 100,
+        backgroundColor: `${idx % 2 === 0 ? this.evenRowBGC : this.oddRowBGC}`,
       };
       return tableBody;
     },
-    tdStyle(d,idx) {
+    tdStyle() {
       return {
         height: `${this.config.table.tableBody.tdHeight}px !important`,
       };
     },
   },
   created() {
-    this.getData=debounce(this.doLoadData,500);
+    this.getData = debounce(this.doLoadData, 500);
   },
   mounted() {
-    if(this.config.viewId) {
+    if (this.config.viewId) {
       this.getData();
     }
   },
@@ -194,8 +194,8 @@ export default {
     config: {
       deep: true,
       handler() {
-        if(this.config.needResize) {
-          this.config.needResize=false;
+        if (this.config.needResize) {
+          this.config.needResize = false;
         }
         this.getData();
       },

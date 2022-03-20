@@ -7,7 +7,7 @@
       >
         <template v-slot:before>
           <div class=" row no-wrap">
-            <b class="text-subtitle1">分类目录</b>
+            <b class="text-subtitle1">{{name}}</b>
             <q-space />
             <q-btn flat round dense color="primary" icon="add" @click="addCatalog()">
               <q-tooltip>新建</q-tooltip>
@@ -60,8 +60,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -83,6 +83,11 @@ export default {
     type: {
       type: String,
       required: true,
+    },
+    name: {
+      type: String,
+      required: false,
+      default: '分类目录',
     },
   },
   data() {
@@ -118,7 +123,7 @@ export default {
           name: 'type', align: 'left', label: '类别', field: 'type',
         },
         {
-          name: 'opt', align: 'center', label: '操作', field: 'id',
+          name: 'opt', align: 'center', label: '操作', field: 'opt',
         },
       ],
     };

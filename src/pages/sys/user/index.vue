@@ -1,33 +1,35 @@
 <template>
   <q-page class="cc-admin q-pa-sm">
     <div class="col bg-white shadow-2 q-pa-md">
-      <div class="row items-center justify-start q-mb-md">
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.username" prefix="账号：" />
+      <div class="row">
+        <q-item class="col-3 items-center">
+          <q-item-label>账号：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.username"></q-input>
           </q-item-section>
         </q-item>
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.realname" prefix="姓名：" />
+        <q-item class="col-3 items-center">
+          <q-item-label>姓名：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.realname"></q-input>
           </q-item-section>
         </q-item>
-        <q-item
-          v-show="showQuery"
-          v-if="$q.screen.gt.md"
-          class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
-        >
-          <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.email" prefix="邮箱：" />
+        <q-item class="col-3 items-center" v-show="showQuery" v-if="$q.screen.gt.md">
+          <q-item-label>邮箱：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.email"></q-input>
           </q-item-section>
         </q-item>
-        <q-item v-if="$q.screen.gt.md" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.phone" prefix="电话：" />
+
+        <q-item class="col-3 items-center">
+          <q-item-label>电话：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.phone"></q-input>
           </q-item-section>
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col">
+        <q-item class="col-3 items-center" v-show="showQuery" v-if="$q.screen.gt.md">
+          <q-item-label>状态：</q-item-label>
+          <q-item-section>
             <q-select
               clearable
               outlined
@@ -36,74 +38,57 @@
               v-model="searchForm.status"
               map-options
               :options="userStatus"
-              class="col"
-              prefix="状态："
             />
           </q-item-section>
         </q-item>
-        <q-item
-          v-show="showQuery"
-          v-if="$q.screen.gt.md"
-          class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
-        >
-          <q-item-section class="col">
-            <q-input outlined dense square clearable v-model="searchForm.workNo" prefix="工号：" />
+
+        <q-item class="col-3 items-center" v-show="showQuery" v-if="$q.screen.gt.md">
+          <q-item-label>工号：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.workNo"></q-input>
           </q-item-section>
         </q-item>
-        <q-item
-          v-show="showQuery"
-          v-if="$q.screen.gt.md"
-          class="col-xl-2 col-md-3 col-sm-6 col-xs-12"
-        >
-          <q-item-section class="col">
-            <q-select
-              clearable
-              outlined
-              dense
-              emit-value
-              v-model="searchForm.post"
-              map-options
-              :options="sysPosition"
-              class="col"
-              prefix="职务："
-            />
+
+        <q-item class="col-3 items-center" v-show="showQuery" v-if="$q.screen.gt.md">
+          <q-item-label>职务：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.post"></q-input>
           </q-item-section>
         </q-item>
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
-          <q-item-label class="col-12 text-right row no-wrap justify-center">
-            <q-btn
-              unelevated
-              label="查询"
-              no-wrap
-              color="primary"
-              class="q-mr-sm no-border-radius"
-              :loading="loading"
-              @click="query()"
-            >
-              <template v-slot:loading>
-                <q-spinner-ios class="on-center" />
-              </template>
-            </q-btn>
-            <q-btn
-              outline
-              unelevated
-              label="重置"
-              no-wrap
-              class="q-mr-sm no-border-radius"
-              color="secondary"
-              @click="searchReset"
-            />
-            <q-btn-dropdown
-              v-model="showQuery"
-              persistent
-              dense
-              flat
-              color="primary"
-              :label="tableLabel"
-              @before-show="show"
-              @before-hide="hide"
-            ></q-btn-dropdown>
-          </q-item-label>
+        <q-item class="col-3 items-center">
+          <q-item-section>
+            <div>
+              <q-btn
+                unelevated
+                class="q-mr-sm no-border-radius"
+                color="primary"
+                icon="search"
+                label="查询"
+                :loading="loading"
+                @click="query()"
+              />
+              <q-btn
+                no-wrap
+                outline
+                unelevated
+                class="q-mr-sm no-border-radius"
+                color="secondary"
+                icon="refresh"
+                label="重置"
+                @click="searchReset"
+              />
+              <q-btn-dropdown
+                v-model="showQuery"
+                persistent
+                dense
+                flat
+                color="primary"
+                :label="tableLabel"
+                @before-show="show"
+                @before-hide="hide"
+              ></q-btn-dropdown>
+            </div>
+          </q-item-section>
         </q-item>
       </div>
       <q-table
@@ -245,52 +230,54 @@
       </q-table>
     </div>
     <q-dialog ref="changePassWord" maximized flat persistent position="right">
-      <q-form @submit="changePassWord" class="dialog_card">
+      <q-form @submit="changePassWord" class="dialog_card column">
         <div class="view_title justify-between q-px-md">
           修改密码
           <q-btn dense outline round size="sm" icon="clear" v-close-popup />
         </div>
-        <div class="row q-col-gutter-x-md dialog_form q-pa-md">
-          <div class="col-12">
-            <h5>用户账号：</h5>
-            <q-input outlined readonly dense v-model="selectUser.username" />
-          </div>
-          <div class="col-12">
-            <h5>用户姓名：</h5>
-            <q-input outlined readonly dense v-model="selectUser.realname" />
-          </div>
+        <q-scroll-area class="col">
+          <div class="col row q-col-gutter-x-md dialog_form q-pa-md">
+            <div class="col-12">
+              <h5>用户账号：</h5>
+              <q-input outlined readonly dense v-model="selectUser.username" />
+            </div>
+            <div class="col-12">
+              <h5>用户姓名：</h5>
+              <q-input outlined readonly dense v-model="selectUser.realname" />
+            </div>
 
-          <div class="col-6">
-            <h5>
-              <q-icon name="star" color="red" />密码：
-            </h5>
-            <q-input
-              outlined
-              dense
-              type="password"
-              v-model="password"
-              :rules="[v => !!v || '不可以为空']"
-            />
+            <div class="col-6">
+              <h5>
+                <q-icon name="star" color="red" />密码：
+              </h5>
+              <q-input
+                outlined
+                dense
+                type="password"
+                v-model="password"
+                :rules="[v => !!v || '不可以为空']"
+              />
+            </div>
+            <div class="col-6">
+              <h5>
+                <q-icon name="star" color="red" />确认密码：
+              </h5>
+              <q-input
+                outlined
+                dense
+                type="password"
+                v-model="confirmpassword"
+                :rules="[v => !!v || '不可以为空']"
+                :error="!isValid"
+              >
+                <template v-slot:error>两次输入密码不一致！</template>
+              </q-input>
+            </div>
           </div>
-          <div class="col-6">
-            <h5>
-              <q-icon name="star" color="red" />确认密码：
-            </h5>
-            <q-input
-              outlined
-              dense
-              type="password"
-              v-model="confirmpassword"
-              :rules="[v => !!v || '不可以为空']"
-              :error="!isValid"
-            >
-              <template v-slot:error>两次输入密码不一致！</template>
-            </q-input>
-          </div>
-        </div>
+        </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="white" text-color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>
@@ -361,9 +348,7 @@
                     field-name="file"
                     @uploaded="importedAvatar"
                   />
-                  <q-tooltip>
-                    点击上传图片
-                  </q-tooltip>
+                  <q-tooltip>点击上传图片</q-tooltip>
                 </q-btn>
               </div>
             </div>
@@ -408,8 +393,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>

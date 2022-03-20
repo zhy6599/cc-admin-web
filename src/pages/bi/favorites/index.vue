@@ -7,14 +7,16 @@
       v-if="this.$q.screen.gt.md"
     />
     <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
-      <div class="row items-center justify-start q-mb-md">
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col">
-            <q-input outlined dense v-model="searchForm.name" type="text" class="col" prefix="名称："/>
+      <div class="row">
+        <q-item class="col-3 items-center">
+          <q-item-label>名称：</q-item-label>
+          <q-item-section>
+            <q-input dense outlined v-model="searchForm.name"></q-input>
           </q-item-section>
         </q-item>
-        <q-item v-show="showQuery" class="col-xl-2 col-md-3 col-sm-6 col-xs-12">
-          <q-item-section class="col">
+        <q-item class="col-3 items-center">
+          <q-item-label>类型：</q-item-label>
+          <q-item-section>
             <q-select
               outlined
               dense
@@ -22,46 +24,43 @@
               v-model="searchForm.type"
               map-options
               :options="chartTypes"
-              class="col"
-              prefix="类型："
             />
           </q-item-section>
         </q-item>
-        <q-item class="col-xl-2 col-md-3 col-sm-6 col-xs-12 q-pr-sm">
-          <q-item-label class="col-12 text-right row no-wrap justify-center">
-            <q-btn
-              unelevated
-              no-wrap
-              label="查询"
-              color="primary"
-              class="q-mr-sm no-border-radius"
-              :loading="loading"
-              @click="query()"
-            >
-              <template v-slot:loading>
-                <q-spinner-ios class="on-center" />
-              </template>
-            </q-btn>
-            <q-btn
-              outline
-              no-wrap
-              unelevated
-              label="重置"
-              class="q-mr-sm no-border-radius"
-              color="secondary"
-              @click="searchReset"
-            />
-            <q-btn-dropdown
-              v-model="showQuery"
-              persistent
-              dense
-              flat
-              color="primary"
-              :label="tableLabel"
-              @before-show="show"
-              @before-hide="hide"
-            ></q-btn-dropdown>
-          </q-item-label>
+        <q-item class="col-3 items-center">
+          <q-item-section>
+            <div>
+              <q-btn
+                unelevated
+                class="q-mr-sm no-border-radius"
+                color="primary"
+                icon="search"
+                label="查询"
+                :loading="loading"
+                @click="query()"
+              />
+              <q-btn
+                no-wrap
+                outline
+                unelevated
+                class="q-mr-sm no-border-radius"
+                color="secondary"
+                icon="refresh"
+                label="重置"
+                @click="searchReset"
+              />
+              <q-btn-dropdown
+                v-model="showQuery"
+                persistent
+                dense
+                flat
+                color="primary"
+                :label="tableLabel"
+                @before-show="show"
+                @before-hide="hide"
+              ></q-btn-dropdown>
+            </div>
+          </q-item-section>
         </q-item>
       </div>
       <q-table
@@ -204,8 +203,8 @@
           </div>
         </q-scroll-area>
         <div class="row justify-end q-pa-md">
-          <q-btn outline color="primary" label="取消" v-close-popup />
-          <q-btn unelevated color="primary" class="on-right" label="提交" type="submit" />
+          <q-btn outline color="primary" icon="mdi-close-thick" label="关闭" v-close-popup />
+          <q-btn class="q-mx-sm" color="primary" icon="mdi-check-bold" label="提交" type="submit" />
         </div>
       </q-form>
     </q-dialog>

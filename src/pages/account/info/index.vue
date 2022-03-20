@@ -1,6 +1,6 @@
 <template>
   <div class="row cc-admin q-pa-sm">
-    <div class="col-md-4 col-xs-12 q-px-sm">
+    <div class="col-md-4 col-xs-12">
       <q-card flat class="bg-white no-border-radius">
         <q-card-section class="text-center">
           <q-img
